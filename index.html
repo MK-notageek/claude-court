@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Court — Hormozi Frameworks, Drawn</title>
+<style>
+  :root{
+    --paper:#FFFFFF; --ink:#1C1235; --ink-soft:#473A63; --muted:#8C7BA8;
+    --line:#E5DCF6; --violet:#7C3AED; --violet-deep:#4C1D95; --violet-fill:#EDE7FB;
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ background:#d8cdf0; color:var(--ink); font-family:var(--body);
+    -webkit-font-smoothing:antialiased; min-height:100vh; padding:0 0 80px; }
+  .wrap{ max-width:1040px; margin:0 auto; padding:0 28px; }
+  header{ background:var(--ink); color:#fff; padding:64px 0 56px; margin-bottom:48px; }
+  header .wrap{ position:relative; }
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px; letter-spacing:.26em;
+    text-transform:uppercase; color:var(--violet); margin-bottom:18px; }
+  h1{ font-family:var(--display); font-weight:800; font-size:64px; line-height:.95;
+    letter-spacing:-.02em; color:#fff; }
+  header p{ font-family:var(--body); font-size:19px; line-height:1.55; color:#D9CCEF;
+    max-width:620px; margin-top:22px; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin-bottom:28px; }
+  .meta{ font-family:var(--display); font-weight:700; font-size:12.5px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); margin-top:34px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:22px; }
+  a.card{ display:block; text-decoration:none; background:var(--paper); border:2px solid var(--line);
+    border-radius:16px; padding:26px 26px 24px; transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+  a.card:hover{ transform:translateY(-4px); box-shadow:0 14px 34px rgba(28,18,53,.16); border-color:var(--violet); }
+  .glyph{ font-family:var(--display); font-weight:800; font-size:46px; line-height:1; color:var(--violet); }
+  .src{ font-family:var(--display); font-weight:700; font-size:11px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--muted); margin:18px 0 8px; }
+  .ct{ font-family:var(--display); font-weight:800; font-size:24px; line-height:1.08;
+    letter-spacing:-.01em; color:var(--ink); }
+  .date{ font-family:var(--display); font-weight:700; font-size:12px; letter-spacing:.06em;
+    color:var(--muted); margin-top:16px; }
+  .read{ font-family:var(--display); font-weight:800; font-size:13px; letter-spacing:.04em;
+    color:var(--violet); margin-top:4px; }
+  footer{ text-align:center; font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-top:54px; }
+  @media(max-width:560px){ h1{font-size:46px;} }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="tick"></div>
+    <div class="kicker">Vibeera · JARVIS</div>
+    <h1>CLAUDE COURT</h1>
+    <p>Alex Hormozi's frameworks, redrawn one a day in Vibeera's house style — print-grade visual breakdowns you can actually read. Two new concepts ship here every morning.</p>
+    <div class="meta">A growing archive · updated daily at 07:00 PKT</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- CARDS:newest-first. The daily routine inserts new cards directly below this line. -->
+  <div class="grid">
+
+    <a class="card" href="concepts/the-core-four.html">
+      <div class="glyph">4</div>
+      <div class="src">$100M Leads</div>
+      <div class="ct">The Core Four</div>
+      <div class="date">2026-06-20</div>
+      <div class="read">Read the breakdown →</div>
+    </a>
+
+    <a class="card" href="concepts/the-grand-slam-offer.html">
+      <div class="glyph">★</div>
+      <div class="src">$100M Offers</div>
+      <div class="ct">The Grand Slam Offer</div>
+      <div class="date">2026-06-20</div>
+      <div class="read">Read the breakdown →</div>
+    </a>
+
+    <a class="card" href="concepts/the-value-equation.html">
+      <div class="glyph">÷</div>
+      <div class="src">$100M Offers</div>
+      <div class="ct">The Value Equation</div>
+      <div class="date">Charter</div>
+      <div class="read">Read the breakdown →</div>
+    </a>
+
+    <a class="card" href="concepts/the-trust-bet.html">
+      <div class="glyph">✺</div>
+      <div class="src">Hormozi · Trust</div>
+      <div class="ct">The Trust Bet</div>
+      <div class="date">Charter</div>
+      <div class="read">Read the breakdown →</div>
+    </a>
+
+    <a class="card" href="concepts/the-context-gap.html">
+      <div class="glyph">⟂</div>
+      <div class="src">Vibeera · Hormozi</div>
+      <div class="ct">The Context Gap</div>
+      <div class="date">Charter</div>
+      <div class="read">Read the breakdown →</div>
+    </a>
+
+  </div>
+</div>
+
+<footer>Built by JARVIS · one starving-crowd idea at a time</footer>
+</body>
+</html>

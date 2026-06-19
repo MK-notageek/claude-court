@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Trust Bet — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#F8F3EA;        /* warm cream page          */
+    --panel:#F0E8DC;        /* inset panels             */
+    --ink:#1A1510;          /* primary text             */
+    --ink-soft:#3A2E24;     /* secondary strokes/text   */
+    --muted:#8C6F58;        /* captions, running heads  */
+    --line:#D8C7B2;         /* hairlines on cream       */
+    --ember:#E2622B;        /* the accent (~10%)        */
+    --ember-soft:#F0A06A;   /* glow / fills             */
+    --signal:#5FA463;       /* "safe / correct"         */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#cdbfa8; }
+  @page{ size:A4; margin:0; }
+
+  .page{
+    width:794px; height:1123px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--ember); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:118px; line-height:.9; letter-spacing:-.03em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:34px; line-height:1.04; letter-spacing:-.01em; margin:0 0 22px; }
+  h2 .em{ color:var(--ember); }
+  p{ font-family:var(--body); font-size:18px; line-height:1.62; color:var(--ink-soft); margin:0 0 18px; }
+  p.lead{ font-size:21px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:16px; line-height:1.55; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:30px; line-height:1.14; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--ember); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:14px; font-weight:600; }
+
+  figure{ margin:24px 0; }
+
+  /* cover */
+  .cover-glyph{ position:absolute; right:-6px; bottom:-150px;
+    font-family:var(--display); font-weight:800; font-size:560px; line-height:1;
+    color:#EFE6D6; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:23px; line-height:1.46;
+    color:var(--ink-soft); max-width:580px; margin:30px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--ember); margin:0 0 30px; }
+
+  .band{ background:var(--ember); color:var(--ink); border-radius:12px;
+    text-align:center; padding:24px 20px; margin:24px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:30px;
+    letter-spacing:.005em; line-height:1.04; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:13px;
+    letter-spacing:.20em; text-transform:uppercase; margin-top:10px; color:#5a2a12; }
+
+  .recap{ border:2.5px solid var(--ink); border-radius:14px; padding:22px 26px; margin-top:8px; }
+  .recap .rk{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.24em; text-transform:uppercase; color:var(--ember); margin:0 0 12px; }
+  .recap .row{ font-family:var(--body); font-size:16.5px; line-height:1.5; color:var(--ink); margin:7px 0; }
+  .recap .row b{ font-family:var(--display); font-weight:800; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:19px; letter-spacing:.01em; margin-top:26px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">&ldquo;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>· adapted from Alex Hormozi</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">What &ldquo;just trust me&rdquo; actually means</div>
+    <h1 class="title">THE<br>TRUST<br>BET</h1>
+    <p class="cover-sub">Trust isn&rsquo;t a feeling. It&rsquo;s the moment you make yourself <b>punishable</b> by another person &mdash; and bet they won&rsquo;t pull the trigger. Here&rsquo;s the entire mechanism, drawn.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>· risk &times; punisher</span></div>
+  </div>
+  <div class="stamp">Trust &middot; The Punishment Model</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · THE DEFINITION ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE TRUST BET</span><span>The Definition</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Trust is not a feeling. <span class="em">It&rsquo;s a bet.</span></h2>
+
+  <p class="lead">Someone says &ldquo;just trust me&rdquo; &mdash; and you freeze. It&rsquo;s an odd command. What are they actually asking for?</p>
+  <p>Here is the answer, behaviorally. To trust someone is to <span class="b">make yourself punishable by them.</span></p>
+  <p>You hand over a secret, your word, or a need. That thing is now <span class="b">leverage</span> &mdash; something they could use to hurt you. Then you place a bet: <span class="b">they won&rsquo;t.</span></p>
+
+  <figure>
+    <!-- D1 · the bet mechanism -->
+    <svg viewBox="0 0 654 222" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- box A -->
+      <rect x="0" y="34" width="196" height="78" rx="11" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="20" y="64" font-size="13" font-weight="800" fill="#1A1510" letter-spacing="1">YOU EXPOSE</text>
+      <text x="20" y="88" font-size="13.5" font-weight="700" fill="#3A2E24">a secret &middot; your word</text>
+      <text x="20" y="106" font-size="13.5" font-weight="700" fill="#3A2E24">&middot; a need</text>
+      <!-- arrow 1 -->
+      <g stroke="#1A1510" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="200" y1="73" x2="226" y2="73"/>
+        <polyline points="216,64 230,73 216,82"/>
+      </g>
+      <!-- box B (ember) -->
+      <rect x="232" y="34" width="196" height="78" rx="11" fill="#E2622B" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="252" y="64" font-size="13" font-weight="800" fill="#1A1510" letter-spacing="1">THEY GET POWER</text>
+      <text x="252" y="88" font-size="13.5" font-weight="700" fill="#3A1305">leverage to</text>
+      <text x="252" y="106" font-size="13.5" font-weight="700" fill="#3A1305">punish you</text>
+      <!-- arrow 2 -->
+      <g stroke="#1A1510" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="432" y1="73" x2="458" y2="73"/>
+        <polyline points="448,64 462,73 448,82"/>
+      </g>
+      <!-- box C (ink) -->
+      <rect x="464" y="34" width="190" height="78" rx="11" fill="#1A1510"/>
+      <text x="484" y="64" font-size="13" font-weight="800" fill="#F0A06A" letter-spacing="1">YOU BET</text>
+      <text x="484" y="88" font-size="13.5" font-weight="700" fill="#F8F3EA">they won&rsquo;t</text>
+      <text x="484" y="106" font-size="13.5" font-weight="700" fill="#F8F3EA">use it</text>
+      <!-- underbrace -->
+      <path d="M2 138 V150 H326 V162 H328 V150 H652 V138" fill="none" stroke="#E2622B" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="327" y="196" text-anchor="middle" font-size="17" font-weight="800" fill="#1A1510" letter-spacing="1">= YOU, MADE PUNISHABLE &mdash; ON PURPOSE</text>
+    </svg>
+    <div class="caption">No leverage handed over, no trust. Trust is risk, taken deliberately.</div>
+  </figure>
+
+  <p>That&rsquo;s the whole definition. Look at any relationship and you can name the exact moment trust occurred: <span class="b">when someone made themselves punishable and wasn&rsquo;t punished.</span></p>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · THE TWO DIALS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE TRUST BET</span><span>The Two Dials</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Every act of trust has <span class="em">two dials.</span></h2>
+
+  <p>It feels like one fuzzy thing. It&rsquo;s actually two clean questions &mdash; and the answers change everything.</p>
+
+  <figure style="margin:30px 0">
+    <!-- D2 · two dials -->
+    <svg viewBox="0 0 654 268" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- dial 1 -->
+      <text x="0" y="24" font-size="13" font-weight="800" fill="#E2622B" letter-spacing="2">DIAL 1 &mdash; WHO IS AT RISK?</text>
+      <line x1="120" y1="62" x2="534" y2="62" stroke="#1A1510" stroke-width="2.5" stroke-dasharray="2 9" stroke-linecap="round"/>
+      <rect x="40" y="38" width="150" height="48" rx="24" fill="#E2622B" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="115" y="68" text-anchor="middle" font-size="17" font-weight="800" fill="#1A1510">YOU</text>
+      <rect x="464" y="38" width="150" height="48" rx="24" fill="#1A1510"/>
+      <text x="539" y="68" text-anchor="middle" font-size="17" font-weight="800" fill="#F8F3EA">THEM</text>
+
+      <!-- dial 2 -->
+      <text x="0" y="142" font-size="13" font-weight="800" fill="#E2622B" letter-spacing="2">DIAL 2 &mdash; WHO HOLDS THE PUNISHMENT?</text>
+      <line x1="120" y1="180" x2="534" y2="180" stroke="#1A1510" stroke-width="2.5" stroke-dasharray="2 9" stroke-linecap="round"/>
+      <rect x="40" y="156" width="150" height="48" rx="24" fill="#E2622B" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="115" y="185" text-anchor="middle" font-size="15" font-weight="800" fill="#1A1510">THE PERSON</text>
+      <rect x="464" y="156" width="150" height="48" rx="24" fill="#1A1510"/>
+      <text x="539" y="185" text-anchor="middle" font-size="15" font-weight="800" fill="#F8F3EA">REALITY</text>
+
+      <!-- result -->
+      <text x="327" y="252" text-anchor="middle" font-size="19" font-weight="800" fill="#1A1510" letter-spacing="1">2 DIALS &times; 2 SETTINGS  =  <tspan fill="#E2622B">4 KINDS OF TRUST</tspan></text>
+    </svg>
+    <div class="caption">Flip the dials and you don&rsquo;t get one kind of trust. You get four.</div>
+  </figure>
+
+  <p><span class="b">Who is at risk</span> &mdash; you, or them? And <span class="b">who does the punishing</span> if the bet goes bad &mdash; the other person, or reality itself?</p>
+  <p>Those two dials, with two positions each, are the entire map. Turn the page.</p>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · THE FOUR TYPES (HERO) ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE TRUST BET</span><span>The Four Types</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">The <span class="em">four types</span> of trust.</h2>
+
+  <p class="small" style="margin-bottom:6px">Set the two dials and every trust you&rsquo;ve ever extended falls into one of these boxes.</p>
+
+  <figure style="margin:16px 0 10px">
+    <!-- D3 · 2x2 matrix -->
+    <svg viewBox="0 0 654 462" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- faint matrix axes -->
+      <line x1="140" y1="243" x2="654" y2="243" stroke="#D8C7B2" stroke-width="2"/>
+      <line x1="397" y1="52"  x2="397" y2="431" stroke="#D8C7B2" stroke-width="2"/>
+
+      <!-- column headers -->
+      <text x="264" y="30" text-anchor="middle" font-size="12.5" font-weight="800" fill="#E2622B" letter-spacing="1.5">THE PERSON PUNISHES</text>
+      <text x="529" y="30" text-anchor="middle" font-size="12.5" font-weight="800" fill="#E2622B" letter-spacing="1.5">REALITY PUNISHES</text>
+
+      <!-- row labels -->
+      <text x="128" y="138" text-anchor="end" font-size="15" font-weight="800" fill="#1A1510">YOU</text>
+      <text x="128" y="156" text-anchor="end" font-size="11" font-weight="700" fill="#8C6F58" letter-spacing="1">AT RISK</text>
+      <text x="128" y="334" text-anchor="end" font-size="15" font-weight="800" fill="#1A1510">THEM</text>
+      <text x="128" y="352" text-anchor="end" font-size="11" font-weight="700" fill="#8C6F58" letter-spacing="1">AT RISK</text>
+
+      <!-- TL card · the secret -->
+      <rect x="140" y="55" width="249" height="180" rx="12" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="160" y="88" font-size="12" font-weight="800" fill="#E2622B" letter-spacing="1.5">TYPE 01 &middot; THE SECRET</text>
+      <text x="160" y="120" font-size="15.5" font-weight="800" fill="#1A1510">You hand over</text>
+      <text x="160" y="142" font-size="15.5" font-weight="800" fill="#1A1510">leverage &mdash; and bet</text>
+      <text x="160" y="164" font-size="15.5" font-weight="800" fill="#1A1510">they never use it.</text>
+      <text x="160" y="206" font-size="12.5" font-style="italic" fill="#8C6F58">&ldquo;Here&rsquo;s what I think of my mother.&rdquo;</text>
+
+      <!-- TR card · the reliance -->
+      <rect x="405" y="55" width="249" height="180" rx="12" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="425" y="88" font-size="12" font-weight="800" fill="#E2622B" letter-spacing="1.5">TYPE 02 &middot; THE RELIANCE</text>
+      <text x="425" y="120" font-size="15.5" font-weight="800" fill="#1A1510">You rely on them</text>
+      <text x="425" y="142" font-size="15.5" font-weight="800" fill="#1A1510">to act. Flake &mdash; and</text>
+      <text x="425" y="164" font-size="15.5" font-weight="800" fill="#1A1510">reality punishes you.</text>
+      <text x="425" y="206" font-size="12.5" font-style="italic" fill="#8C6F58">&ldquo;Can you pick my kid up tomorrow?&rdquo;</text>
+
+      <!-- BL card · the confidence -->
+      <rect x="140" y="251" width="249" height="180" rx="12" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="160" y="284" font-size="12" font-weight="800" fill="#E2622B" letter-spacing="1.5">TYPE 03 &middot; THE CONFIDENCE</text>
+      <text x="160" y="316" font-size="15.5" font-weight="800" fill="#1A1510">They hand you the</text>
+      <text x="160" y="338" font-size="15.5" font-weight="800" fill="#1A1510">knife. Stay worthy</text>
+      <text x="160" y="360" font-size="15.5" font-weight="800" fill="#1A1510">of it &mdash; never stab.</text>
+      <text x="160" y="402" font-size="12.5" font-style="italic" fill="#8C6F58">&ldquo;I&rsquo;ve told no one but you.&rdquo;</text>
+
+      <!-- BR card · the advice -->
+      <rect x="405" y="251" width="249" height="180" rx="12" fill="#1A1510"/>
+      <text x="425" y="284" font-size="12" font-weight="800" fill="#F0A06A" letter-spacing="1.5">TYPE 04 &middot; THE ADVICE</text>
+      <text x="425" y="316" font-size="15.5" font-weight="800" fill="#F8F3EA">They act on your</text>
+      <text x="425" y="338" font-size="15.5" font-weight="800" fill="#F8F3EA">word. The result</text>
+      <text x="425" y="360" font-size="15.5" font-weight="800" fill="#F8F3EA">decides the next time.</text>
+      <text x="425" y="402" font-size="12.5" font-style="italic" fill="#C9A98E">&ldquo;I&rsquo;ll do what she advised.&rdquo;</text>
+    </svg>
+    <div class="caption">Who&rsquo;s at risk down the side &middot; who does the punishing across the top.</div>
+  </figure>
+
+  <p class="small">Most arguments about trust are really two people standing in <span class="b">different boxes</span> &mdash; one talking secrets, the other talking reliability.</p>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · SHOULD YOU TRUST ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE TRUST BET</span><span>The Two Tests</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">So should you <span class="em">trust them?</span></h2>
+
+  <p>Before you make yourself punishable, run two tests. <span class="b">Both</span> have to pass.</p>
+
+  <figure style="margin:26px 0">
+    <!-- D4 · two litmus gates -->
+    <svg viewBox="0 0 654 240" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- question token -->
+      <rect x="0" y="78" width="120" height="68" rx="12" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="60" y="108" text-anchor="middle" font-size="18" font-weight="800" fill="#1A1510">TRUST?</text>
+      <text x="60" y="130" text-anchor="middle" font-size="11.5" font-weight="700" fill="#8C6F58">the question</text>
+      <!-- arrow -->
+      <g stroke="#1A1510" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="120" y1="112" x2="148" y2="112"/><polyline points="138,103 152,112 138,121"/>
+      </g>
+      <!-- gate 1 -->
+      <rect x="154" y="60" width="184" height="104" rx="12" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="172" y="90" font-size="12" font-weight="800" fill="#E2622B" letter-spacing="1.5">TEST 1</text>
+      <text x="172" y="114" font-size="17" font-weight="800" fill="#1A1510">TRACK RECORD</text>
+      <text x="172" y="136" font-size="12.5" font-weight="700" fill="#3A2E24">Held the knife before &mdash;</text>
+      <text x="172" y="153" font-size="12.5" font-weight="700" fill="#3A2E24">and never used it?</text>
+      <!-- arrow -->
+      <g stroke="#1A1510" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="338" y1="112" x2="366" y2="112"/><polyline points="356,103 370,112 356,121"/>
+      </g>
+      <!-- gate 2 -->
+      <rect x="372" y="60" width="184" height="104" rx="12" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="390" y="90" font-size="12" font-weight="800" fill="#E2622B" letter-spacing="1.5">TEST 2</text>
+      <text x="390" y="114" font-size="17" font-weight="800" fill="#1A1510">INCENTIVE</text>
+      <text x="390" y="136" font-size="12.5" font-weight="700" fill="#3A2E24">Is betraying you a</text>
+      <text x="390" y="153" font-size="12.5" font-weight="700" fill="#3A2E24">bad deal for them?</text>
+      <!-- split -->
+      <g stroke="#1A1510" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="556" y1="112" x2="576" y2="112"/>
+        <path d="M576 112 C 592 112, 592 58, 560 50"/>
+        <path d="M576 112 C 592 112, 592 168, 560 176"/>
+      </g>
+      <!-- pass chip -->
+      <rect x="560" y="26" width="94" height="48" rx="11" fill="#5FA463"/>
+      <text x="607" y="49" text-anchor="middle" font-size="15" font-weight="800" fill="#1A1510">TRUST</text>
+      <text x="607" y="65" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1A3318" letter-spacing="1">BOTH PASS</text>
+      <!-- fail chip -->
+      <rect x="560" y="152" width="94" height="48" rx="11" fill="#E2622B"/>
+      <text x="607" y="175" text-anchor="middle" font-size="15" font-weight="800" fill="#1A1510">DON&rsquo;T</text>
+      <text x="607" y="191" text-anchor="middle" font-size="9.5" font-weight="700" fill="#3A1305" letter-spacing="1">EITHER FAILS</text>
+    </svg>
+    <div class="caption">Two gates, wired in series. Miss one and trust is a bad bet.</div>
+  </figure>
+
+  <p><span class="b">One &mdash; track record.</span> Given the chance to burn you, have they protected you instead? A knife at your back they chose not to use?</p>
+  <p><span class="b">Two &mdash; incentive.</span> Does burning you cost them more than keeping you? If betrayal is a bad deal for them, you&rsquo;re far safer.</p>
+
+  <div style="height:6px"></div>
+  <div class="pull">Track record without aligned incentive is <span class="em">luck.</span> Incentive without track record is a <span class="em">guess.</span></div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · WHY RISK IT ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE TRUST BET</span><span>The Ceiling</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Then why <span class="em">risk it</span> at all?</h2>
+
+  <p>Because the ceiling of any relationship is set by one thing: <span class="b">how much context the two of you share.</span></p>
+  <p>A stranger can barely help you &mdash; they know nothing about you. Every single thing you reveal hands them more to work with, and lifts the ceiling on what you can become to each other.</p>
+
+  <figure style="margin:22px 0">
+    <!-- D5 · shared-context cone -->
+    <svg viewBox="0 0 654 296" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- cone fills -->
+      <path d="M82 148 L600 52 L600 148 Z" fill="#5FA463" fill-opacity="0.14"/>
+      <path d="M82 148 L600 148 L600 244 Z" fill="#E2622B" fill-opacity="0.14"/>
+      <!-- midline -->
+      <line x1="82" y1="148" x2="600" y2="148" stroke="#8C6F58" stroke-width="2" stroke-dasharray="2 8"/>
+      <!-- edges -->
+      <path d="M82 148 L600 52"  fill="none" stroke="#5FA463" stroke-width="4" stroke-linecap="round"/>
+      <path d="M82 148 L600 244" fill="none" stroke="#E2622B" stroke-width="4" stroke-linecap="round"/>
+      <!-- apex dot -->
+      <circle cx="82" cy="148" r="6" fill="#1A1510"/>
+      <!-- edge labels -->
+      <text x="250" y="86" font-size="13.5" font-weight="800" fill="#3f7a4a">HOW MUCH THEY CAN HELP YOU</text>
+      <text x="250" y="226" font-size="13.5" font-weight="800" fill="#E2622B">HOW MUCH THEY CAN HURT YOU</text>
+      <!-- ticks -->
+      <line x1="340" y1="120" x2="340" y2="176" stroke="#8C6F58" stroke-width="1.5" stroke-dasharray="2 5"/>
+      <circle cx="340" cy="148" r="4" fill="#1A1510"/>
+      <line x1="600" y1="52"  x2="600" y2="244" stroke="#8C6F58" stroke-width="1.5" stroke-dasharray="2 5"/>
+      <!-- axis -->
+      <g stroke="#1A1510" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="82" y1="270" x2="612" y2="270"/><polyline points="600,262 616,270 600,278"/>
+      </g>
+      <text x="82"  y="290" font-size="12" font-weight="800" fill="#1A1510">STRANGER</text>
+      <text x="340" y="290" text-anchor="middle" font-size="12" font-weight="800" fill="#1A1510">ACQUAINTANCE</text>
+      <text x="600" y="290" text-anchor="end" font-size="12" font-weight="800" fill="#1A1510">FULLY KNOWN</text>
+      <text x="330" y="20"  text-anchor="middle" font-size="11.5" font-weight="800" fill="#8C6F58" letter-spacing="2">SHARED CONTEXT &rarr;</text>
+    </svg>
+    <div class="caption">Same disclosures feed both edges. The cone only opens one way: wider.</div>
+  </figure>
+
+  <p>That&rsquo;s the blade. The more someone can help you, the more they can <span class="b">hurt</span> you. You don&rsquo;t get the upside without handing over the downside.</p>
+
+  <div class="band">
+    <div class="t">THE MORE THEY KNOW, THE HIGHER IT GOES &mdash; BOTH WAYS.</div>
+    <div class="s">shared context  =  the ceiling and the knife</div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · ZERO PUNISHMENT ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE TRUST BET</span><span>Zero Punishment</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Trust runs on <span class="em">zero punishment.</span></h2>
+
+  <p>You give a little. They don&rsquo;t misuse it. You give a little more. Still safe. Drop by drop, over years, the trust compounds into something huge.</p>
+  <p>Then one day the short-term temptation &mdash; winning the argument, using what they told you &mdash; beats the long game. And they take it.</p>
+
+  <figure style="margin:22px 0">
+    <!-- D6 · staircase up, cliff to zero -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- axes -->
+      <line x1="56" y1="40" x2="56" y2="256" stroke="#1A1510" stroke-width="2.5"/>
+      <line x1="56" y1="256" x2="610" y2="256" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="56" y="28" text-anchor="middle" font-size="12" font-weight="800" fill="#8C6F58" letter-spacing="1.5">TRUST</text>
+      <!-- climbing staircase -->
+      <polyline points="70,252 70,228 120,228 120,204 170,204 170,180 220,180 220,156 270,156 270,132 320,132 320,108 380,108 380,84 430,84"
+                fill="none" stroke="#E2622B" stroke-width="3.5" stroke-linejoin="round"/>
+      <!-- small deposit dots on each tread -->
+      <g fill="#1A1510">
+        <circle cx="95" cy="228" r="3"/><circle cx="145" cy="204" r="3"/><circle cx="195" cy="180" r="3"/>
+        <circle cx="245" cy="156" r="3"/><circle cx="295" cy="132" r="3"/><circle cx="350" cy="108" r="3"/>
+      </g>
+      <!-- summit marker -->
+      <circle cx="430" cy="84" r="6" fill="#1A1510"/>
+      <text x="424" y="72" text-anchor="end" font-size="12.5" font-weight="800" fill="#1A1510">20 YEARS IN</text>
+      <!-- the cliff -->
+      <g stroke="#E2622B" stroke-width="7" stroke-linecap="round" fill="none">
+        <line x1="430" y1="90" x2="430" y2="248"/>
+        <polyline points="418,232 430,250 442,232"/>
+      </g>
+      <text x="452" y="150" font-size="15" font-weight="800" fill="#E2622B">ONE ACT</text>
+      <text x="452" y="172" font-size="13" font-weight="700" fill="#3A2E24">of betrayal</text>
+      <!-- zero marker -->
+      <circle cx="430" cy="256" r="5" fill="#1A1510"/>
+      <text x="452" y="252" font-size="20" font-weight="800" fill="#1A1510">0</text>
+      <!-- base label -->
+      <text x="70" y="282" font-size="12.5" font-weight="800" fill="#8C6F58" letter-spacing="1">YEARS OF SMALL DEPOSITS &rarr;</text>
+    </svg>
+    <div class="caption">Built one drop at a time. Emptied in a single act. That asymmetry is the whole game.</div>
+  </figure>
+
+  <div class="pull">The betrayal doesn&rsquo;t <span class="em">subtract</span> from the trust. It <span class="em">resets it to zero</span> &mdash; and undoes every cycle that built it.</div>
+
+  <p class="small">It&rsquo;s a tree cut from the vine. It still stands for a while &mdash; but the nutrients, the truth flowing between you, are already severed. Everyone knows when it&rsquo;s hollow inside.</p>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · BE TRUSTWORTHY / CLOSE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE TRUST BET</span><span>The Payoff</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">So <span class="em">be the one</span> who never punishes.</h2>
+
+  <p>Trustworthiness isn&rsquo;t soft. It&rsquo;s leverage. Refuse to punish what people hand you &mdash; and they hand you more.</p>
+
+  <figure style="margin:18px 0 14px">
+    <!-- D7 · compounding-trust cycle -->
+    <svg viewBox="0 0 654 224" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- center -->
+      <text x="327" y="104" text-anchor="middle" font-size="16" font-weight="800" fill="#E2622B" letter-spacing="1">TRUST</text>
+      <text x="327" y="124" text-anchor="middle" font-size="16" font-weight="800" fill="#E2622B" letter-spacing="1">COMPOUNDS</text>
+      <!-- nodes -->
+      <rect x="240" y="12"  width="174" height="46" rx="23" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="327" y="40"  text-anchor="middle" font-size="13.5" font-weight="800" fill="#1A1510">YOU NEVER PUNISH</text>
+
+      <rect x="452" y="86"  width="196" height="46" rx="23" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="550" y="114" text-anchor="middle" font-size="13.5" font-weight="800" fill="#1A1510">THEY SHARE MORE</text>
+
+      <rect x="240" y="160" width="174" height="46" rx="23" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="327" y="188" text-anchor="middle" font-size="13" font-weight="800" fill="#1A1510">YOU SEE MORE</text>
+
+      <rect x="6"   y="86"  width="196" height="46" rx="23" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="104" y="114" text-anchor="middle" font-size="13.5" font-weight="800" fill="#1A1510">INFLUENCE GROWS</text>
+
+      <!-- clockwise arrows -->
+      <g stroke="#E2622B" stroke-width="3" fill="none" stroke-linecap="round">
+        <path d="M416 38 C 470 44, 506 60, 528 84"/><polyline points="516,72 532,86 512,90" fill="#E2622B" stroke="none"/>
+        <path d="M548 132 C 520 158, 470 174, 416 180"/><polyline points="432,170 412,181 434,188" fill="#E2622B" stroke="none"/>
+        <path d="M238 180 C 184 174, 138 158, 116 134"/><polyline points="130,146 112,132 134,128" fill="#E2622B" stroke="none"/>
+        <path d="M108 84 C 132 60, 184 44, 238 38"/><polyline points="222,30 240,38 220,46" fill="#E2622B" stroke="none"/>
+      </g>
+    </svg>
+    <div class="caption">More context &rarr; more influence &rarr; they let you closer. Punish once and the loop stops cold.</div>
+  </figure>
+
+  <div class="recap">
+    <div class="rk">The litmus &mdash; both directions</div>
+    <div class="row"><b>To trust someone:</b> check the track record, then the incentive. Both must pass.</div>
+    <div class="row"><b>To be trusted:</b> zero punishment &mdash; when they disclose, and forever after. Keep your word.</div>
+  </div>
+
+  <div class="closer">Make yourself punishable. Then never make them regret it.</div>
+
+  <div class="stamp">Trust &middot; The Punishment Model</div>
+  <div class="folio">08</div>
+</section>
+
+</body>
+</html>

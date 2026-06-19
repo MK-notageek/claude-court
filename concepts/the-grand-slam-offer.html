@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Grand Slam Offer — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;        /* white page               */
+    --panel:#F4F0FC;        /* light lavender panels    */
+    --ink:#1C1235;          /* deep violet-ink text     */
+    --ink-soft:#473A63;     /* secondary text           */
+    --muted:#8C7BA8;        /* captions, running heads  */
+    --line:#E5DCF6;         /* lavender hairlines       */
+    --violet:#7C3AED;       /* the accent (~10%)        */
+    --violet-deep:#4C1D95;  /* strong fills             */
+    --violet-soft:#C9B8F5;  /* glow / light strokes     */
+    --violet-fill:#EDE7FB;  /* faint violet block fill  */
+    --plum:#9A86B8;         /* destroys / minimize / cut*/
+    --plum-fill:#F0EBF6;    /* faint plum block fill    */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#d8cdf0; }
+  @page{ size:A4; margin:0; }
+
+  .page{
+    width:794px; height:1123px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  /* cover */
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#F3EEFC; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#E9DEFB; }
+
+  /* compare rows */
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #DCCEEA; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  /* CTA */
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#D9CCEF; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">&#9733;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>· adapted from Alex Hormozi &middot; $100M Offers</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">The offer so good people feel stupid saying no</div>
+    <h1 class="title">THE<br>GRAND SLAM<br>OFFER</h1>
+    <p class="cover-sub">Stop selling the same thing as everyone else at a slightly lower price. Build one offer so far ahead of the field that the prospect&rsquo;s only question is <b>&ldquo;how do I pay?&rdquo;</b> &mdash; here&rsquo;s the system that builds it.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>· pick the market &middot; stack the value &middot; reverse the risk</span></div>
+  </div>
+  <div class="stamp">The Grand Slam Offer</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · COMMODITY VS GRAND SLAM ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>Why It Matters</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Compete on price and you <span class="em">already lost.</span></h2>
+
+  <p class="lead">A commodity is anything sold on price. The moment you look like everyone else, the buyer&rsquo;s only lever is &ldquo;make it cheaper&rdquo; &mdash; and that&rsquo;s a race to the bottom you win by going broke.</p>
+  <p>A <span class="b">Grand Slam Offer</span> breaks the comparison entirely. When nobody else sells what you sell, there is no &ldquo;cheaper&rdquo; &mdash; there&rsquo;s only you. Price stops being the conversation. Value does.</p>
+
+  <figure style="margin:24px 0">
+    <!-- D-COMMODITY · before/after price & margin -->
+    <svg viewBox="0 0 654 252" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- left card: commodity -->
+      <rect x="0" y="8" width="318" height="236" rx="13" fill="#FFFFFF" stroke="#9A86B8" stroke-width="2.5"/>
+      <text x="24" y="40" font-size="12" font-weight="800" fill="#9A86B8" letter-spacing="1.5">&#9660; COMMODITY</text>
+      <text x="24" y="66" font-size="19" font-weight="800" fill="#1C1235">RACE TO THE BOTTOM</text>
+      <!-- shrinking price bars -->
+      <text x="24" y="104" font-size="11.5" font-weight="800" fill="#473A63">PRICE</text>
+      <rect x="24" y="112" width="200" height="20" rx="5" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <rect x="24" y="138" width="150" height="20" rx="5" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <rect x="24" y="164" width="104" height="20" rx="5" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="24" y="214" font-size="12.5" font-weight="800" fill="#9A86B8">MARGIN  ·  &rarr; 0</text>
+      <rect x="120" y="200" width="34" height="20" rx="5" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="170" y="215" font-size="11.5" font-style="italic" fill="#8C7BA8">thinner every quarter</text>
+
+      <!-- right card: grand slam -->
+      <rect x="336" y="8" width="318" height="236" rx="13" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="360" y="40" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1.5">&#9650; GRAND SLAM</text>
+      <text x="360" y="66" font-size="19" font-weight="800" fill="#1C1235">ONLY LOGICAL CHOICE</text>
+      <!-- premium price bar -->
+      <text x="360" y="104" font-size="11.5" font-weight="800" fill="#1C1235">PRICE</text>
+      <rect x="360" y="112" width="270" height="20" rx="5" fill="#7C3AED"/>
+      <text x="630" y="127" text-anchor="end" font-size="11" font-weight="800" fill="#FFFFFF">$$$</text>
+      <!-- fat margin -->
+      <text x="360" y="214" font-size="12.5" font-weight="800" fill="#7C3AED">MARGIN  ·  FAT</text>
+      <rect x="360" y="146" width="270" height="38" rx="8" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="495" y="170" text-anchor="middle" font-size="13" font-weight="800" fill="#4C1D95">NO ONE TO COMPARE</text>
+      <rect x="450" y="200" width="180" height="20" rx="5" fill="#7C3AED"/>
+    </svg>
+    <div class="caption">Same effort, two universes. One defends a shrinking margin; the other sets the price.</div>
+  </figure>
+
+  <p>Charge more and you can afford to <em>deliver</em> more &mdash; better results, better clients, better testimonials. The premium pays for the proof that justifies the premium.</p>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · PICK THE RIGHT MARKET ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>The Market</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">A starving crowd beats a <span class="em">great offer.</span></h2>
+
+  <p>The single biggest determinant of success isn&rsquo;t the offer &mdash; it&rsquo;s who you point it at. A mediocre offer to a desperate market still wins. A flawless offer to a market that doesn&rsquo;t care still starves.</p>
+
+  <figure style="margin:20px 0">
+    <!-- D-MARKET · 4 indicators + 3 big markets -->
+    <svg viewBox="0 0 654 268" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- 4 indicator chips -->
+      <g font-weight="800">
+        <rect x="0" y="0" width="318" height="60" rx="12" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+        <text x="22" y="30" font-size="15" fill="#1C1235">PAIN</text>
+        <text x="22" y="48" font-size="11.5" font-weight="600" fill="#473A63">it hurts now, not someday</text>
+
+        <rect x="336" y="0" width="318" height="60" rx="12" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+        <text x="358" y="30" font-size="15" fill="#1C1235">PURCHASING POWER</text>
+        <text x="358" y="48" font-size="11.5" font-weight="600" fill="#473A63">they can actually afford to fix it</text>
+
+        <rect x="0" y="72" width="318" height="60" rx="12" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+        <text x="22" y="102" font-size="15" fill="#1C1235">EASY TO TARGET</text>
+        <text x="22" y="120" font-size="11.5" font-weight="600" fill="#473A63">a list, a group, a channel exists</text>
+
+        <rect x="336" y="72" width="318" height="60" rx="12" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+        <text x="358" y="102" font-size="15" fill="#1C1235">GROWING</text>
+        <text x="358" y="120" font-size="11.5" font-weight="600" fill="#473A63">a tailwind, not a sunset</text>
+      </g>
+
+      <!-- three big markets band -->
+      <text x="0" y="170" font-size="12.5" font-weight="800" fill="#9A86B8" letter-spacing="1.5">THE THREE THAT NEVER DRY UP</text>
+      <rect x="0" y="182" width="208" height="74" rx="12" fill="#7C3AED"/>
+      <text x="104" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">HEALTH</text>
+      <text x="104" y="242" text-anchor="middle" font-size="11.5" font-weight="700" fill="#E9DEFB">be well, look good</text>
+      <rect x="223" y="182" width="208" height="74" rx="12" fill="#7C3AED"/>
+      <text x="327" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">WEALTH</text>
+      <text x="327" y="242" text-anchor="middle" font-size="11.5" font-weight="700" fill="#E9DEFB">make it, keep it</text>
+      <rect x="446" y="182" width="208" height="74" rx="12" fill="#7C3AED"/>
+      <text x="550" y="222" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">RELATIONSHIPS</text>
+      <text x="550" y="242" text-anchor="middle" font-size="11.5" font-weight="700" fill="#E9DEFB">love, status, belonging</text>
+    </svg>
+    <div class="caption">Score every market on four indicators. Then sit it inside one of the three big ones.</div>
+  </figure>
+
+  <p>Find a niche that is <span class="b">in pain</span>, <span class="b">has money</span>, is <span class="b">easy to reach</span>, and is <span class="b">growing.</span> Pass all four, plant your flag, and stay. Riches are in the niches.</p>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · THE 5 STEPS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>The Pipeline</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Five steps from <span class="em">nothing</span> to irresistible.</h2>
+
+  <p>An offer this good isn&rsquo;t invented in a flash &mdash; it&rsquo;s assembled. Five moves, in order. Skip one and the whole thing wobbles. Run them straight and you build something the market can&rsquo;t match.</p>
+
+  <figure style="margin:24px 0">
+    <!-- D-FIVE-STEPS · vertical flow of 5 boxes -->
+    <svg viewBox="0 0 654 430" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- step 1 -->
+      <rect x="0" y="0" width="654" height="62" rx="12" fill="#7C3AED"/>
+      <text x="24" y="32" font-size="13" font-weight="800" fill="#E9DEFB" letter-spacing="1">STEP 01</text>
+      <text x="24" y="52" font-size="18" font-weight="800" fill="#FFFFFF">IDENTIFY THE DREAM OUTCOME</text>
+      <text x="630" y="40" text-anchor="end" font-size="11.5" font-weight="700" fill="#E9DEFB">what do they truly want?</text>
+      <g stroke="#1C1235" stroke-width="3" fill="none" stroke-linecap="round"><line x1="327" y1="62" x2="327" y2="80"/><polyline points="318,71 327,82 336,71"/></g>
+
+      <!-- step 2 -->
+      <rect x="0" y="84" width="654" height="62" rx="12" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="24" y="116" font-size="13" font-weight="800" fill="#7C3AED" letter-spacing="1">STEP 02</text>
+      <text x="24" y="136" font-size="18" font-weight="800" fill="#1C1235">LIST EVERY PROBLEM</text>
+      <text x="630" y="124" text-anchor="end" font-size="11.5" font-weight="700" fill="#8C7BA8">every obstacle in the way</text>
+      <g stroke="#1C1235" stroke-width="3" fill="none" stroke-linecap="round"><line x1="327" y1="146" x2="327" y2="164"/><polyline points="318,155 327,166 336,155"/></g>
+
+      <!-- step 3 -->
+      <rect x="0" y="168" width="654" height="62" rx="12" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="24" y="200" font-size="13" font-weight="800" fill="#7C3AED" letter-spacing="1">STEP 03</text>
+      <text x="24" y="220" font-size="18" font-weight="800" fill="#1C1235">TURN PROBLEMS INTO SOLUTIONS</text>
+      <text x="630" y="208" text-anchor="end" font-size="11.5" font-weight="700" fill="#8C7BA8">flip each into a deliverable</text>
+      <g stroke="#1C1235" stroke-width="3" fill="none" stroke-linecap="round"><line x1="327" y1="230" x2="327" y2="248"/><polyline points="318,239 327,250 336,239"/></g>
+
+      <!-- step 4 -->
+      <rect x="0" y="252" width="654" height="62" rx="12" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="24" y="284" font-size="13" font-weight="800" fill="#7C3AED" letter-spacing="1">STEP 04</text>
+      <text x="24" y="304" font-size="18" font-weight="800" fill="#1C1235">TRIM &amp; STACK</text>
+      <text x="630" y="292" text-anchor="end" font-size="11.5" font-weight="700" fill="#8C7BA8">keep the high-value, cut the rest</text>
+      <g stroke="#1C1235" stroke-width="3" fill="none" stroke-linecap="round"><line x1="327" y1="314" x2="327" y2="332"/><polyline points="318,323 327,334 336,323"/></g>
+
+      <!-- step 5 -->
+      <rect x="0" y="336" width="654" height="62" rx="12" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="24" y="368" font-size="13" font-weight="800" fill="#7C3AED" letter-spacing="1">STEP 05</text>
+      <text x="24" y="388" font-size="18" font-weight="800" fill="#1C1235">NAME IT</text>
+      <text x="630" y="376" text-anchor="end" font-size="11.5" font-weight="700" fill="#7C3AED">give it a magnetic title</text>
+    </svg>
+    <div class="caption">Outcome down to name &mdash; run the line in order, top to bottom.</div>
+  </figure>
+
+  <p>The first three steps make the offer <em>complete.</em> The last two make it <em>irresistible.</em> Most people quit after solving problems &mdash; the money is in the trim and the name.</p>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · PROBLEMS → SOLUTIONS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>Diverge</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">List every obstacle. Then <span class="em">solve all of them.</span></h2>
+
+  <p>Between the buyer and their dream outcome sits a wall of problems. Write down every single one &mdash; the small, embarrassing, &ldquo;they&rsquo;d never admit it&rdquo; ones too. Then write the dream solution to each.</p>
+
+  <figure style="margin:20px 0">
+    <!-- D-PROBSOL · two columns mapping by arrows -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- headers -->
+      <text x="0" y="20" font-size="12.5" font-weight="800" fill="#9A86B8" letter-spacing="1.5">&#9660; PROBLEM</text>
+      <text x="404" y="20" font-size="12.5" font-weight="800" fill="#7C3AED" letter-spacing="1.5">&#9650; DREAM SOLUTION</text>
+
+      <!-- row 1 -->
+      <rect x="0" y="34" width="250" height="46" rx="10" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="18" y="62" font-size="13.5" font-weight="800" fill="#473A63">&ldquo;I have no time.&rdquo;</text>
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round"><line x1="256" y1="57" x2="396" y2="57"/><polyline points="386,48 400,57 386,66"/></g>
+      <rect x="404" y="34" width="250" height="46" rx="10" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="422" y="62" font-size="13.5" font-weight="800" fill="#1C1235">We do it for you, done.</text>
+
+      <!-- row 2 -->
+      <rect x="0" y="92" width="250" height="46" rx="10" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="18" y="120" font-size="13.5" font-weight="800" fill="#473A63">&ldquo;I&rsquo;ll mess it up.&rdquo;</text>
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round"><line x1="256" y1="115" x2="396" y2="115"/><polyline points="386,106 400,115 386,124"/></g>
+      <rect x="404" y="92" width="250" height="46" rx="10" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="422" y="120" font-size="13.5" font-weight="800" fill="#1C1235">Templates &amp; live review.</text>
+
+      <!-- row 3 -->
+      <rect x="0" y="150" width="250" height="46" rx="10" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="18" y="178" font-size="13.5" font-weight="800" fill="#473A63">&ldquo;It costs too much.&rdquo;</text>
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round"><line x1="256" y1="173" x2="396" y2="173"/><polyline points="386,164 400,173 386,182"/></g>
+      <rect x="404" y="150" width="250" height="46" rx="10" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="422" y="178" font-size="13.5" font-weight="800" fill="#1C1235">Pay only when it works.</text>
+
+      <!-- row 4 -->
+      <rect x="0" y="208" width="250" height="46" rx="10" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="18" y="236" font-size="13.5" font-weight="800" fill="#473A63">&ldquo;What if I get stuck?&rdquo;</text>
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round"><line x1="256" y1="231" x2="396" y2="231"/><polyline points="386,222 400,231 386,240"/></g>
+      <rect x="404" y="208" width="250" height="46" rx="10" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="422" y="236" font-size="13.5" font-weight="800" fill="#1C1235">24/7 support, no waiting.</text>
+
+      <!-- tally tag -->
+      <rect x="207" y="268" width="240" height="32" rx="16" fill="#7C3AED"/>
+      <text x="327" y="289" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">&rarr; 100+ SOLUTIONS, NO LIMITS</text>
+    </svg>
+    <div class="caption">Every fear, doubt, and excuse becomes a deliverable. Diverge wide &mdash; you&rsquo;ll trim later.</div>
+  </figure>
+
+  <p>Don&rsquo;t edit yet. This is the divergent pass &mdash; quantity over quality. You&rsquo;re building a hundred-item menu so the next step has something rich to cut from.</p>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · TRIM & STACK ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>Converge</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Keep only <span class="em">high value, low cost.</span></h2>
+
+  <p>You now have a hundred solutions. You can&rsquo;t deliver all of them, and you shouldn&rsquo;t. Score each on two axes: how much the customer values it, and how much it costs <em>you</em> to provide.</p>
+
+  <figure style="margin:18px 0">
+    <!-- D-TRIMSTACK · value x cost 2x2 (mirrors value-equation) -->
+    <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- keep quadrant highlight (low cost, high value = upper-left) -->
+      <rect x="62" y="30" width="278" height="116" fill="#EDE7FB"/>
+      <!-- axes -->
+      <line x1="62" y1="30" x2="62" y2="262" stroke="#1C1235" stroke-width="2.5"/>
+      <line x1="62" y1="262" x2="624" y2="262" stroke="#1C1235" stroke-width="2.5"/>
+      <!-- mid grid -->
+      <line x1="340" y1="30" x2="340" y2="262" stroke="#E5DCF6" stroke-width="2"/>
+      <line x1="62" y1="146" x2="624" y2="146" stroke="#E5DCF6" stroke-width="2"/>
+      <!-- axis labels -->
+      <text x="20" y="150" font-size="12" font-weight="800" fill="#1C1235" transform="rotate(-90 20 150)" text-anchor="middle">VALUE TO CUSTOMER &rarr;</text>
+      <text x="343" y="290" font-size="12" font-weight="800" fill="#1C1235">COST TO YOU &rarr;</text>
+      <!-- keep label -->
+      <text x="74" y="52" font-size="12.5" font-weight="800" fill="#7C3AED" letter-spacing="1">HIGH VALUE &middot; LOW COST</text>
+      <text x="74" y="70" font-size="11.5" font-weight="700" fill="#7C3AED">&#10003; KEEP &amp; STACK</text>
+      <!-- kept dots (violet) -->
+      <g fill="#7C3AED">
+        <circle cx="120" cy="92" r="8"/><circle cx="180" cy="118" r="8"/>
+        <circle cx="240" cy="76" r="8"/><circle cx="150" cy="128" r="8"/><circle cx="290" cy="110" r="8"/>
+      </g>
+      <!-- cut dots (gray) -->
+      <g fill="#C9BBDD">
+        <circle cx="420" cy="200" r="8"/><circle cx="520" cy="100" r="8"/>
+        <circle cx="470" cy="232" r="8"/><circle cx="568" cy="180" r="8"/><circle cx="400" cy="130" r="8"/>
+      </g>
+      <text x="470" y="252" text-anchor="middle" font-size="12" font-weight="800" fill="#9A86B8" letter-spacing="1">&#10007; CUT EVERYTHING ELSE</text>
+    </svg>
+    <div class="caption">Upper-left is the gold: things they&rsquo;d pay a fortune for that cost you almost nothing.</div>
+  </figure>
+
+  <p>Stack the survivors into one offer and the perceived value dwarfs the price. What costs <span class="b">you</span> little but means <span class="b">the world</span> to them is exactly where Grand Slam Offers are built.</p>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · THE FIVE ENHANCERS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>Enhance It</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Five ways to make a good offer <span class="em">undeniable.</span></h2>
+
+  <p>You&rsquo;ve built the core. Now amplify it. Five enhancers turn a solid offer into one people can&rsquo;t walk away from &mdash; and two of them carry most of the weight.</p>
+
+  <figure style="margin:20px 0">
+    <!-- D-ENHANCERS · 5 chips, guarantee + bonuses highlighted -->
+    <svg viewBox="0 0 654 318" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- scarcity -->
+      <rect x="0" y="0" width="318" height="60" rx="12" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="20" y="28" font-size="15" font-weight="800" fill="#1C1235">SCARCITY</text>
+      <text x="20" y="48" font-size="11.5" font-weight="600" fill="#473A63">limited spots &mdash; fewer than you want</text>
+
+      <!-- urgency -->
+      <rect x="336" y="0" width="318" height="60" rx="12" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="356" y="28" font-size="15" font-weight="800" fill="#1C1235">URGENCY</text>
+      <text x="356" y="48" font-size="11.5" font-weight="600" fill="#473A63">a real deadline &mdash; decide now or lose it</text>
+
+      <!-- bonuses (highlighted) -->
+      <rect x="0" y="72" width="318" height="84" rx="12" fill="#7C3AED"/>
+      <text x="20" y="100" font-size="15" font-weight="800" fill="#FFFFFF">BONUSES</text>
+      <text x="280" y="100" text-anchor="end" font-size="10.5" font-weight="800" fill="#E9DEFB" letter-spacing="1">HIGH LEVERAGE</text>
+      <text x="20" y="124" font-size="11.5" font-weight="600" fill="#E9DEFB">pile on stand-alone wins that each</text>
+      <text x="20" y="142" font-size="11.5" font-weight="600" fill="#E9DEFB">out-value the entire price by themselves</text>
+
+      <!-- guarantee (highlighted) -->
+      <rect x="336" y="72" width="318" height="84" rx="12" fill="#7C3AED"/>
+      <text x="356" y="100" font-size="15" font-weight="800" fill="#FFFFFF">GUARANTEE</text>
+      <text x="634" y="100" text-anchor="end" font-size="10.5" font-weight="800" fill="#E9DEFB" letter-spacing="1">HIGHEST LEVERAGE</text>
+      <text x="356" y="124" font-size="11.5" font-weight="600" fill="#E9DEFB">reverse the risk &mdash; you carry it,</text>
+      <text x="356" y="142" font-size="11.5" font-weight="600" fill="#E9DEFB">not them. the wall to buying drops.</text>
+
+      <!-- naming -->
+      <rect x="0" y="168" width="654" height="60" rx="12" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="20" y="196" font-size="15" font-weight="800" fill="#1C1235">NAMING</text>
+      <text x="20" y="216" font-size="11.5" font-weight="600" fill="#473A63">a magnetic title that says who it&rsquo;s for and what they get &mdash; before they read a word</text>
+
+      <!-- leverage note -->
+      <rect x="0" y="244" width="654" height="64" rx="12" fill="#F4F0FC" stroke="#E5DCF6" stroke-width="2"/>
+      <text x="24" y="278" font-size="15" font-weight="800" fill="#1C1235">Lead with GUARANTEE and BONUSES.</text>
+      <text x="24" y="298" font-size="12" font-weight="600" fill="#473A63">Scarcity, urgency and naming sharpen the edge &mdash; but risk reversal closes the deal.</text>
+    </svg>
+    <div class="caption">All five help. Guarantees and bonuses do the heavy lifting &mdash; spend your effort there.</div>
+  </figure>
+
+  <p>Bonuses make the price feel small. Guarantees make the decision feel safe. Get those two right and the other three are polish &mdash; not the engine.</p>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · PRICE WITH CONFIDENCE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>The Price Loop</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">A higher price is a <span class="em">virtuous cycle.</span></h2>
+
+  <p>Charging more isn&rsquo;t greed &mdash; it&rsquo;s how you make the result better. Price isn&rsquo;t the last decision you make about an offer. It&rsquo;s the first input to a loop that feeds itself.</p>
+
+  <figure style="margin:18px 0">
+    <!-- D-PRICELOOP · 5-node circular flow -->
+    <svg viewBox="0 0 654 360" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- node coordinates around a circle, cx=327 cy=180 r=132 -->
+      <!-- node 1 top -->
+      <rect x="247" y="0" width="160" height="58" rx="12" fill="#7C3AED"/>
+      <text x="327" y="26" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">HIGHER</text>
+      <text x="327" y="46" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">PRICE</text>
+
+      <!-- node 2 right -->
+      <rect x="476" y="120" width="178" height="58" rx="12" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="565" y="146" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">MORE CLIENT</text>
+      <text x="565" y="166" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">COMMITMENT</text>
+
+      <!-- node 3 bottom-right -->
+      <rect x="380" y="290" width="170" height="58" rx="12" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="465" y="316" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">BETTER</text>
+      <text x="465" y="336" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">RESULTS</text>
+
+      <!-- node 4 bottom-left -->
+      <rect x="104" y="290" width="170" height="58" rx="12" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="189" y="316" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">STRONGER</text>
+      <text x="189" y="336" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">TESTIMONIALS</text>
+
+      <!-- node 5 left -->
+      <rect x="0" y="120" width="178" height="58" rx="12" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="89" y="146" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">JUSTIFIES A</text>
+      <text x="89" y="166" text-anchor="middle" font-size="13" font-weight="800" fill="#4C1D95">HIGHER PRICE</text>
+
+      <!-- arrows clockwise -->
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round">
+        <!-- 1 -> 2 -->
+        <path d="M410 40 C 480 60, 530 90, 552 116"/><polyline points="540,108 556,120 542,128"/>
+        <!-- 2 -> 3 -->
+        <path d="M560 180 C 552 230, 520 265, 488 288"/><polyline points="492,276 484,292 476,278"/>
+        <!-- 3 -> 4 -->
+        <path d="M378 320 C 330 332, 320 332, 278 320"/><polyline points="290,312 274,320 290,328"/>
+        <!-- 4 -> 5 -->
+        <path d="M166 288 C 130 264, 100 228, 92 182"/><polyline points="100,194 90,178 82,194"/>
+        <!-- 5 -> 1 -->
+        <path d="M102 116 C 124 90, 174 60, 244 40"/><polyline points="232,34 248,38 236,50"/>
+      </g>
+
+      <!-- center label -->
+      <text x="327" y="176" text-anchor="middle" font-size="13" font-weight="800" fill="#9A86B8" letter-spacing="1">THE</text>
+      <text x="327" y="196" text-anchor="middle" font-size="15" font-weight="800" fill="#7C3AED" letter-spacing="1">PRICE LOOP</text>
+    </svg>
+    <div class="caption">Each turn of the wheel earns the right to charge more on the next.</div>
+  </figure>
+
+  <div class="band">
+    <div class="t">CHARGE MORE. DELIVER MORE. THE LOOP COMPOUNDS.</div>
+    <div class="s">low price kills commitment &mdash; and commitment is what produces results</div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · CLOSE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>The Close</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Build the one offer they <span class="em">can&rsquo;t refuse.</span></h2>
+
+  <p>Pick a starving market. Stack the value until it dwarfs the price. Reverse the risk so the only fear left is missing out. That&rsquo;s a Grand Slam Offer &mdash; and it changes everything downstream of it.</p>
+
+  <div class="band">
+    <div class="t">MAKE THE OFFER SO GOOD THEY FEEL STUPID SAYING NO.</div>
+    <div class="s">when the offer is right, the selling gets easy</div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Offers &mdash; the book.</h3>
+    <p>The full market-selection scorecard, the five offer-creation steps, every enhancer, and the complete pricing playbook &mdash; build offers so good people feel stupid saying no.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Pick the market. Stack the value. Reverse the risk. Charge what it&rsquo;s worth.</div>
+
+  <div class="stamp">The Grand Slam Offer</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>

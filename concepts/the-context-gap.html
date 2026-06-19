@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Context Gap — Vibeera</title>
+<style>
+  :root{
+    --paper:#F8F3EA;        /* warm cream page          */
+    --panel:#F0E8DC;        /* inset panels             */
+    --ink:#1A1510;          /* primary text             */
+    --ink-soft:#3A2E24;     /* secondary strokes/text   */
+    --muted:#8C6F58;        /* captions, running heads  */
+    --line:#D8C7B2;         /* hairlines on cream       */
+    --ember:#E2622B;        /* the accent (~10%)        */
+    --ember-soft:#F0A06A;   /* glow / fills             */
+    --signal:#5FA463;       /* "specific / correct"     */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#cdbfa8; }
+  @page{ size:A4; margin:0; }
+
+  .page{
+    width:794px; height:1123px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  /* running head + folio */
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  /* type system */
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--ember); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:92px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:34px; line-height:1.02; letter-spacing:-.01em; margin:0 0 22px; }
+  h2 .em{ color:var(--ember); }
+  p{ font-family:var(--body); font-size:18px; line-height:1.62; color:var(--ink-soft); margin:0 0 18px; }
+  p.lead{ font-size:21px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:16px; line-height:1.55; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.12; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--ember); }
+
+  ul.clean{ list-style:none; margin:6px 0 18px; padding:0; }
+  ul.clean li{ font-family:var(--body); font-size:18px; line-height:1.5;
+    color:var(--ink); padding:9px 0 9px 30px; position:relative; }
+  ul.clean li::before{ content:""; position:absolute; left:0; top:17px;
+    width:12px; height:12px; background:var(--ember); border-radius:2px; transform:rotate(45deg); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:14px; font-weight:600; }
+
+  figure{ margin:26px 0; }
+
+  /* cover bits */
+  .cover-99{ position:absolute; right:-40px; bottom:-70px;
+    font-family:var(--display); font-weight:800; font-size:520px; line-height:1;
+    color:#EFE6D6; letter-spacing:-.04em; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:23px; line-height:1.42;
+    color:var(--ink-soft); max-width:560px; margin:30px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--ember); margin:0 0 30px; }
+
+  /* CTA */
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:34px 38px; margin-top:8px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--ember-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:30px;
+    line-height:1.05; margin:0 0 14px; color:var(--paper); }
+  .cta p{ color:#E6D9C4; font-size:16px; margin:0 0 20px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:20px; letter-spacing:.01em; color:var(--ink); background:var(--ember);
+    padding:14px 22px; border-radius:10px; text-decoration:none; }
+  .cta .step{ font-family:var(--display); font-size:13px; letter-spacing:.04em;
+    color:#C9A98E; margin-top:18px; }
+  .cta .step b{ color:var(--ember-soft); }
+
+  .band{ background:var(--ember); color:var(--ink); border-radius:12px;
+    text-align:center; padding:26px 20px; margin:26px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:40px;
+    letter-spacing:.01em; line-height:1; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:13px;
+    letter-spacing:.22em; text-transform:uppercase; margin-top:10px; color:#5a2a12; }
+
+  .spacer{ flex:1; }
+  .flexcol{ display:flex; flex-direction:column; height:100%; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-99">%</div>
+  <div class="cover-inner">
+    <div class="byline">VIBEERA <span>· an internal note</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">The one thing nobody tells you</div>
+    <h1 class="title">THE<br>CONTEXT<br>GAP</h1>
+    <p class="cover-sub">Why <b>99% of people</b> never get what they want —<br>and the single move that separates them<br>from the 1%.</p>
+    <div class="spacer"></div>
+    <div class="byline">From Moeed <span>→ the team</span></div>
+  </div>
+  <div class="stamp">Vibeera · Operating Notes</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · THE PRINCIPLE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">VIBEERA</span><span>The Context Gap</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">It has happened to <span class="em">all of us.</span></h2>
+
+  <p class="lead">Has it ever happened that you're trying to explain something to a teacher — and they just don't get it?</p>
+  <p>You knew exactly what you meant. It was crystal clear in your own head.</p>
+  <p>But they didn't have the context. And you couldn't phrase it right. So it came out as noise.</p>
+
+  <div style="height:14px"></div>
+  <div class="pull">That gap — <span class="em">vague language</span> plus <span class="em">missing context</span> — is the single reason 99% of people never get what they want.</div>
+  <div style="height:14px"></div>
+
+  <p>Not talent. Not effort. Not luck.</p>
+  <p>They know what they mean. The other person doesn't have the context to receive it. <span class="b">The signal dies in the gap.</span></p>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · PREREQUISITE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">VIBEERA</span><span>The Context Gap</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Context is <span class="em">layered.</span> You can't skip floors.</h2>
+
+  <p>Let me ask you something simple. Can you teach calculus to someone who doesn't know basic exponents?</p>
+  <p class="lead">No. You can't.</p>
+  <p>Not because they're stupid — because the foundation isn't there. You'd be pouring water into a cup that hasn't been built yet.</p>
+
+  <figure>
+    <!-- D2 · prerequisite staircase -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- steps -->
+      <g stroke="#1A1510" stroke-width="3">
+        <rect x="40"  y="208" width="180" height="58" fill="#F0E8DC"/>
+        <rect x="220" y="150" width="180" height="116" fill="#F0E8DC"/>
+        <rect x="400" y="92"  width="180" height="174" fill="#1A1510"/>
+      </g>
+      <text x="130" y="243" text-anchor="middle" font-size="17" font-weight="800" fill="#1A1510">EXPONENTS</text>
+      <text x="310" y="214" text-anchor="middle" font-size="17" font-weight="800" fill="#1A1510">ALGEBRA</text>
+      <text x="490" y="185" text-anchor="middle" font-size="17" font-weight="800" fill="#F8F3EA">CALCULUS</text>
+      <!-- the illegal jump -->
+      <path d="M118 200 C 200 60, 380 50, 470 86" fill="none" stroke="#E2622B" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round"/>
+      <!-- big X -->
+      <g stroke="#E2622B" stroke-width="6" stroke-linecap="round">
+        <line x1="280" y1="44" x2="312" y2="76"/>
+        <line x1="312" y1="44" x2="280" y2="76"/>
+      </g>
+      <text x="40" y="34" font-size="13" font-weight="800" fill="#E2622B" letter-spacing="1.5">CAN'T JUMP STRAIGHT TO THE TOP</text>
+    </svg>
+    <div class="caption">You can't hand someone the top floor when they're missing the ground floor.</div>
+  </figure>
+
+  <p>Context works exactly the same way. It's built in layers — and you can't hand over the top one if the ones beneath it aren't there yet.</p>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · 5 vs 95 ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">VIBEERA</span><span>The Context Gap</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">When I talk, you hear <span class="em">5%.</span></h2>
+
+  <p>Here's how this hits us directly. When I tell you something, you're receiving it with maybe <span class="b">5% of the context</span> I'm operating from. Maybe less.</p>
+  <p>Not because you're not sharp. Because you haven't lived the last three years inside my head.</p>
+
+  <figure>
+    <!-- D1 · context bars -->
+    <svg viewBox="0 0 654 250" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- row 1: you -->
+      <text x="0" y="42" font-size="15" font-weight="800" fill="#1A1510" letter-spacing="1">WHAT YOU SEE</text>
+      <rect x="0" y="56" width="520" height="46" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <rect x="0" y="56" width="26" height="46" fill="#E2622B" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="560" y="90" font-size="38" font-weight="800" fill="#1A1510">5%</text>
+      <!-- row 2: me -->
+      <text x="0" y="158" font-size="15" font-weight="800" fill="#1A1510" letter-spacing="1">WHAT I SEE</text>
+      <rect x="0" y="172" width="520" height="46" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <rect x="0" y="172" width="494" height="46" fill="#1A1510"/>
+      <rect x="0" y="172" width="520" height="46" fill="none" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="560" y="206" font-size="38" font-weight="800" fill="#1A1510">95%</text>
+    </svg>
+    <div class="caption">Same words leaving my mouth. Wildly different amount of context behind them.</div>
+  </figure>
+
+  <p>So when something I say lands as "obvious" to me and "vague" to you — that's not a you-problem or a me-problem. <span class="b">It's a gap problem.</span></p>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · THE PROOF ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">VIBEERA</span><span>The Context Gap</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">What's inside the other <span class="em">95%.</span></h2>
+
+  <p>This didn't start in January 2024. It started in early 2023.</p>
+  <p>That year alone: <span class="b">Millionaire Fastlane</span>, <span class="b">The 4-Hour Workweek</span>, <span class="b">Influence</span> by Cialdini — and 60–70 other business books. In one year.</p>
+  <p>Then 2024 and 2025: over <span class="b">1,000 hours of Alex Hormozi</span>, every book he's written, countless meetings, and four or five major pivots in the business.</p>
+
+  <figure>
+    <!-- D4 · compounding curve -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- axes -->
+      <line x1="54" y1="40" x2="54" y2="250" stroke="#1A1510" stroke-width="2.5"/>
+      <line x1="54" y1="250" x2="624" y2="250" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="54" y="28" text-anchor="middle" font-size="12" font-weight="800" fill="#8C6F58" letter-spacing="1.5">CONTEXT</text>
+      <!-- curve -->
+      <path d="M54 246 C 230 240, 330 210, 430 150 S 560 60, 612 46" fill="none" stroke="#E2622B" stroke-width="4.5" stroke-linecap="round"/>
+      <!-- milestone dots -->
+      <g fill="#1A1510">
+        <circle cx="120" cy="243" r="6"/>
+        <circle cx="330" cy="206" r="6"/>
+        <circle cx="470" cy="124" r="6"/>
+        <circle cx="600" cy="50" r="7"/>
+      </g>
+      <!-- year ticks -->
+      <g font-size="14" font-weight="800" fill="#1A1510" text-anchor="middle">
+        <text x="120" y="274">2023</text>
+        <text x="330" y="274">2024</text>
+        <text x="470" y="274">2025</text>
+        <text x="600" y="274">NOW</text>
+      </g>
+      <!-- labels -->
+      <g font-size="12.5" font-weight="700" fill="#3A2E24">
+        <text x="92"  y="226">60–70 books</text>
+        <text x="210" y="190">1,000+ hrs Hormozi</text>
+        <text x="362" y="108">countless meetings</text>
+        <text x="470" y="40" fill="#E2622B" font-weight="800">4–5 pivots</text>
+      </g>
+    </svg>
+    <div class="caption">Three years of compounding — folded into one sentence I say to you in passing.</div>
+  </figure>
+
+  <p>You're hearing the sentence. <span class="b">I'm hearing everything underneath it.</span> That's the gap, drawn to scale.</p>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · VAGUE vs SPECIFIC ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">VIBEERA</span><span>The Context Gap</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">"Be good at delivery" <span class="em">means nothing.</span></h2>
+
+  <p>This is why vague instructions are useless. If I say <span class="b">"be good at service delivery"</span> — that's fog. You can't act on fog.</p>
+
+  <figure>
+    <!-- D3 · vague -> specific -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- vague card -->
+      <rect x="0" y="20" width="270" height="260" rx="12" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+      <text x="24" y="58" font-size="14" font-weight="800" fill="#E2622B" letter-spacing="2">VAGUE</text>
+      <g stroke="#E2622B" stroke-width="4" stroke-linecap="round">
+        <line x1="224" y1="44" x2="246" y2="66"/><line x1="246" y1="44" x2="224" y2="66"/>
+      </g>
+      <text x="24" y="138" font-size="23" font-weight="800" fill="#1A1510">"Be good at</text>
+      <text x="24" y="168" font-size="23" font-weight="800" fill="#1A1510">service</text>
+      <text x="24" y="198" font-size="23" font-weight="800" fill="#1A1510">delivery."</text>
+      <!-- scribble fog -->
+      <path d="M24 226 q 30 -16 60 0 t 60 0 t 60 0" fill="none" stroke="#C9A98E" stroke-width="3" stroke-linecap="round"/>
+      <text x="24" y="258" font-size="13" font-weight="700" fill="#8C6F58">Can't act on it.</text>
+
+      <!-- arrow -->
+      <g stroke="#1A1510" stroke-width="4" stroke-linecap="round" fill="none">
+        <line x1="292" y1="150" x2="360" y2="150"/>
+        <polyline points="346,136 362,150 346,164"/>
+      </g>
+
+      <!-- specific card -->
+      <rect x="384" y="20" width="270" height="260" rx="12" fill="#F0E8DC" stroke="#5FA463" stroke-width="3"/>
+      <text x="408" y="58" font-size="14" font-weight="800" fill="#5FA463" letter-spacing="2">SPECIFIC</text>
+      <path d="M620 48 l 8 9 16 -20" fill="none" stroke="#5FA463" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <g font-size="15" font-weight="700" fill="#1A1510">
+        <circle cx="414" cy="98" r="4" fill="#5FA463"/><text x="430" y="103">Finish before the deadline</text>
+        <circle cx="414" cy="146" r="4" fill="#5FA463"/><text x="430" y="151">Document your process</text>
+        <circle cx="414" cy="194" r="4" fill="#5FA463"/><text x="430" y="199">Explain every feature</text>
+        <text x="430" y="221">to the client</text>
+      </g>
+      <text x="408" y="262" font-size="13" font-weight="700" fill="#5FA463">Now you can move.</text>
+    </svg>
+    <div class="caption">Same intent. Only one version survives the trip from my head to your hands.</div>
+  </figure>
+
+  <p>The difference isn't the idea. It's whether I handed you enough context to <span class="b">act</span> on it.</p>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · THE HERO ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">VIBEERA</span><span>The Context Gap</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">The whole game, in <span class="em">one picture.</span></h2>
+
+  <figure style="margin:26px 0 12px">
+    <!-- D5 · two heads + gap (hero) -->
+    <svg viewBox="0 0 654 384" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <defs>
+        <pattern id="dense" width="13" height="13" patternUnits="userSpaceOnUse">
+          <circle cx="3" cy="3" r="2.4" fill="#1A1510"/>
+        </pattern>
+        <pattern id="sparse" width="42" height="42" patternUnits="userSpaceOnUse">
+          <circle cx="7" cy="7" r="2.6" fill="#1A1510"/>
+        </pattern>
+        <path id="bust" d="M85 12 a66 66 0 1 1 -0.1 0 Z M8 308 C 8 205, 58 178, 85 178 C 112 178, 162 205, 162 308 Z"/>
+        <clipPath id="clipBust"><use href="#bust"/></clipPath>
+      </defs>
+
+      <!-- LEFT: full context -->
+      <g transform="translate(45,8)">
+        <rect x="0" y="0" width="170" height="312" fill="url(#dense)" clip-path="url(#clipBust)"/>
+        <use href="#bust" fill="none" stroke="#1A1510" stroke-width="3.5"/>
+        <text x="85" y="344" text-anchor="middle" font-size="17" font-weight="800" fill="#1A1510">ME</text>
+        <text x="85" y="366" text-anchor="middle" font-size="12.5" font-weight="600" fill="#8C6F58">full context</text>
+      </g>
+
+      <!-- GAP bracket -->
+      <g>
+        <line x1="250" y1="86" x2="250" y2="250" stroke="#E2622B" stroke-width="3"/>
+        <line x1="404" y1="86" x2="404" y2="250" stroke="#E2622B" stroke-width="3"/>
+        <line x1="250" y1="168" x2="404" y2="168" stroke="#E2622B" stroke-width="3" stroke-dasharray="2 8"/>
+        <rect x="285" y="148" width="84" height="40" rx="8" fill="#E2622B"/>
+        <text x="327" y="175" text-anchor="middle" font-size="17" font-weight="800" fill="#1A1510">GAP</text>
+      </g>
+
+      <!-- RIGHT: sparse context -->
+      <g transform="translate(439,8)">
+        <rect x="0" y="0" width="170" height="312" fill="url(#sparse)" clip-path="url(#clipBust)"/>
+        <use href="#bust" fill="none" stroke="#1A1510" stroke-width="3.5"/>
+        <text x="85" y="344" text-anchor="middle" font-size="17" font-weight="800" fill="#1A1510">YOU</text>
+        <text x="85" y="366" text-anchor="middle" font-size="12.5" font-weight="600" fill="#8C6F58">5% of it</text>
+      </g>
+    </svg>
+  </figure>
+
+  <p style="margin-top:6px">On one side: me, with the full context. On the other: you, with a fraction of it. The space between is the gap — and it's the most expensive thing in this business.</p>
+
+  <div class="band">
+    <div class="t">THE SMALLEST GAP WINS.</div>
+    <div class="s">least gap between intended &amp; understood  =  most money</div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · CLOSE IT / CTA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">VIBEERA</span><span>The Context Gap</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">So let's <span class="em">close it.</span> Both sides.</h2>
+
+  <figure style="margin:20px 0 22px">
+    <!-- D6 · closing mechanism -->
+    <svg viewBox="0 0 654 196" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- two inputs -->
+      <g>
+        <rect x="0" y="12" width="250" height="52" rx="10" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+        <text x="20" y="36" font-size="13.5" font-weight="800" fill="#1A1510">MY SIDE</text>
+        <text x="20" y="54" font-size="12.5" font-weight="600" fill="#3A2E24">I document the context</text>
+
+        <rect x="0" y="86" width="250" height="52" rx="10" fill="#F0E8DC" stroke="#1A1510" stroke-width="2.5"/>
+        <text x="20" y="110" font-size="13.5" font-weight="800" fill="#1A1510">YOUR SIDE</text>
+        <text x="20" y="128" font-size="12.5" font-weight="600" fill="#3A2E24">You learn how you decode</text>
+      </g>
+      <!-- merge arrows -->
+      <g stroke="#1A1510" stroke-width="3" fill="none" stroke-linecap="round">
+        <path d="M250 38 C 290 38, 290 75, 322 75"/>
+        <path d="M250 112 C 290 112, 290 75, 322 75"/>
+        <polyline points="310,66 326,75 310,84"/>
+      </g>
+      <!-- gap shrinks -->
+      <rect x="330" y="48" width="150" height="54" rx="10" fill="#1A1510"/>
+      <text x="405" y="72" text-anchor="middle" font-size="14" font-weight="800" fill="#F8F3EA">GAP SHRINKS</text>
+      <text x="405" y="90" text-anchor="middle" font-size="11.5" font-weight="600" fill="#C9A98E">aligned execution</text>
+      <!-- arrow to money -->
+      <g stroke="#1A1510" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="480" y1="75" x2="520" y2="75"/>
+        <polyline points="508,66 524,75 508,84"/>
+      </g>
+      <!-- money -->
+      <rect x="528" y="48" width="118" height="54" rx="10" fill="#5FA463"/>
+      <text x="587" y="82" text-anchor="middle" font-size="26" font-weight="800" fill="#1A1510">$  $  $</text>
+    </svg>
+  </figure>
+
+  <p class="small"><span class="b">My side:</span> I stop assuming you have the context and start writing it down. This page is me beginning to do exactly that.</p>
+  <p class="small"><span class="b">Your side:</span> ask sharper questions — and understand how <em>you're</em> wired to take information in. We don't all decode the same way.</p>
+
+  <div class="cta">
+    <div class="ck">Step one · five minutes</div>
+    <h3>Take the free personality test.</h3>
+    <p>It's not a personality game — it's a map. Once I know how each of you processes information, I can phrase things the way you actually receive them, and you'll know where your own blind spots are.</p>
+    <a class="link" href="https://www.16personalities.com/free-personality-test">16personalities.com/free-personality-test</a>
+    <div class="step">Then: screenshot your result &amp; drop your <b>4-letter type</b> in <b>#general.</b></div>
+  </div>
+
+  <p class="small" style="margin-top:24px; text-align:center; color:var(--ink); font-family:var(--display); font-weight:700; letter-spacing:.02em;">The least gap wins. Let's go close it.</p>
+
+  <div class="stamp">Vibeera · Operating Notes</div>
+  <div class="folio">08</div>
+</section>
+
+</body>
+</html>

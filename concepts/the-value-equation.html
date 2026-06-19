@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Value Equation — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;        /* white page               */
+    --panel:#F4F0FC;        /* light lavender panels    */
+    --ink:#1C1235;          /* deep violet-ink text     */
+    --ink-soft:#473A63;     /* secondary text           */
+    --muted:#8C7BA8;        /* captions, running heads  */
+    --line:#E5DCF6;         /* lavender hairlines       */
+    --violet:#7C3AED;       /* the accent (~10%)        */
+    --violet-deep:#4C1D95;  /* strong fills             */
+    --violet-soft:#C9B8F5;  /* glow / light strokes     */
+    --violet-fill:#EDE7FB;  /* faint violet block fill  */
+    --plum:#9A86B8;         /* destroys / minimize / cut*/
+    --plum-fill:#F0EBF6;    /* faint plum block fill    */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#d8cdf0; }
+  @page{ size:A4; margin:0; }
+
+  .page{
+    width:794px; height:1123px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  /* cover */
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#F3EEFC; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#E9DEFB; }
+
+  /* compare rows */
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #DCCEEA; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  /* CTA */
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#D9CCEF; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">$</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>· adapted from Alex Hormozi &middot; $100M Offers</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">The one equation that makes you rich</div>
+    <h1 class="title">THE<br>VALUE<br>EQUATION</h1>
+    <p class="cover-sub">Everyone says &ldquo;add value.&rdquo; Almost no one can define it. Here are the <b>four variables</b> that make anything worth more &mdash; or less &mdash; and how to reverse the risk so people actually buy.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>· create value &middot; then enhance it</span></div>
+  </div>
+  <div class="stamp">The Value Equation &middot; &amp; Guarantees</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · WHAT IS VALUE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>Two Moves</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Everyone says &ldquo;add value.&rdquo; <span class="em">Nobody defines it.</span></h2>
+
+  <p class="lead">&ldquo;Give value. Provide more value.&rdquo; Great &mdash; but what <em>is</em> value? What actually makes a product worth more, or less?</p>
+  <p>There are two moves. First you <span class="b">build</span> something valuable. Then you <span class="b">enhance</span> it &mdash; with scarcity, urgency, bonuses, guarantees, or simply a sharper name.</p>
+
+  <figure style="margin:28px 0">
+    <!-- D0 · two moves + 5 enhancers -->
+    <svg viewBox="0 0 654 200" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- move 1 -->
+      <rect x="0" y="8" width="300" height="70" rx="12" fill="#7C3AED"/>
+      <text x="24" y="38" font-size="13" font-weight="800" fill="#E9DEFB" letter-spacing="1">MOVE 1</text>
+      <text x="24" y="62" font-size="18" font-weight="800" fill="#FFFFFF">BUILD VALUE</text>
+      <text x="210" y="49" font-size="11.5" font-weight="700" fill="#E9DEFB">the equation</text>
+      <!-- arrow -->
+      <g stroke="#1C1235" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="304" y1="43" x2="330" y2="43"/><polyline points="320,34 334,43 320,52"/>
+      </g>
+      <!-- move 2 -->
+      <rect x="336" y="8" width="318" height="70" rx="12" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="360" y="38" font-size="13" font-weight="800" fill="#7C3AED" letter-spacing="1">MOVE 2</text>
+      <text x="360" y="62" font-size="18" font-weight="800" fill="#1C1235">ENHANCE IT &times; 5</text>
+      <!-- 5 enhancer chips -->
+      <g font-size="12.5" font-weight="800" text-anchor="middle">
+        <rect x="0"   y="118" width="120" height="44" rx="10" fill="#F4F0FC" stroke="#E5DCF6" stroke-width="2"/>
+        <text x="60"  y="145" fill="#473A63">SCARCITY</text>
+        <rect x="134" y="118" width="120" height="44" rx="10" fill="#F4F0FC" stroke="#E5DCF6" stroke-width="2"/>
+        <text x="194" y="145" fill="#473A63">URGENCY</text>
+        <rect x="268" y="118" width="120" height="44" rx="10" fill="#F4F0FC" stroke="#E5DCF6" stroke-width="2"/>
+        <text x="328" y="145" fill="#473A63">BONUSES</text>
+        <rect x="402" y="118" width="120" height="44" rx="10" fill="#7C3AED" stroke="#4C1D95" stroke-width="2"/>
+        <text x="462" y="145" fill="#FFFFFF">GUARANTEES</text>
+        <rect x="536" y="118" width="118" height="44" rx="10" fill="#F4F0FC" stroke="#E5DCF6" stroke-width="2"/>
+        <text x="595" y="145" fill="#473A63">NAMING</text>
+      </g>
+      <text x="462" y="184" text-anchor="middle" font-size="11" font-weight="700" fill="#7C3AED" letter-spacing="1">&uarr; the one we&rsquo;ll build too</text>
+    </svg>
+    <div class="caption">First define value with the equation. Then enhance it &mdash; we&rsquo;ll focus on guarantees.</div>
+  </figure>
+
+  <p>So we&rsquo;ll do both: the equation that <em>defines</em> value, then the enhancer with the most leverage &mdash; <span class="b">guarantees.</span></p>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · THE EQUATION (HERO) ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>The Formula</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Value, written as a <span class="em">fraction.</span></h2>
+
+  <p>Four variables. Two <span class="b">create</span> value, two <span class="b">destroy</span> it. Draw a line down the middle of the page &mdash; two on top, two on the bottom.</p>
+
+  <figure style="margin:18px 0 14px">
+    <!-- D-HERO · the value equation fraction -->
+    <svg viewBox="0 0 654 426" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- VALUE = -->
+      <text x="6" y="222" font-size="46" font-weight="800" fill="#1C1235">VALUE</text>
+      <text x="178" y="222" font-size="46" font-weight="800" fill="#7C3AED">=</text>
+
+      <!-- top tag -->
+      <text x="235" y="68" font-size="13" font-weight="800" fill="#7C3AED" letter-spacing="1.5">&#9650; CREATES VALUE &mdash; MAXIMIZE</text>
+
+      <!-- numerator blocks -->
+      <rect x="235" y="86" width="180" height="86" rx="12" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="325" y="124" text-anchor="middle" font-size="17" font-weight="800" fill="#1C1235">DREAM</text>
+      <text x="325" y="150" text-anchor="middle" font-size="17" font-weight="800" fill="#1C1235">OUTCOME</text>
+      <text x="431" y="139" text-anchor="middle" font-size="28" font-weight="800" fill="#7C3AED">&times;</text>
+      <rect x="448" y="86" width="206" height="86" rx="12" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="551" y="124" text-anchor="middle" font-size="17" font-weight="800" fill="#1C1235">PERCEIVED</text>
+      <text x="551" y="150" text-anchor="middle" font-size="17" font-weight="800" fill="#1C1235">LIKELIHOOD</text>
+
+      <!-- fraction bar -->
+      <rect x="235" y="203" width="419" height="6" rx="3" fill="#1C1235"/>
+
+      <!-- denominator blocks -->
+      <rect x="235" y="240" width="180" height="86" rx="12" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2.5"/>
+      <text x="325" y="278" text-anchor="middle" font-size="17" font-weight="800" fill="#473A63">TIME</text>
+      <text x="325" y="304" text-anchor="middle" font-size="17" font-weight="800" fill="#473A63">DELAY</text>
+      <text x="431" y="293" text-anchor="middle" font-size="28" font-weight="800" fill="#9A86B8">&times;</text>
+      <rect x="448" y="240" width="206" height="86" rx="12" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2.5"/>
+      <text x="551" y="278" text-anchor="middle" font-size="17" font-weight="800" fill="#473A63">EFFORT &amp;</text>
+      <text x="551" y="304" text-anchor="middle" font-size="17" font-weight="800" fill="#473A63">SACRIFICE</text>
+
+      <!-- bottom tag -->
+      <text x="235" y="356" font-size="13" font-weight="800" fill="#9A86B8" letter-spacing="1.5">&#9660; DESTROYS VALUE &mdash; MINIMIZE</text>
+
+      <!-- big up/down arrows on the side -->
+      <g>
+        <polygon points="700,0 700,0 700,0" fill="none"/>
+      </g>
+    </svg>
+    <div class="caption">Raise the top. Crush the bottom. That&rsquo;s the whole machine.</div>
+  </figure>
+
+  <p>Do both and you&rsquo;ve built something people pay a premium for &mdash; with margins to match. Most founders only ever work the top.</p>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · TOP HALF ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>The Top Half</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">The top half &mdash; what <span class="em">creates</span> value.</h2>
+
+  <p><span class="b">Dream outcome:</span> the thing they actually want. It separates whole industries &mdash; &ldquo;make a million&rdquo; out-prices &ldquo;lose weight,&rdquo; which is why B2B out-prices B2C.</p>
+
+  <figure style="margin:20px 0">
+    <!-- D-TOP · two value creators -->
+    <svg viewBox="0 0 654 286" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- left card -->
+      <rect x="0" y="8" width="318" height="270" rx="13" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="24" y="40" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1.5">&#9650; MAXIMIZE</text>
+      <text x="24" y="66" font-size="19" font-weight="800" fill="#1C1235">DREAM OUTCOME</text>
+      <text x="24" y="86" font-size="12.5" font-weight="600" fill="#8C7BA8">the thing they actually want</text>
+      <!-- bars -->
+      <text x="24" y="126" font-size="12.5" font-weight="800" fill="#1C1235">MAKE A MILLION  ·  $$$</text>
+      <rect x="24" y="134" width="262" height="26" rx="5" fill="#7C3AED"/>
+      <text x="24" y="190" font-size="12.5" font-weight="800" fill="#473A63">LOSE WEIGHT  ·  $</text>
+      <rect x="24" y="198" width="150" height="26" rx="5" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="24" y="254" font-size="12.5" font-style="italic" fill="#8C7BA8">different outcomes &rarr; different price ceilings</text>
+
+      <!-- right card -->
+      <rect x="336" y="8" width="318" height="270" rx="13" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="360" y="40" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1.5">&#9650; MAXIMIZE</text>
+      <text x="360" y="66" font-size="19" font-weight="800" fill="#1C1235">PERCEIVED LIKELIHOOD</text>
+      <text x="360" y="86" font-size="12.5" font-weight="600" fill="#8C7BA8">do they believe it works for them?</text>
+      <!-- bars -->
+      <text x="360" y="126" font-size="12.5" font-weight="800" fill="#1C1235">10,000 SURGERIES  &#9733;&#9733;&#9733;&#9733;&#9733;</text>
+      <rect x="360" y="134" width="270" height="26" rx="5" fill="#7C3AED"/>
+      <text x="630" y="153" text-anchor="end" font-size="12" font-weight="800" fill="#FFFFFF">$$$</text>
+      <text x="360" y="190" font-size="12.5" font-weight="800" fill="#473A63">1 SURGERY  &#9733;</text>
+      <rect x="360" y="198" width="104" height="26" rx="5" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="360" y="254" font-size="12.5" font-style="italic" fill="#8C7BA8">more proof &rarr; less risk &rarr; higher price</text>
+    </svg>
+    <div class="caption">Same surgery, same outcome &mdash; the proven operator charges more and works less.</div>
+  </figure>
+
+  <p><span class="b">Perceived likelihood:</span> do they believe it&rsquo;ll work for <em>them?</em> Amazon&rsquo;s reviews do exactly this &mdash; they raise belief, so people pay. This top half is the <em>easy</em> half, and where most founders stop.</p>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · BOTTOM HALF ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>The Bottom Half</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">The bottom half &mdash; what <span class="em">destroys</span> value.</h2>
+
+  <p><span class="b">Time delay:</span> how long between paying and getting. Two agencies, same promise &mdash; one rings your phone in 60 days, the other before your card finishes processing.</p>
+
+  <figure style="margin:20px 0">
+    <!-- D-BOTTOM · two value destroyers -->
+    <svg viewBox="0 0 654 286" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- left card -->
+      <rect x="0" y="8" width="318" height="270" rx="13" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="24" y="40" font-size="12" font-weight="800" fill="#9A86B8" letter-spacing="1.5">&#9660; MINIMIZE</text>
+      <text x="24" y="66" font-size="19" font-weight="800" fill="#1C1235">TIME DELAY</text>
+      <text x="24" y="86" font-size="12.5" font-weight="600" fill="#8C7BA8">from &ldquo;buy&rdquo; to &ldquo;got it&rdquo;</text>
+      <!-- bars -->
+      <text x="24" y="126" font-size="12.5" font-weight="800" fill="#473A63">AGENCY A  ·  60 DAYS</text>
+      <rect x="24" y="134" width="270" height="26" rx="5" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="24" y="190" font-size="12.5" font-weight="800" fill="#1C1235">AGENCY B  ·  SECONDS  &#10003;</text>
+      <rect x="24" y="198" width="58" height="26" rx="5" fill="#7C3AED"/>
+      <text x="24" y="254" font-size="12.5" font-style="italic" fill="#8C7BA8">collapse time-to-value. speed wins.</text>
+
+      <!-- right card -->
+      <rect x="336" y="8" width="318" height="270" rx="13" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="360" y="40" font-size="12" font-weight="800" fill="#9A86B8" letter-spacing="1.5">&#9660; MINIMIZE</text>
+      <text x="360" y="66" font-size="19" font-weight="800" fill="#1C1235">EFFORT &amp; SACRIFICE</text>
+      <text x="360" y="86" font-size="12.5" font-weight="600" fill="#8C7BA8">two sides of the same coin</text>
+      <!-- two items -->
+      <rect x="360" y="106" width="270" height="40" rx="9" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="376" y="124" font-size="12.5" font-weight="800" fill="#1C1235">START doing  (effort)</text>
+      <text x="376" y="140" font-size="11" font-weight="600" fill="#8C7BA8">things they don&rsquo;t want to do</text>
+      <rect x="360" y="152" width="270" height="40" rx="9" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="376" y="170" font-size="12.5" font-weight="800" fill="#1C1235">STOP doing  (sacrifice)</text>
+      <text x="376" y="186" font-size="11" font-weight="600" fill="#8C7BA8">things they&rsquo;d like to keep</text>
+      <!-- arrow to zero -->
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="470" y1="196" x2="470" y2="222"/><polyline points="461,213 470,224 479,213"/>
+      </g>
+      <rect x="430" y="226" width="130" height="34" rx="9" fill="#7C3AED"/>
+      <text x="495" y="249" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">DRIVE TO ZERO</text>
+    </svg>
+    <div class="caption">&ldquo;Six-minute abs&rdquo; would be worth almost anything &mdash; because the bottom is near zero.</div>
+  </figure>
+
+  <p><span class="b">Effort &amp; sacrifice:</span> what they must <em>start</em> doing and <em>stop</em> doing. Push both toward zero. And deliver <em>a</em> result first &mdash; not the biggest, just a tangible one they can hold.</p>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · THE MOAT ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>The Moat</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">The fortunes live on the <span class="em">bottom.</span></h2>
+
+  <p>Bigger promises and more testimonials are easy &mdash; anyone can do it. Delivering <em>faster</em>, with <em>less effort</em>, takes real operational muscle. That&rsquo;s the moat.</p>
+
+  <figure style="margin:22px 0">
+    <!-- D-MOAT -->
+    <svg viewBox="0 0 654 250" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- top side band -->
+      <rect x="0" y="0" width="654" height="74" rx="12" fill="#F4F0FC" stroke="#E5DCF6" stroke-width="2"/>
+      <text x="22" y="32" font-size="13" font-weight="800" fill="#9A86B8" letter-spacing="1.5">TOP SIDE</text>
+      <text x="22" y="58" font-size="17" font-weight="800" fill="#473A63">Promise bigger &middot; pile on testimonials</text>
+      <rect x="468" y="22" width="166" height="30" rx="15" fill="#FFFFFF" stroke="#9A86B8" stroke-width="2"/>
+      <text x="551" y="42" text-anchor="middle" font-size="11.5" font-weight="800" fill="#9A86B8" letter-spacing="1">EASY &middot; A COMMODITY</text>
+
+      <!-- bottom side band -->
+      <rect x="0" y="86" width="654" height="74" rx="12" fill="#7C3AED"/>
+      <text x="22" y="118" font-size="13" font-weight="800" fill="#E9DEFB" letter-spacing="1.5">BOTTOM SIDE</text>
+      <text x="22" y="144" font-size="17" font-weight="800" fill="#FFFFFF">Deliver faster &middot; remove all effort</text>
+      <rect x="476" y="108" width="158" height="30" rx="15" fill="#FFFFFF"/>
+      <text x="555" y="128" text-anchor="middle" font-size="11.5" font-weight="800" fill="#7C3AED" letter-spacing="1">HARD &middot; THE MOAT</text>
+
+      <!-- proof chips -->
+      <rect x="0" y="180" width="318" height="62" rx="11" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="20" y="208" font-size="15" font-weight="800" fill="#1C1235">NETFLIX &gt; BLOCKBUSTER</text>
+      <text x="20" y="229" font-size="12" font-weight="600" fill="#473A63">killed the drive, the wait, the late fee</text>
+      <rect x="336" y="180" width="318" height="62" rx="11" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="356" y="208" font-size="15" font-weight="800" fill="#1C1235">AMAZON</text>
+      <text x="356" y="229" font-size="12" font-weight="600" fill="#473A63">one-click &middot; next-day &middot; reviews</text>
+    </svg>
+    <div class="caption">Same dream outcome as everyone. The winner just collapsed time and effort to nothing.</div>
+  </figure>
+
+  <div class="band">
+    <div class="t">SAME PROMISE. WHOEVER COLLAPSES TIME &amp; EFFORT WINS.</div>
+    <div class="s">the competitive moats hide on the bottom of the equation</div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · THE COPY ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>It&rsquo;s Also Your Copy</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">The same four variables <span class="em">are your copy.</span></h2>
+
+  <p>Value and persuasion are married. The four variables don&rsquo;t just build the offer &mdash; they write the headline.</p>
+
+  <figure style="margin:20px 0">
+    <!-- D-COPY -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- headline box -->
+      <rect x="0" y="0" width="654" height="120" rx="13" fill="#F4F0FC" stroke="#E5DCF6" stroke-width="2"/>
+      <text x="28" y="52" font-size="20" font-weight="800" fill="#1C1235"><tspan fill="#7C3AED">70%</tspan> of chiropractors hit <tspan fill="#7C3AED">100+ patients</tspan></text>
+      <text x="28" y="86" font-size="20" font-weight="800" fill="#1C1235">in <tspan fill="#4C1D95">30 days</tspan> &mdash; <tspan fill="#9A86B8">without running one ad.</tspan></text>
+
+      <!-- legend grid -->
+      <g>
+        <rect x="0" y="142" width="318" height="64" rx="11" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2.5"/>
+        <circle cx="24" cy="166" r="6" fill="#7C3AED"/>
+        <text x="40" y="171" font-size="13.5" font-weight="800" fill="#1C1235">DREAM OUTCOME</text>
+        <text x="40" y="192" font-size="12.5" font-style="italic" fill="#473A63">&ldquo;100+ patients&rdquo;</text>
+
+        <rect x="336" y="142" width="318" height="64" rx="11" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2.5"/>
+        <circle cx="360" cy="166" r="6" fill="#7C3AED"/>
+        <text x="376" y="171" font-size="13.5" font-weight="800" fill="#1C1235">PERCEIVED LIKELIHOOD</text>
+        <text x="376" y="192" font-size="12.5" font-style="italic" fill="#473A63">&ldquo;70% of chiropractors&rdquo;</text>
+
+        <rect x="0" y="218" width="318" height="64" rx="11" fill="#FFFFFF" stroke="#4C1D95" stroke-width="2.5"/>
+        <circle cx="24" cy="242" r="6" fill="#4C1D95"/>
+        <text x="40" y="247" font-size="13.5" font-weight="800" fill="#1C1235">TIME</text>
+        <text x="40" y="268" font-size="12.5" font-style="italic" fill="#473A63">&ldquo;in 30 days&rdquo;</text>
+
+        <rect x="336" y="218" width="318" height="64" rx="11" fill="#FFFFFF" stroke="#9A86B8" stroke-width="2.5"/>
+        <circle cx="360" cy="242" r="6" fill="#9A86B8"/>
+        <text x="376" y="247" font-size="13.5" font-weight="800" fill="#1C1235">EFFORT SPARED</text>
+        <text x="376" y="268" font-size="12.5" font-style="italic" fill="#473A63">&ldquo;without running one ad&rdquo;</text>
+      </g>
+    </svg>
+    <div class="caption">One claim, four variables &mdash; reverse-engineered straight from the value equation.</div>
+  </figure>
+
+  <p>Pull the outcome, a number for proof, the time it takes, and the effort it spares. Now you have headlines for ads, emails, sales pages, and hooks.</p>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · TRIM & STACK ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>Build It</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Build it: list, solve, <span class="em">trim &amp; stack.</span></h2>
+
+  <p>Write down every micro-problem a customer hits on the way to the outcome. Then write the dream solution to each &mdash; no limits. You&rsquo;ll end up with a hundred.</p>
+
+  <figure style="margin:18px 0">
+    <!-- D-TRIMSTACK · value x cost 2x2 -->
+    <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- keep quadrant highlight (low cost, high value = upper-left) -->
+      <rect x="62" y="30" width="278" height="116" fill="#EDE7FB"/>
+      <!-- axes -->
+      <line x1="62" y1="30" x2="62" y2="262" stroke="#1C1235" stroke-width="2.5"/>
+      <line x1="62" y1="262" x2="624" y2="262" stroke="#1C1235" stroke-width="2.5"/>
+      <!-- mid grid -->
+      <line x1="340" y1="30" x2="340" y2="262" stroke="#E5DCF6" stroke-width="2"/>
+      <line x1="62" y1="146" x2="624" y2="146" stroke="#E5DCF6" stroke-width="2"/>
+      <!-- axis labels -->
+      <text x="20" y="150" font-size="12" font-weight="800" fill="#1C1235" transform="rotate(-90 20 150)" text-anchor="middle">VALUE TO CUSTOMER &rarr;</text>
+      <text x="343" y="290" font-size="12" font-weight="800" fill="#1C1235">INCREMENTAL COST TO YOU &rarr;</text>
+      <!-- keep label -->
+      <text x="74" y="52" font-size="12.5" font-weight="800" fill="#7C3AED" letter-spacing="1">HIGH VALUE &middot; LOW COST</text>
+      <text x="74" y="70" font-size="11.5" font-weight="700" fill="#7C3AED">&#10003; KEEP &amp; STACK</text>
+      <!-- kept dots (violet) -->
+      <g fill="#7C3AED">
+        <circle cx="120" cy="92" r="8"/><circle cx="180" cy="118" r="8"/>
+        <circle cx="240" cy="76" r="8"/><circle cx="150" cy="128" r="8"/><circle cx="290" cy="110" r="8"/>
+      </g>
+      <!-- cut dots (gray) -->
+      <g fill="#C9BBDD">
+        <circle cx="420" cy="200" r="8"/><circle cx="520" cy="100" r="8"/>
+        <circle cx="470" cy="232" r="8"/><circle cx="568" cy="180" r="8"/><circle cx="400" cy="130" r="8"/>
+      </g>
+      <text x="470" y="252" text-anchor="middle" font-size="12" font-weight="800" fill="#9A86B8" letter-spacing="1">&#10007; CUT EVERYTHING ELSE</text>
+    </svg>
+    <div class="caption">Keep only what&rsquo;s high-value to them and low-cost to you. Trim the rest, ruthlessly.</div>
+  </figure>
+
+  <p>What survives the trim is <span class="b">high-value, high-margin</span> &mdash; the offer you actually want to sell.</p>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · INACTION ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">GUARANTEES</span><span>The Real Enemy</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">You&rsquo;re not selling against <span class="em">rivals.</span></h2>
+
+  <p>You&rsquo;re selling against inaction. Doubt. The comfort of doing nothing. The real enemy is <span class="b">risk</span> &mdash; so lower the bar until they can just step over it.</p>
+
+  <figure style="margin:24px 0">
+    <!-- D-INACTION · threshold lowered -->
+    <svg viewBox="0 0 654 230" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- panel A: without -->
+      <text x="0" y="22" font-size="12.5" font-weight="800" fill="#9A86B8" letter-spacing="1">WITHOUT A GUARANTEE</text>
+      <line x1="0" y1="180" x2="300" y2="180" stroke="#1C1235" stroke-width="2.5"/>
+      <!-- tall wall -->
+      <rect x="150" y="58" width="46" height="122" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2.5"/>
+      <text x="173" y="120" font-size="11" font-weight="800" fill="#9A86B8" transform="rotate(-90 173 120)" text-anchor="middle">RISK &middot; DOUBT</text>
+      <!-- buyer stuck -->
+      <circle cx="60" cy="150" r="15" fill="#1C1235"/>
+      <rect x="45" y="166" width="30" height="14" rx="7" fill="#1C1235"/>
+      <text x="60" y="206" text-anchor="middle" font-size="12" font-weight="800" fill="#9A86B8">&#10007; STUCK</text>
+
+      <!-- middle arrow -->
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="306" y1="120" x2="348" y2="120"/><polyline points="338,111 352,120 338,129"/>
+      </g>
+      <text x="327" y="104" text-anchor="middle" font-size="11" font-weight="800" fill="#7C3AED">GUARANTEE</text>
+
+      <!-- panel B: with -->
+      <text x="360" y="22" font-size="12.5" font-weight="800" fill="#7C3AED" letter-spacing="1">WITH A GUARANTEE</text>
+      <line x1="360" y1="180" x2="654" y2="180" stroke="#1C1235" stroke-width="2.5"/>
+      <!-- short wall -->
+      <rect x="500" y="150" width="46" height="30" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <!-- buyer stepping over -->
+      <circle cx="470" cy="120" r="15" fill="#7C3AED"/>
+      <rect x="455" y="136" width="30" height="14" rx="7" fill="#7C3AED"/>
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round">
+        <path d="M492 132 C 520 120, 540 128, 560 150"/><polyline points="551,140 562,152 549,156"/>
+      </g>
+      <text x="590" y="172" text-anchor="middle" font-size="12" font-weight="800" fill="#7C3AED">&#10003; BUYS</text>
+    </svg>
+    <div class="caption">A guarantee shifts the risk from the buyer to you &mdash; and the wall drops.</div>
+  </figure>
+
+  <p>You&rsquo;ve done this a hundred times; it&rsquo;s their first. You know more about the outcome than they do &mdash; so it&rsquo;s only fair the risk sits with the side that knows. That&rsquo;s a guarantee.</p>
+
+  <div class="folio">09</div>
+</section>
+
+<!-- ============================== PAGE 10 · FOUR GUARANTEES ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">GUARANTEES</span><span>The Four Types</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">The <span class="em">four</span> guarantees.</h2>
+
+  <p class="small" style="margin-bottom:8px">A guarantee is purchase insurance &mdash; you assume part of the buyer&rsquo;s risk. Here are the four ways to structure one.</p>
+
+  <figure style="margin:14px 0 12px">
+    <!-- D-GUARANTEES 2x2 -->
+    <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- 01 unconditional (violet filled = strongest) -->
+      <rect x="0" y="0" width="318" height="150" rx="13" fill="#7C3AED"/>
+      <text x="24" y="36" font-size="12" font-weight="800" fill="#E9DEFB" letter-spacing="1.5">01 &middot; UNCONDITIONAL  &mdash;  STRONGEST</text>
+      <text x="24" y="70" font-size="19" font-weight="800" fill="#FFFFFF">Money back. No</text>
+      <text x="24" y="94" font-size="19" font-weight="800" fill="#FFFFFF">matter what.</text>
+      <text x="24" y="130" font-size="12.5" font-style="italic" fill="#E9DEFB">&ldquo;Don&rsquo;t love it? Full refund.&rdquo;</text>
+
+      <!-- 02 conditional -->
+      <rect x="336" y="0" width="318" height="150" rx="13" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="360" y="36" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1.5">02 &middot; CONDITIONAL</text>
+      <text x="360" y="70" font-size="19" font-weight="800" fill="#1C1235">Do X, get Y &mdash; or</text>
+      <text x="360" y="94" font-size="19" font-weight="800" fill="#1C1235">we work free.</text>
+      <text x="360" y="130" font-size="12.5" font-style="italic" fill="#8C7BA8">&ldquo;Hit the milestones or refund.&rdquo;</text>
+
+      <!-- 03 anti -->
+      <rect x="0" y="170" width="318" height="150" rx="13" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="24" y="206" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1.5">03 &middot; ANTI-GUARANTEE</text>
+      <text x="24" y="240" font-size="19" font-weight="800" fill="#1C1235">No guarantee &mdash;</text>
+      <text x="24" y="264" font-size="19" font-weight="800" fill="#1C1235">on purpose.</text>
+      <text x="24" y="300" font-size="12.5" font-style="italic" fill="#8C7BA8">&ldquo;If you need one, this isn&rsquo;t for you.&rdquo;</text>
+
+      <!-- 04 implied -->
+      <rect x="336" y="170" width="318" height="150" rx="13" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="360" y="206" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1.5">04 &middot; IMPLIED</text>
+      <text x="360" y="240" font-size="19" font-weight="800" fill="#1C1235">We only win if</text>
+      <text x="360" y="264" font-size="19" font-weight="800" fill="#1C1235">you win.</text>
+      <text x="360" y="300" font-size="12.5" font-style="italic" fill="#8C7BA8">&ldquo;We take 20% of the upside.&rdquo;</text>
+    </svg>
+  </figure>
+
+  <div class="band">
+    <div class="t">+20% SALES, A FEW % MORE REFUNDS = NET WIN.</div>
+    <div class="s">a guarantee is a math equation, not an emotional one</div>
+  </div>
+
+  <div class="folio">10</div>
+</section>
+
+<!-- ============================== PAGE 11 · ENGINEER + CLOSE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">GUARANTEES</span><span>Engineer It</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">Then <span class="em">engineer</span> it to win.</h2>
+
+  <p><span class="b">Stack them:</span> a 30-day unconditional <em>and</em> a 90-day conditional. The sale becomes a trial &mdash; more closes, a few more refunds, net more money.</p>
+
+  <figure style="margin:16px 0">
+    <!-- D-ENGINEER · bake success into the guarantee -->
+    <svg viewBox="0 0 654 132" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0" y="34" width="150" height="64" rx="11" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="75" y="62" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">BEST</text>
+      <text x="75" y="80" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">CUSTOMERS</text>
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round"><line x1="152" y1="66" x2="176" y2="66"/><polyline points="167,57 180,66 167,75"/></g>
+
+      <rect x="182" y="34" width="150" height="64" rx="11" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="257" y="62" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">EXTRACT THEIR</text>
+      <text x="257" y="80" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">KEY MILESTONES</text>
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round"><line x1="334" y1="66" x2="358" y2="66"/><polyline points="349,57 362,66 349,75"/></g>
+
+      <rect x="364" y="34" width="150" height="64" rx="11" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="439" y="62" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">MAKE THEM THE</text>
+      <text x="439" y="80" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">CONDITIONS</text>
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round"><line x1="516" y1="66" x2="540" y2="66"/><polyline points="531,57 544,66 531,75"/></g>
+
+      <rect x="546" y="34" width="108" height="64" rx="11" fill="#7C3AED"/>
+      <text x="600" y="62" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">SUCCESS</text>
+      <text x="600" y="80" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">GUARANTEED</text>
+    </svg>
+    <div class="caption">Copy what your winners did, make those the stipulations &mdash; fewest conditions win.</div>
+  </figure>
+
+  <p class="small" style="margin-bottom:6px"><span class="b">And spell it out.</span> Vague guarantees get banner-blindness. Name the exact outcome &mdash; you don&rsquo;t even need the word &ldquo;guarantee.&rdquo;</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;Results guaranteed.&rdquo; &mdash; means nothing; everyone&rsquo;s heard it.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;If you don&rsquo;t lose six inches off your waist, I&rsquo;ll write you a check for the difference.&rdquo;</span></div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Offers &mdash; the book.</h3>
+    <p>The full value equation, all five enhancers, and the complete guarantee playbook &mdash; build offers so good people feel stupid saying no.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Build the value. Reverse the risk. Sell more, at higher prices.</div>
+
+  <div class="stamp">The Value Equation &middot; &amp; Guarantees</div>
+  <div class="folio">11</div>
+</section>
+
+</body>
+</html>
