@@ -22,15 +22,29 @@
   }
   *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
   html,body{ margin:0; padding:0; background:#b9d6d2; }
-  @page{ size:A4; margin:0; }
+  @page{ size:A4 landscape; margin:0; }
 
   .page{
-    width:794px; height:1123px; position:relative; overflow:hidden;
+    width:1123px; height:794px; position:relative; overflow:hidden;
     background:var(--paper); color:var(--ink);
     padding:74px 70px 70px; margin:0 auto;
     page-break-after:always;
   }
   .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page: full-width CTA, upper content in a bounded landscape row */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
 
   .rhead{ position:absolute; top:30px; left:70px; right:70px;
     display:flex; justify-content:space-between; align-items:center;
@@ -137,11 +151,17 @@
   <div class="rhead"><span class="v">THE CORE FOUR</span><span>The Map</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Leads come from <span class="em">exactly four</span> places.</h2>
 
   <p class="lead">Two questions decide everything. Do they <em>know</em> you yet &mdash; warm or cold? And are you reaching <em>one</em> person or <em>many</em> at once?</p>
   <p>Cross those two axes and you get a grid with four boxes. There is no fifth box. Every billion-dollar ad strategy and every scrappy cold DM lives somewhere on this map.</p>
 
+  <p>Don&rsquo;t try to run all four at once. Pick the one nearest you &mdash; warm outreach &mdash; and earn the right to the harder boxes.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:18px 0 14px">
     <!-- D-HERO · the 2x2 -->
     <svg viewBox="0 0 654 400" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -185,8 +205,8 @@
     </svg>
     <div class="caption">Warm vs cold &times; one-to-one vs one-to-many. That&rsquo;s the whole universe of lead gen.</div>
   </figure>
-
-  <p>Don&rsquo;t try to run all four at once. Pick the one nearest you &mdash; warm outreach &mdash; and earn the right to the harder boxes.</p>
+  </div>
+  </div>
 
   <div class="folio">02</div>
 </section>
@@ -196,11 +216,17 @@
   <div class="rhead"><span class="v">THE CORE FOUR</span><span>1 &middot; Warm Outreach</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Warm outreach: <span class="em">start where you&rsquo;re trusted.</span></h2>
 
   <p>The fastest leads aren&rsquo;t strangers. They&rsquo;re the people who already have your number. Your phone has more buried opportunity than any ad account you&rsquo;ll ever build.</p>
   <p>But you can&rsquo;t open with the pitch. Lead with <span class="b">them.</span> Acknowledge, compliment, then ask &mdash; the ACA framework. Give before you take, every single time.</p>
 
+  <p>Work the whole list. Twenty-five names a day, every day. Most won&rsquo;t buy &mdash; but they&rsquo;ll point you to someone who will, and that referral runs warm too.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:22px 0">
     <!-- D-ACA · acknowledge -> compliment -> ask -->
     <svg viewBox="0 0 654 232" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -243,8 +269,8 @@
     </svg>
     <div class="caption">Acknowledge their world. Compliment them honestly. Then &mdash; only then &mdash; ask.</div>
   </figure>
-
-  <p>Work the whole list. Twenty-five names a day, every day. Most won&rsquo;t buy &mdash; but they&rsquo;ll point you to someone who will, and that referral runs warm too.</p>
+  </div>
+  </div>
 
   <div class="folio">03</div>
 </section>
@@ -254,12 +280,18 @@
   <div class="rhead"><span class="v">THE CORE FOUR</span><span>2 &middot; Post Content</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Post content: <span class="em">give value to the many.</span></h2>
 
   <p>Warm outreach taps people one at a time. Content taps your whole audience at once &mdash; for free, forever. You give value publicly, and the right strangers raise their hands.</p>
 
   <p>Every post does the same four jobs, on a loop. <span class="b">Hook</span> them in, <span class="b">retain</span> their attention, <span class="b">reward</span> them with something useful, then <span class="b">repeat</span> &mdash; tomorrow, and the day after.</p>
 
+  <p>Content is slow to start and impossible to stop. One viewer becomes a follower, a follower becomes a buyer &mdash; and the back catalogue keeps working while you sleep.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:18px 0">
     <!-- D-FLYWHEEL · hook retain reward repeat -->
     <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -298,8 +330,8 @@
     </svg>
     <div class="caption">Hook, retain, reward, repeat. Each turn of the wheel grows the audience that knows you.</div>
   </figure>
-
-  <p>Content is slow to start and impossible to stop. One viewer becomes a follower, a follower becomes a buyer &mdash; and the back catalogue keeps working while you sleep.</p>
+  </div>
+  </div>
 
   <div class="folio">04</div>
 </section>
@@ -309,12 +341,18 @@
   <div class="rhead"><span class="v">THE CORE FOUR</span><span>3 &middot; Cold Outreach</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Cold outreach: <span class="em">strangers, by the thousand.</span></h2>
 
   <p>Now you contact people who have no idea who you are &mdash; one at a time, but at brutal scale. The math is simple and unforgiving: big list, big volume, a lead magnet good enough to earn a reply.</p>
 
   <p>Each step shrinks. Thousands of names become hundreds of messages that land, dozens of responses, a handful of real leads. So you fix the leak by pouring more in the top.</p>
 
+  <p>Don&rsquo;t agonize over the perfect line to a single prospect. Personalize the first sentence, automate the rest, and send until the numbers move. Volume is the strategy.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:18px 0">
     <!-- D-FUNNEL · list -> messages -> responses -> leads -->
     <svg viewBox="0 0 654 270" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -344,8 +382,8 @@
     </svg>
     <div class="caption">Every layer narrows. A 5,000-name list and a sharp lead magnet still nets 30 real leads.</div>
   </figure>
-
-  <p>Don&rsquo;t agonize over the perfect line to a single prospect. Personalize the first sentence, automate the rest, and send until the numbers move. Volume is the strategy.</p>
+  </div>
+  </div>
 
   <div class="folio">05</div>
 </section>
@@ -355,12 +393,18 @@
   <div class="rhead"><span class="v">THE CORE FOUR</span><span>4 &middot; Paid Ads</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Paid ads: <span class="em">rent the strangers&rsquo; attention.</span></h2>
 
   <p>The last box is the most powerful and the most expensive. You pay a platform to put your message in front of strangers &mdash; one-to-many, on demand. Money becomes attention becomes leads.</p>
 
   <p>Every ad that works is built the same way. <span class="b">Call out</span> the right person, deliver <span class="b">value</span> so they keep watching, then give one clear <span class="b">CTA.</span> Three bands, in that order.</p>
 
+  <p>Ads scale faster than anything else and punish sloppiness hardest. Earn your reps in the free three boxes first, then pour fuel on the fire that&rsquo;s already burning.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:18px 0">
     <!-- D-AD · call-out / value / cta -->
     <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -400,8 +444,8 @@
     </svg>
     <div class="caption">Call-out, value, CTA. Miss a band and the dollars leak out before the lead arrives.</div>
   </figure>
-
-  <p>Ads scale faster than anything else and punish sloppiness hardest. Earn your reps in the free three boxes first, then pour fuel on the fire that&rsquo;s already burning.</p>
+  </div>
+  </div>
 
   <div class="folio">06</div>
 </section>
@@ -411,10 +455,16 @@
   <div class="rhead"><span class="v">THE CORE FOUR</span><span>The Rule Of 100</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">The Rule of 100: <span class="em">activity guarantees outcomes.</span></h2>
 
   <p>Strategy fails for one reason &mdash; not enough at-bats. So fix the variable you control. Do <span class="b">100 primary actions a day</span> &mdash; 100 reach-outs, 100 minutes of content, 100 ad dollars &mdash; for 100 days straight.</p>
 
+  <p>You can&rsquo;t control replies, the algorithm, or click-through rates. You <em>can</em> control how many shots you take. Take a hundred a day and luck stops mattering.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:18px 0">
     <!-- D-100 · 10x10 dot grid -->
     <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -438,8 +488,8 @@
     </svg>
     <div class="caption">One hundred actions, one hundred days. Do the reps and the outcome is no longer a maybe.</div>
   </figure>
-
-  <p>You can&rsquo;t control replies, the algorithm, or click-through rates. You <em>can</em> control how many shots you take. Take a hundred a day and luck stops mattering.</p>
+  </div>
+  </div>
 
   <div class="folio">07</div>
 </section>
@@ -449,10 +499,16 @@
   <div class="rhead"><span class="v">THE CORE FOUR</span><span>Scale It</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Scale any channel: <span class="em">more, better, new.</span></h2>
 
   <p>Once a box works, you scale it in exactly three moves &mdash; and in this order. Do <span class="b">more</span> of what works. Make each action <span class="b">better.</span> Only then add a <span class="b">new</span> channel.</p>
 
+  <p>Most people jump straight to a shiny new channel and stay broke across four mediocre ones. Squeeze the box you have until it screams &mdash; <em>then</em> open the next.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:20px 0">
     <!-- D-MBN · escalating bars -->
     <svg viewBox="0 0 654 270" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -484,8 +540,8 @@
     </svg>
     <div class="caption">Exhaust more, then better, before you ever touch new. Order is the discipline.</div>
   </figure>
-
-  <p>Most people jump straight to a shiny new channel and stay broke across four mediocre ones. Squeeze the box you have until it screams &mdash; <em>then</em> open the next.</p>
+  </div>
+  </div>
 
   <div class="folio">08</div>
 </section>
@@ -495,10 +551,14 @@
   <div class="rhead"><span class="v">THE CORE FOUR</span><span>The Takeaway</span></div>
   <div class="rule"></div>
 
+  <div class="close-top">
+  <div class="close-left">
   <h2 style="margin-top:30px">One box. A hundred a day. <span class="em">That&rsquo;s it.</span></h2>
 
   <p>You don&rsquo;t have a lead problem. You have a volume problem disguised as a strategy problem. The map is settled &mdash; four boxes, no more. The only open question is whether you do the reps.</p>
+  </div>
 
+  <div class="close-right">
   <figure style="margin:20px 0 6px">
     <!-- D-CLOSE · four boxes -> one chosen -->
     <svg viewBox="0 0 654 150" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -522,6 +582,8 @@
     </svg>
     <div class="caption">Stop shopping the menu. Pick the box nearest you and feed it a hundred actions a day.</div>
   </figure>
+  </div>
+  </div>
 
   <div class="band">
     <div class="t">PICK ONE. DO 100 A DAY. VOLUME NEGATES LUCK.</div>

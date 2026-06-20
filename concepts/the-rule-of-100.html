@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Rule of 100 — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFDF7;
+    --panel:#FBF0D6;
+    --ink:#2A1F08;
+    --ink-soft:#4A3A14;
+    --muted:#9A8552;
+    --line:#E8DBB6;
+    --violet:#D98A0B;
+    --violet-deep:#9A5E04;
+    --violet-soft:#F0CE7E;
+    --violet-fill:#FBF0D6;
+    --plum:#B89A6A;
+    --plum-fill:#F5EDD8;
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#e6d4a8; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page: full-width CTA, upper content in a bounded landscape row */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#F6ECD2; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#F0CE7E; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #DDD0B8; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#D6C9A8; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">&infin;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Leads</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">The single habit that makes strategy optional</div>
+    <h1 class="title">THE<br>RULE<br>OF 100</h1>
+    <p class="cover-sub">Most businesses don&rsquo;t fail because the strategy was wrong. They fail because nobody did <b>enough of it, consistently.</b> Here is the one rule that fixes that &mdash; permanently.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; volume &middot; consistency &middot; compound results</span></div>
+  </div>
+  <div class="stamp">The Rule of 100</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · THE VOLUME PROBLEM ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE RULE OF 100</span><span>The Real Problem</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">You don&rsquo;t have a strategy problem. <span class="em">You have a volume problem.</span></h2>
+
+  <p class="lead">Every stuck founder believes the offer is broken, the niche is wrong, the funnel needs another tool. Almost none of them are right.</p>
+  <p>The funnel is fine. The offer is good enough. The copy works. Nobody is pulling the lever enough times to find out. A hundred attempts at almost anything will teach you more than a thousand hours of planning ever could.</p>
+
+  <p>Fix the volume <em>before</em> you touch the strategy. Most &ldquo;bad offers&rdquo; are just offers that haven&rsquo;t been heard by enough people, enough times.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D-VOLUME · results curve comparison: 10/day vs 100/day -->
+    <svg viewBox="0 0 654 240" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- axes -->
+      <line x1="58" y1="14" x2="58" y2="194" stroke="#2A1F08" stroke-width="2.5"/>
+      <line x1="58" y1="194" x2="634" y2="194" stroke="#2A1F08" stroke-width="2.5"/>
+      <!-- axis ticks and labels -->
+      <text x="346" y="220" text-anchor="middle" font-size="11" font-weight="800" fill="#9A8552" letter-spacing="1">DAYS &rarr;</text>
+      <text x="14" y="104" font-size="11" font-weight="800" fill="#9A8552" transform="rotate(-90 14 104)" text-anchor="middle">RESULTS</text>
+      <text x="58" y="210" text-anchor="middle" font-size="10" fill="#9A8552">0</text>
+      <text x="250" y="210" text-anchor="middle" font-size="10" fill="#9A8552">33</text>
+      <text x="442" y="210" text-anchor="middle" font-size="10" fill="#9A8552">67</text>
+      <text x="634" y="210" text-anchor="middle" font-size="10" fill="#9A8552">100</text>
+      <!-- grid lines -->
+      <line x1="250" y1="14" x2="250" y2="194" stroke="#E8DBB6" stroke-width="1.5" stroke-dasharray="4 6"/>
+      <line x1="442" y1="14" x2="442" y2="194" stroke="#E8DBB6" stroke-width="1.5" stroke-dasharray="4 6"/>
+      <!-- 10/day line — barely rises -->
+      <polyline points="58,190 150,188 250,186 350,183 450,179 550,174 634,169"
+        fill="none" stroke="#B89A6A" stroke-width="2" stroke-dasharray="7 5"/>
+      <text x="638" y="172" font-size="11" font-weight="700" fill="#B89A6A">10/day</text>
+      <!-- 100/day line — accelerates -->
+      <polyline points="58,190 110,182 180,168 260,148 350,120 440,86 530,50 600,28 634,18"
+        fill="none" stroke="#D98A0B" stroke-width="3.5"/>
+      <text x="638" y="21" font-size="11" font-weight="800" fill="#D98A0B">100/day</text>
+      <!-- breakthrough annotation -->
+      <rect x="360" y="62" width="148" height="42" rx="9" fill="#D98A0B"/>
+      <text x="434" y="82" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">BREAKTHROUGH</text>
+      <text x="434" y="98" text-anchor="middle" font-size="10" font-weight="700" fill="#FBF0D6">visible ~day 60</text>
+      <line x1="370" y1="90" x2="345" y2="110" stroke="#D98A0B" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <div class="caption">Same strategy, same offer &mdash; the only variable is how many times you pull the lever each day.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · THE PRIMARY ACTION ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE RULE OF 100</span><span>Primary Action</span></div>
+  <div class="rule"></div>
+
+  <h2 style="margin-top:30px">One action per channel. The one <span class="em">most connected to leads.</span></h2>
+
+  <p>Every channel has a single move that actually generates contact with potential buyers. Not prep, not research, not editing. The one act that, at high volume, eventually puts a prospect in your funnel.</p>
+
+  <figure style="margin:20px 0">
+    <!-- D-CHANNELS · 4-channel table -->
+    <svg viewBox="0 0 654 316" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- header -->
+      <rect x="0" y="0" width="654" height="46" rx="11" fill="#2A1F08"/>
+      <text x="22" y="28" font-size="11.5" font-weight="800" fill="#F0CE7E" letter-spacing="1.5">CHANNEL</text>
+      <text x="252" y="28" font-size="11.5" font-weight="800" fill="#F0CE7E" letter-spacing="1.5">PRIMARY ACTION</text>
+      <text x="520" y="28" font-size="11.5" font-weight="800" fill="#F0CE7E" letter-spacing="1.5">100 =</text>
+      <!-- row 1 warm -->
+      <rect x="0" y="56" width="654" height="58" rx="9" fill="#FBF0D6" stroke="#E8DBB6" stroke-width="2"/>
+      <text x="22" y="79" font-size="14" font-weight="800" fill="#2A1F08">WARM OUTREACH</text>
+      <text x="22" y="97" font-size="11.5" font-weight="600" fill="#9A8552">people who know you</text>
+      <text x="252" y="87" font-size="13" font-weight="800" fill="#4A3A14">Personal message sent</text>
+      <text x="520" y="87" font-size="16" font-weight="800" fill="#D98A0B">100 DMs</text>
+      <!-- row 2 content -->
+      <rect x="0" y="124" width="654" height="58" rx="9" fill="#FFFDF7" stroke="#E8DBB6" stroke-width="2"/>
+      <text x="22" y="147" font-size="14" font-weight="800" fill="#2A1F08">POST CONTENT</text>
+      <text x="22" y="165" font-size="11.5" font-weight="600" fill="#9A8552">your audience at scale</text>
+      <text x="252" y="155" font-size="13" font-weight="800" fill="#4A3A14">Minutes of production</text>
+      <text x="520" y="155" font-size="16" font-weight="800" fill="#D98A0B">100 min</text>
+      <!-- row 3 cold -->
+      <rect x="0" y="192" width="654" height="58" rx="9" fill="#FBF0D6" stroke="#E8DBB6" stroke-width="2"/>
+      <text x="22" y="215" font-size="14" font-weight="800" fill="#2A1F08">COLD OUTREACH</text>
+      <text x="22" y="233" font-size="11.5" font-weight="600" fill="#9A8552">strangers, one by one</text>
+      <text x="252" y="223" font-size="13" font-weight="800" fill="#4A3A14">Cold emails / calls sent</text>
+      <text x="520" y="223" font-size="16" font-weight="800" fill="#D98A0B">100 sent</text>
+      <!-- row 4 paid (accent) -->
+      <rect x="0" y="260" width="654" height="50" rx="9" fill="#D98A0B"/>
+      <text x="22" y="291" font-size="14" font-weight="800" fill="#FFFFFF">PAID ADS</text>
+      <text x="252" y="285" font-size="13" font-weight="800" fill="#FBF0D6">Ad spend per day</text>
+      <text x="520" y="285" font-size="16" font-weight="800" fill="#FFFFFF">$100/day</text>
+      <text x="520" y="303" font-size="10.5" font-weight="700" fill="#F0CE7E">minimum test budget</text>
+    </svg>
+    <div class="caption">Pick your channel. Identify its one primary action. That single metric is your entire daily goal.</div>
+  </figure>
+
+  <p>Everything else &mdash; analytics reviews, A/B tests, script revisions &mdash; is maintenance. Do the hundred first; maintenance fills the gaps around it.</p>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · 100 PER DAY ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE RULE OF 100</span><span>The Daily Number</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Not &ldquo;some.&rdquo; Not &ldquo;a lot.&rdquo; <span class="em">One hundred.</span></h2>
+
+  <p>The number is not arbitrary &mdash; it is a commitment device. Ten feels like enough. A hundred forces you to build the systems, the scripts, the calendar blocks that make it repeatable. You can&rsquo;t do 100 on willpower alone.</p>
+
+  <p>A hundred is a concrete finish line you can see from the start of the day. Anything vague lets you rationalize stopping at 47.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <!-- D-100 · 5x10 dot grid, 50 filled/50 hollow, center badge -->
+    <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- row 1 (all filled) -->
+      <circle cx="32" cy="32" r="22" fill="#D98A0B"/>
+      <circle cx="97" cy="32" r="22" fill="#D98A0B"/>
+      <circle cx="162" cy="32" r="22" fill="#D98A0B"/>
+      <circle cx="227" cy="32" r="22" fill="#D98A0B"/>
+      <circle cx="292" cy="32" r="22" fill="#D98A0B"/>
+      <circle cx="357" cy="32" r="22" fill="#D98A0B"/>
+      <circle cx="422" cy="32" r="22" fill="#D98A0B"/>
+      <circle cx="487" cy="32" r="22" fill="#D98A0B"/>
+      <circle cx="552" cy="32" r="22" fill="#D98A0B"/>
+      <circle cx="617" cy="32" r="22" fill="#D98A0B"/>
+      <!-- row 2 (all filled) -->
+      <circle cx="32" cy="96" r="22" fill="#D98A0B"/>
+      <circle cx="97" cy="96" r="22" fill="#D98A0B"/>
+      <circle cx="162" cy="96" r="22" fill="#D98A0B"/>
+      <circle cx="227" cy="96" r="22" fill="#D98A0B"/>
+      <circle cx="292" cy="96" r="22" fill="#D98A0B"/>
+      <circle cx="357" cy="96" r="22" fill="#D98A0B"/>
+      <circle cx="422" cy="96" r="22" fill="#D98A0B"/>
+      <circle cx="487" cy="96" r="22" fill="#D98A0B"/>
+      <circle cx="552" cy="96" r="22" fill="#D98A0B"/>
+      <circle cx="617" cy="96" r="22" fill="#D98A0B"/>
+      <!-- row 3 (all filled) -->
+      <circle cx="32" cy="160" r="22" fill="#D98A0B"/>
+      <circle cx="97" cy="160" r="22" fill="#D98A0B"/>
+      <circle cx="162" cy="160" r="22" fill="#D98A0B"/>
+      <circle cx="227" cy="160" r="22" fill="#D98A0B"/>
+      <circle cx="292" cy="160" r="22" fill="#D98A0B"/>
+      <circle cx="357" cy="160" r="22" fill="#D98A0B"/>
+      <circle cx="422" cy="160" r="22" fill="#D98A0B"/>
+      <circle cx="487" cy="160" r="22" fill="#D98A0B"/>
+      <circle cx="552" cy="160" r="22" fill="#D98A0B"/>
+      <circle cx="617" cy="160" r="22" fill="#D98A0B"/>
+      <!-- row 4 (8 filled, 2 hollow) -->
+      <circle cx="32" cy="224" r="22" fill="#D98A0B"/>
+      <circle cx="97" cy="224" r="22" fill="#D98A0B"/>
+      <circle cx="162" cy="224" r="22" fill="#D98A0B"/>
+      <circle cx="227" cy="224" r="22" fill="#D98A0B"/>
+      <circle cx="292" cy="224" r="22" fill="#D98A0B"/>
+      <circle cx="357" cy="224" r="22" fill="#D98A0B"/>
+      <circle cx="422" cy="224" r="22" fill="#D98A0B"/>
+      <circle cx="487" cy="224" r="22" fill="#D98A0B"/>
+      <circle cx="552" cy="224" r="22" fill="#FFFDF7" stroke="#D98A0B" stroke-width="3"/>
+      <circle cx="617" cy="224" r="22" fill="#FFFDF7" stroke="#D98A0B" stroke-width="3"/>
+      <!-- row 5 (5 filled, 5 hollow) -->
+      <circle cx="32" cy="288" r="22" fill="#D98A0B"/>
+      <circle cx="97" cy="288" r="22" fill="#D98A0B"/>
+      <circle cx="162" cy="288" r="22" fill="#D98A0B"/>
+      <circle cx="227" cy="288" r="22" fill="#D98A0B"/>
+      <circle cx="292" cy="288" r="22" fill="#D98A0B"/>
+      <circle cx="357" cy="288" r="22" fill="#FFFDF7" stroke="#D98A0B" stroke-width="3"/>
+      <circle cx="422" cy="288" r="22" fill="#FFFDF7" stroke="#D98A0B" stroke-width="3"/>
+      <circle cx="487" cy="288" r="22" fill="#FFFDF7" stroke="#D98A0B" stroke-width="3"/>
+      <circle cx="552" cy="288" r="22" fill="#FFFDF7" stroke="#D98A0B" stroke-width="3"/>
+      <circle cx="617" cy="288" r="22" fill="#FFFDF7" stroke="#D98A0B" stroke-width="3"/>
+      <!-- center badge -->
+      <rect x="238" y="138" width="178" height="84" rx="14" fill="#2A1F08"/>
+      <text x="327" y="177" text-anchor="middle" font-size="30" font-weight="800" fill="#FFFFFF">100/DAY</text>
+      <text x="327" y="200" text-anchor="middle" font-size="11" font-weight="700" fill="#F0CE7E" letter-spacing="1.5">NON-NEGOTIABLE</text>
+    </svg>
+    <div class="caption">Filled = done. Hollow = remaining. The day ends when every circle is amber.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · THE 100-DAY WINDOW ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE RULE OF 100</span><span>The 100-Day Test</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">100 days is the <span class="em">minimum honest test.</span></h2>
+
+  <p>Most people quit in the first thirty days because results lag behind effort. The math of compounding means you will feel nothing for weeks, then everything at once. Quitting before day 60 is quitting before the experiment begins.</p>
+
+  <p>At day 100 you will have more data than most businesses collect in a year. <em>Then</em> you evaluate whether to continue, optimize, or switch channels.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D-TIMELINE · 100-day phases -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- phase backgrounds -->
+      <rect x="0" y="40" width="210" height="160" rx="12" fill="#F5EDD8" stroke="#DDD0B8" stroke-width="2"/>
+      <rect x="220" y="40" width="194" height="160" rx="12" fill="#FBF0D6" stroke="#E8DBB6" stroke-width="2"/>
+      <rect x="424" y="40" width="230" height="160" rx="12" fill="#D98A0B"/>
+      <!-- phase labels -->
+      <text x="105" y="68" text-anchor="middle" font-size="11" font-weight="800" fill="#9A8552" letter-spacing="1.5">DAYS 1–30</text>
+      <text x="105" y="100" text-anchor="middle" font-size="17" font-weight="800" fill="#4A3A14">THE GRIND</text>
+      <text x="105" y="126" text-anchor="middle" font-size="12.5" font-weight="600" fill="#9A8552">No visible results.</text>
+      <text x="105" y="144" text-anchor="middle" font-size="12.5" font-weight="600" fill="#9A8552">Skills forming below</text>
+      <text x="105" y="162" text-anchor="middle" font-size="12.5" font-weight="600" fill="#9A8552">the surface. Hold.</text>
+
+      <text x="317" y="68" text-anchor="middle" font-size="11" font-weight="800" fill="#9A5E04" letter-spacing="1.5">DAYS 31–60</text>
+      <text x="317" y="100" text-anchor="middle" font-size="17" font-weight="800" fill="#2A1F08">FIRST SIGNALS</text>
+      <text x="317" y="126" text-anchor="middle" font-size="12.5" font-weight="600" fill="#4A3A14">Patterns emerge.</text>
+      <text x="317" y="144" text-anchor="middle" font-size="12.5" font-weight="600" fill="#4A3A14">First real responses.</text>
+      <text x="317" y="162" text-anchor="middle" font-size="12.5" font-weight="600" fill="#4A3A14">Optimize the script.</text>
+
+      <text x="539" y="68" text-anchor="middle" font-size="11" font-weight="800" fill="#F0CE7E" letter-spacing="1.5">DAYS 61–100</text>
+      <text x="539" y="100" text-anchor="middle" font-size="17" font-weight="800" fill="#FFFFFF">COMPOUNDING</text>
+      <text x="539" y="126" text-anchor="middle" font-size="12.5" font-weight="600" fill="#FBF0D6">Volume &times; skill =</text>
+      <text x="539" y="144" text-anchor="middle" font-size="12.5" font-weight="600" fill="#FBF0D6">exponential leads.</text>
+      <text x="539" y="162" text-anchor="middle" font-size="12.5" font-weight="600" fill="#FBF0D6">Scale what works.</text>
+
+      <!-- arrows between phases -->
+      <g stroke="#2A1F08" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="212" y1="120" x2="218" y2="120"/>
+        <polyline points="210,112 222,120 210,128"/>
+      </g>
+      <g stroke="#2A1F08" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="416" y1="120" x2="422" y2="120"/>
+        <polyline points="414,112 426,120 414,128"/>
+      </g>
+
+      <!-- progress bar at bottom -->
+      <rect x="0" y="224" width="654" height="18" rx="9" fill="#E8DBB6"/>
+      <rect x="0" y="224" width="654" height="18" rx="9" fill="#D98A0B"/>
+      <text x="327" y="260" text-anchor="middle" font-size="12" font-weight="800" fill="#9A8552" letter-spacing="1">100 DAYS &middot; 10,000 PRIMARY ACTIONS &middot; OUTCOME GUARANTEED</text>
+    </svg>
+    <div class="caption">The test has three phases. Most people quit in phase one and conclude the method doesn&rsquo;t work.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · VOLUME CREATES DATA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE RULE OF 100</span><span>Volume Creates Data</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">You can&rsquo;t optimize what you haven&rsquo;t done <span class="em">a hundred times.</span></h2>
+
+  <p>Every tweak to your message, every change to your hook, every new subject line &mdash; none of it is meaningful until you have a large enough sample to read a pattern. Low volume produces noise. High volume produces signal.</p>
+
+  <p>The fastest path to a high-converting offer is not a smarter launch plan. It&rsquo;s 100 reps, fast &mdash; then one targeted optimization, repeated.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D-SIGNAL · bar chart: noise vs signal as rep count rises -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- baseline -->
+      <line x1="30" y1="234" x2="624" y2="234" stroke="#2A1F08" stroke-width="2.5"/>
+      <!-- x axis label -->
+      <text x="327" y="258" text-anchor="middle" font-size="11" font-weight="800" fill="#9A8552" letter-spacing="1">TOTAL REPS COMPLETED &rarr;</text>
+
+      <!-- bar: 10 reps -->
+      <rect x="54" y="164" width="86" height="70" rx="9" fill="#F5EDD8" stroke="#B89A6A" stroke-width="2.5"/>
+      <text x="97" y="152" text-anchor="middle" font-size="11" font-weight="800" fill="#B89A6A">NOISE</text>
+      <text x="97" y="274" text-anchor="middle" font-size="12" font-weight="800" fill="#9A8552">10 REPS</text>
+      <text x="97" y="214" text-anchor="middle" font-size="12" font-weight="700" fill="#B89A6A">can&rsquo;t read</text>
+      <text x="97" y="230" text-anchor="middle" font-size="12" font-weight="700" fill="#B89A6A">a pattern</text>
+
+      <!-- bar: 30 reps -->
+      <rect x="178" y="124" width="86" height="110" rx="9" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+      <text x="221" y="112" text-anchor="middle" font-size="11" font-weight="800" fill="#9A8552">SOME DATA</text>
+      <text x="221" y="274" text-anchor="middle" font-size="12" font-weight="800" fill="#9A8552">30 REPS</text>
+      <text x="221" y="188" text-anchor="middle" font-size="12" font-weight="700" fill="#9A8552">hints of</text>
+      <text x="221" y="204" text-anchor="middle" font-size="12" font-weight="700" fill="#9A8552">pattern</text>
+
+      <!-- bar: 100 reps -->
+      <rect x="302" y="74" width="86" height="160" rx="9" fill="#D98A0B"/>
+      <text x="345" y="62" text-anchor="middle" font-size="11" font-weight="800" fill="#D98A0B">SIGNAL</text>
+      <text x="345" y="274" text-anchor="middle" font-size="12" font-weight="800" fill="#2A1F08">100 REPS</text>
+      <text x="345" y="154" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">pattern</text>
+      <text x="345" y="170" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">clear</text>
+
+      <!-- bar: 300 reps -->
+      <rect x="426" y="34" width="86" height="200" rx="9" fill="#9A5E04"/>
+      <text x="469" y="274" text-anchor="middle" font-size="12" font-weight="800" fill="#2A1F08">300 REPS</text>
+      <text x="469" y="130" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">optimize</text>
+      <text x="469" y="148" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">with</text>
+      <text x="469" y="166" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">precision</text>
+
+      <!-- annotation arrow -->
+      <g stroke="#D98A0B" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="530" y1="100" x2="600" y2="100"/>
+        <polyline points="590,90 604,100 590,110"/>
+      </g>
+      <text x="536" y="84" font-size="11" font-weight="800" fill="#D98A0B">build on</text>
+      <text x="536" y="100" font-size="11" font-weight="800" fill="#D98A0B">what you</text>
+      <text x="536" y="116" font-size="11" font-weight="800" fill="#D98A0B">now know</text>
+    </svg>
+    <div class="caption">Below 100 reps you&rsquo;re guessing. After 100 you&rsquo;re reading real data and making real improvements.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · THE FEEDBACK FLYWHEEL ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE RULE OF 100</span><span>The Flywheel</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Volume feeds the flywheel <span class="em">that compounds your skill.</span></h2>
+
+  <p>Every rep produces a result &mdash; a reply, a no, a click, a sign-up. Every result teaches you something. Every insight lets you tighten the message. A tighter message gets a better result next time. That loop is where skill actually lives.</p>
+
+  <p>Expertise is not talent. It&rsquo;s reps &times; reflection &times; adjustment &mdash; run in a loop, at speed. <span class="b">Volume is not opposed to quality. Volume is what creates it.</span></p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:24px 0">
+    <!-- D-FLYWHEEL · action → result → insight → optimize → back to action -->
+    <svg viewBox="0 0 654 310" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- dashed ring -->
+      <circle cx="327" cy="155" r="110" fill="none" stroke="#F0CE7E" stroke-width="3" stroke-dasharray="7 9"/>
+      <!-- direction arrow on ring (top-right) -->
+      <polygon points="427,88 415,82 418,97" fill="#D98A0B"/>
+
+      <!-- center label -->
+      <text x="327" y="148" text-anchor="middle" font-size="14" font-weight="800" fill="#2A1F08">THE</text>
+      <text x="327" y="168" text-anchor="middle" font-size="14" font-weight="800" fill="#D98A0B">FLYWHEEL</text>
+
+      <!-- node TOP: ACTION -->
+      <rect x="259" y="6" width="136" height="60" rx="12" fill="#D98A0B"/>
+      <text x="327" y="32" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">1 · ACTION</text>
+      <text x="327" y="52" text-anchor="middle" font-size="11" font-weight="600" fill="#FBF0D6">100 primary moves/day</text>
+
+      <!-- node RIGHT: RESULT -->
+      <rect x="490" y="124" width="154" height="60" rx="12" fill="#FFFDF7" stroke="#2A1F08" stroke-width="2.5"/>
+      <text x="567" y="150" text-anchor="middle" font-size="15" font-weight="800" fill="#2A1F08">2 · RESULT</text>
+      <text x="567" y="170" text-anchor="middle" font-size="11" font-weight="600" fill="#9A8552">reply, click, sale, silence</text>
+
+      <!-- node BOTTOM: INSIGHT -->
+      <rect x="259" y="244" width="136" height="60" rx="12" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2.5"/>
+      <text x="327" y="270" text-anchor="middle" font-size="15" font-weight="800" fill="#2A1F08">3 · INSIGHT</text>
+      <text x="327" y="290" text-anchor="middle" font-size="11" font-weight="600" fill="#4A3A14">what the data reveals</text>
+
+      <!-- node LEFT: OPTIMIZE -->
+      <rect x="10" y="124" width="154" height="60" rx="12" fill="#9A5E04"/>
+      <text x="87" y="150" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">4 · OPTIMIZE</text>
+      <text x="87" y="170" text-anchor="middle" font-size="11" font-weight="600" fill="#F0CE7E">one change at a time</text>
+
+      <!-- tick: speed indicator -->
+      <text x="327" y="442" text-anchor="middle" font-size="0" fill="none"/>
+    </svg>
+    <div class="caption">One full turn of this flywheel requires a hundred reps. At ten reps you don&rsquo;t even complete one revolution.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · SYSTEMS OVER MOTIVATION ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE RULE OF 100</span><span>Replace Motivation</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Motivation dips. <span class="em">Systems don&rsquo;t.</span></h2>
+
+  <p>You cannot do 100 primary actions per day on enthusiasm alone. In week one it feels possible. In week three it feels pointless. The rule only works if it is backed by a system that runs whether or not you feel like it.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&times;</span><span>Waiting until you feel inspired to do outreach &mdash; so some days you do 3, some days 30, and the average is 8.</span></div>
+    <div class="r good"><span class="mk">&checkmark;</span><span>Morning block, scripted template, 100 messages sent before anything else opens. Boring, systematic, and it compounds.</span></div>
+  </div>
+
+  <p class="small" style="margin-top:14px">Build the script. Book the block. Track the number. The only creative decision is <em>what</em> the 100 actions are &mdash; not <em>whether</em> you do them.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D-SYSTEMS · motivation line vs output line comparison -->
+    <svg viewBox="0 0 654 230" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- axes -->
+      <line x1="58" y1="14" x2="58" y2="192" stroke="#2A1F08" stroke-width="2.5"/>
+      <line x1="58" y1="192" x2="634" y2="192" stroke="#2A1F08" stroke-width="2.5"/>
+      <text x="346" y="218" text-anchor="middle" font-size="11" font-weight="800" fill="#9A8552" letter-spacing="1">TIME &rarr;</text>
+      <!-- motivation line (volatile, dips) -->
+      <polyline points="58,60 110,40 160,80 220,140 270,100 330,160 390,80 440,140 500,60 560,130 620,90"
+        fill="none" stroke="#B89A6A" stroke-width="2" stroke-dasharray="6 5"/>
+      <text x="628" y="93" font-size="11" font-weight="700" fill="#B89A6A">motivation</text>
+      <!-- output line (flat at 100, with system) -->
+      <line x1="58" y1="110" x2="634" y2="110" stroke="#D98A0B" stroke-width="3.5"/>
+      <text x="628" y="113" font-size="11" font-weight="800" fill="#D98A0B">output</text>
+      <!-- band label -->
+      <rect x="170" y="94" width="210" height="32" rx="9" fill="#D98A0B"/>
+      <text x="275" y="115" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">100/DAY — REGARDLESS</text>
+    </svg>
+    <div class="caption">Motivation is a wave. A calendar block and a script template are a flatline &mdash; in the best possible way.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · CTA + CLOSER ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE RULE OF 100</span><span>The Takeaway</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">Pick one channel. Do 100. <span class="em">For 100 days.</span></h2>
+
+  <p>You don&rsquo;t need a new strategy. You need to stop treating the current one as optional. Commit one channel, commit 100 primary actions per day, and do not evaluate the results until you have 100 days of data. That is 10,000 reps. No serious business judgment can be made with less.</p>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:20px 0">
+    <!-- D-COMMIT · simple before/after panel -->
+    <svg viewBox="0 0 654 160" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- before panel -->
+      <rect x="0" y="0" width="310" height="148" rx="13" fill="#F5EDD8" stroke="#B89A6A" stroke-width="2.5"/>
+      <text x="24" y="32" font-size="12" font-weight="800" fill="#B89A6A" letter-spacing="1.5">BEFORE THE RULE</text>
+      <text x="24" y="62" font-size="15" font-weight="800" fill="#4A3A14">&ldquo;I&rsquo;m trying three channels</text>
+      <text x="24" y="84" font-size="15" font-weight="800" fill="#4A3A14">and doing 15 or so things</text>
+      <text x="24" y="106" font-size="15" font-weight="800" fill="#4A3A14">in each. Nothing&rsquo;s working.&rdquo;</text>
+      <text x="24" y="132" font-size="12.5" font-style="italic" fill="#9A8552">scattered volume = no signal</text>
+      <!-- after panel -->
+      <rect x="344" y="0" width="310" height="148" rx="13" fill="#D98A0B"/>
+      <text x="368" y="32" font-size="12" font-weight="800" fill="#F0CE7E" letter-spacing="1.5">AFTER THE RULE</text>
+      <text x="368" y="62" font-size="15" font-weight="800" fill="#FFFFFF">&ldquo;One channel. 100 emails</text>
+      <text x="368" y="84" font-size="15" font-weight="800" fill="#FFFFFF">a day. Day 74. Already</text>
+      <text x="368" y="106" font-size="15" font-weight="800" fill="#FFFFFF">have 12 clients booked.&rdquo;</text>
+      <text x="368" y="132" font-size="12.5" font-style="italic" fill="#FBF0D6">focused volume = compounding</text>
+    </svg>
+    <div class="caption">Every operator who actually runs the rule for 100 days says some version of the same thing on day 101.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="band">
+    <div class="t">ONE CHANNEL. 100 A DAY. 100 DAYS. THEN JUDGE.</div>
+    <div class="s">do not change the channel before the data is in</div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Leads &mdash; the book.</h3>
+    <p>The Rule of 100, the Core Four, lead magnets, and the full scaling playbook &mdash; never run out of people to sell to again.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Pick the channel. Do the reps. Let the data decide.</div>
+
+  <div class="stamp">The Rule of 100</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>

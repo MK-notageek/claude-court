@@ -19,15 +19,29 @@
   }
   *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
   html,body{ margin:0; padding:0; background:#cdbfa8; }
-  @page{ size:A4; margin:0; }
+  @page{ size:A4 landscape; margin:0; }
 
   .page{
-    width:794px; height:1123px; position:relative; overflow:hidden;
+    width:1123px; height:794px; position:relative; overflow:hidden;
     background:var(--paper); color:var(--ink);
     padding:74px 70px 70px; margin:0 auto;
     page-break-after:always;
   }
   .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page: full-width recap/closer, upper content in a bounded landscape row */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
 
   .rhead{ position:absolute; top:30px; left:70px; right:70px;
     display:flex; justify-content:space-between; align-items:center;
@@ -118,12 +132,18 @@
   <div class="rhead"><span class="v">THE TRUST BET</span><span>The Definition</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Trust is not a feeling. <span class="em">It&rsquo;s a bet.</span></h2>
 
   <p class="lead">Someone says &ldquo;just trust me&rdquo; &mdash; and you freeze. It&rsquo;s an odd command. What are they actually asking for?</p>
   <p>Here is the answer, behaviorally. To trust someone is to <span class="b">make yourself punishable by them.</span></p>
   <p>You hand over a secret, your word, or a need. That thing is now <span class="b">leverage</span> &mdash; something they could use to hurt you. Then you place a bet: <span class="b">they won&rsquo;t.</span></p>
 
+  <p>That&rsquo;s the whole definition. Look at any relationship and you can name the exact moment trust occurred: <span class="b">when someone made themselves punishable and wasn&rsquo;t punished.</span></p>
+  </div>
+
+  <div class="col-fig">
   <figure>
     <!-- D1 · the bet mechanism -->
     <svg viewBox="0 0 654 222" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -158,8 +178,8 @@
     </svg>
     <div class="caption">No leverage handed over, no trust. Trust is risk, taken deliberately.</div>
   </figure>
-
-  <p>That&rsquo;s the whole definition. Look at any relationship and you can name the exact moment trust occurred: <span class="b">when someone made themselves punishable and wasn&rsquo;t punished.</span></p>
+  </div>
+  </div>
 
   <div class="folio">02</div>
 </section>
@@ -169,10 +189,17 @@
   <div class="rhead"><span class="v">THE TRUST BET</span><span>The Two Dials</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Every act of trust has <span class="em">two dials.</span></h2>
 
   <p>It feels like one fuzzy thing. It&rsquo;s actually two clean questions &mdash; and the answers change everything.</p>
 
+  <p><span class="b">Who is at risk</span> &mdash; you, or them? And <span class="b">who does the punishing</span> if the bet goes bad &mdash; the other person, or reality itself?</p>
+  <p>Those two dials, with two positions each, are the entire map. Turn the page.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:30px 0">
     <!-- D2 · two dials -->
     <svg viewBox="0 0 654 268" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -197,9 +224,8 @@
     </svg>
     <div class="caption">Flip the dials and you don&rsquo;t get one kind of trust. You get four.</div>
   </figure>
-
-  <p><span class="b">Who is at risk</span> &mdash; you, or them? And <span class="b">who does the punishing</span> if the bet goes bad &mdash; the other person, or reality itself?</p>
-  <p>Those two dials, with two positions each, are the entire map. Turn the page.</p>
+  </div>
+  </div>
 
   <div class="folio">03</div>
 </section>
@@ -209,10 +235,16 @@
   <div class="rhead"><span class="v">THE TRUST BET</span><span>The Four Types</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">The <span class="em">four types</span> of trust.</h2>
 
   <p class="small" style="margin-bottom:6px">Set the two dials and every trust you&rsquo;ve ever extended falls into one of these boxes.</p>
 
+  <p class="small">Most arguments about trust are really two people standing in <span class="b">different boxes</span> &mdash; one talking secrets, the other talking reliability.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:16px 0 10px">
     <!-- D3 · 2x2 matrix -->
     <svg viewBox="0 0 654 462" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -264,8 +296,8 @@
     </svg>
     <div class="caption">Who&rsquo;s at risk down the side &middot; who does the punishing across the top.</div>
   </figure>
-
-  <p class="small">Most arguments about trust are really two people standing in <span class="b">different boxes</span> &mdash; one talking secrets, the other talking reliability.</p>
+  </div>
+  </div>
 
   <div class="folio">04</div>
 </section>
@@ -275,10 +307,20 @@
   <div class="rhead"><span class="v">THE TRUST BET</span><span>The Two Tests</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">So should you <span class="em">trust them?</span></h2>
 
   <p>Before you make yourself punishable, run two tests. <span class="b">Both</span> have to pass.</p>
 
+  <p><span class="b">One &mdash; track record.</span> Given the chance to burn you, have they protected you instead? A knife at your back they chose not to use?</p>
+  <p><span class="b">Two &mdash; incentive.</span> Does burning you cost them more than keeping you? If betrayal is a bad deal for them, you&rsquo;re far safer.</p>
+
+  <div style="height:6px"></div>
+  <div class="pull">Track record without aligned incentive is <span class="em">luck.</span> Incentive without track record is a <span class="em">guess.</span></div>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:26px 0">
     <!-- D4 · two litmus gates -->
     <svg viewBox="0 0 654 240" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -323,12 +365,8 @@
     </svg>
     <div class="caption">Two gates, wired in series. Miss one and trust is a bad bet.</div>
   </figure>
-
-  <p><span class="b">One &mdash; track record.</span> Given the chance to burn you, have they protected you instead? A knife at your back they chose not to use?</p>
-  <p><span class="b">Two &mdash; incentive.</span> Does burning you cost them more than keeping you? If betrayal is a bad deal for them, you&rsquo;re far safer.</p>
-
-  <div style="height:6px"></div>
-  <div class="pull">Track record without aligned incentive is <span class="em">luck.</span> Incentive without track record is a <span class="em">guess.</span></div>
+  </div>
+  </div>
 
   <div class="folio">05</div>
 </section>
@@ -338,11 +376,22 @@
   <div class="rhead"><span class="v">THE TRUST BET</span><span>The Ceiling</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Then why <span class="em">risk it</span> at all?</h2>
 
   <p>Because the ceiling of any relationship is set by one thing: <span class="b">how much context the two of you share.</span></p>
   <p>A stranger can barely help you &mdash; they know nothing about you. Every single thing you reveal hands them more to work with, and lifts the ceiling on what you can become to each other.</p>
 
+  <p>That&rsquo;s the blade. The more someone can help you, the more they can <span class="b">hurt</span> you. You don&rsquo;t get the upside without handing over the downside.</p>
+
+  <div class="band">
+    <div class="t">THE MORE THEY KNOW, THE HIGHER IT GOES &mdash; BOTH WAYS.</div>
+    <div class="s">shared context  =  the ceiling and the knife</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:22px 0">
     <!-- D5 · shared-context cone -->
     <svg viewBox="0 0 654 296" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -374,12 +423,7 @@
     </svg>
     <div class="caption">Same disclosures feed both edges. The cone only opens one way: wider.</div>
   </figure>
-
-  <p>That&rsquo;s the blade. The more someone can help you, the more they can <span class="b">hurt</span> you. You don&rsquo;t get the upside without handing over the downside.</p>
-
-  <div class="band">
-    <div class="t">THE MORE THEY KNOW, THE HIGHER IT GOES &mdash; BOTH WAYS.</div>
-    <div class="s">shared context  =  the ceiling and the knife</div>
+  </div>
   </div>
 
   <div class="folio">06</div>
@@ -390,11 +434,19 @@
   <div class="rhead"><span class="v">THE TRUST BET</span><span>Zero Punishment</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Trust runs on <span class="em">zero punishment.</span></h2>
 
   <p>You give a little. They don&rsquo;t misuse it. You give a little more. Still safe. Drop by drop, over years, the trust compounds into something huge.</p>
   <p>Then one day the short-term temptation &mdash; winning the argument, using what they told you &mdash; beats the long game. And they take it.</p>
 
+  <div class="pull">The betrayal doesn&rsquo;t <span class="em">subtract</span> from the trust. It <span class="em">resets it to zero</span> &mdash; and undoes every cycle that built it.</div>
+
+  <p class="small">It&rsquo;s a tree cut from the vine. It still stands for a while &mdash; but the nutrients, the truth flowing between you, are already severed. Everyone knows when it&rsquo;s hollow inside.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:22px 0">
     <!-- D6 · staircase up, cliff to zero -->
     <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -428,10 +480,8 @@
     </svg>
     <div class="caption">Built one drop at a time. Emptied in a single act. That asymmetry is the whole game.</div>
   </figure>
-
-  <div class="pull">The betrayal doesn&rsquo;t <span class="em">subtract</span> from the trust. It <span class="em">resets it to zero</span> &mdash; and undoes every cycle that built it.</div>
-
-  <p class="small">It&rsquo;s a tree cut from the vine. It still stands for a while &mdash; but the nutrients, the truth flowing between you, are already severed. Everyone knows when it&rsquo;s hollow inside.</p>
+  </div>
+  </div>
 
   <div class="folio">07</div>
 </section>
@@ -441,11 +491,15 @@
   <div class="rhead"><span class="v">THE TRUST BET</span><span>The Payoff</span></div>
   <div class="rule"></div>
 
+  <div class="close-top">
+  <div class="close-left">
   <h2 style="margin-top:30px">So <span class="em">be the one</span> who never punishes.</h2>
 
   <p>Trustworthiness isn&rsquo;t soft. It&rsquo;s leverage. Refuse to punish what people hand you &mdash; and they hand you more.</p>
+  </div>
 
-  <figure style="margin:18px 0 14px">
+  <div class="close-right">
+  <figure style="margin:16px 0">
     <!-- D7 · compounding-trust cycle -->
     <svg viewBox="0 0 654 224" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
       <!-- center -->
@@ -474,6 +528,8 @@
     </svg>
     <div class="caption">More context &rarr; more influence &rarr; they let you closer. Punish once and the loop stops cold.</div>
   </figure>
+  </div>
+  </div>
 
   <div class="recap">
     <div class="rk">The litmus &mdash; both directions</div>

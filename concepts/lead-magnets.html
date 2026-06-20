@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lead Magnets That Convert — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --panel:#DCF2EF;
+    --ink:#0E2A2A;
+    --ink-soft:#234746;
+    --muted:#6E908E;
+    --line:#D2E6E3;
+    --violet:#0E9488;
+    --violet-deep:#075E55;
+    --violet-soft:#8FD4CC;
+    --violet-fill:#DCF2EF;
+    --plum:#6E908E;
+    --plum-fill:#E9F1F0;
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#b9d6d2; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page: full-width CTA, upper content in a bounded landscape row */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#EAF6F4; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#DCF2EF; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #CFE0DE; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#C5DBD8; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">%</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Leads</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Turn strangers into hand-raisers before the first pitch</div>
+    <h1 class="title">LEAD<br>MAGNETS<br>THAT<br>CONVERT</h1>
+    <p class="cover-sub">A lead magnet is not a freebie. It&rsquo;s a <b>filter.</b> Done right, it separates curious browsers from motivated buyers &mdash; and hands you their contact details in exchange for a result they actually wanted.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; attract &middot; filter &middot; convert</span></div>
+  </div>
+  <div class="stamp">Lead Magnets That Convert</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · WHAT A LEAD MAGNET IS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">LEAD MAGNETS</span><span>The Definition</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">A lead magnet delivers a <span class="em">complete result</span> for free.</h2>
+
+  <p class="lead">Not a teaser. Not a sample chapter. A complete, standalone result that a motivated prospect would pay for.</p>
+  <p>Most lead magnets fail because they deliver hope &mdash; a vague promise that more value lives behind a paywall. A converting lead magnet delivers <span class="b">one complete win</span>, so the prospect experiences your competence before paying a cent.</p>
+
+  <p>The test is simple: <span class="b">would a motivated buyer pay money for this?</span> If yes, it qualifies as a lead magnet. If it&rsquo;s just marginally useful, it won&rsquo;t generate the urgency needed to give you an email address.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D-DEFINITION · generic vs specific magnet comparison -->
+    <svg viewBox="0 0 654 250" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- left: failing magnet -->
+      <rect x="0" y="0" width="308" height="238" rx="13" fill="#E9F1F0" stroke="#6E908E" stroke-width="2.5"/>
+      <text x="24" y="32" font-size="12" font-weight="800" fill="#6E908E" letter-spacing="1.5">&#10007; DOES NOT CONVERT</text>
+      <text x="24" y="64" font-size="18" font-weight="800" fill="#234746">&ldquo;FREE MARKETING</text>
+      <text x="24" y="88" font-size="18" font-weight="800" fill="#234746">TIPS GUIDE&rdquo;</text>
+      <!-- problems -->
+      <text x="24" y="122" font-size="12.5" font-weight="800" fill="#6E908E">WHY IT FAILS:</text>
+      <text x="24" y="145" font-size="12.5" font-weight="600" fill="#234746">&#8226; No specific person named</text>
+      <text x="24" y="165" font-size="12.5" font-weight="600" fill="#234746">&#8226; No promised result</text>
+      <text x="24" y="185" font-size="12.5" font-weight="600" fill="#234746">&#8226; Competes with a million others</text>
+      <text x="24" y="205" font-size="12.5" font-weight="600" fill="#234746">&#8226; Delivers information, not outcome</text>
+      <!-- conversion label -->
+      <rect x="24" y="216" width="130" height="14" rx="7" fill="#CFE0DE"/>
+      <text x="89" y="227" text-anchor="middle" font-size="10" font-weight="800" fill="#6E908E">LOW CONVERSION</text>
+
+      <!-- right: converting magnet -->
+      <rect x="346" y="0" width="308" height="238" rx="13" fill="#0E9488"/>
+      <text x="370" y="32" font-size="12" font-weight="800" fill="#DCF2EF" letter-spacing="1.5">&#10003; CONVERTS</text>
+      <text x="370" y="64" font-size="16" font-weight="800" fill="#FFFFFF">&ldquo;5-EMAIL SEQUENCE</text>
+      <text x="370" y="88" font-size="16" font-weight="800" fill="#FFFFFF">THAT BOOKS CHIRO-</text>
+      <text x="370" y="112" font-size="16" font-weight="800" fill="#FFFFFF">PRACTORS 10+ PATIENTS&rdquo;</text>
+      <!-- win -->
+      <text x="370" y="146" font-size="12.5" font-weight="800" fill="#8FD4CC">WHY IT WORKS:</text>
+      <text x="370" y="169" font-size="12.5" font-weight="600" fill="#DCF2EF">&#8226; Named the exact person</text>
+      <text x="370" y="189" font-size="12.5" font-weight="600" fill="#DCF2EF">&#8226; Promised a specific result</text>
+      <text x="370" y="209" font-size="12.5" font-weight="600" fill="#DCF2EF">&#8226; Complete deliverable, zero fluff</text>
+      <!-- conversion label -->
+      <rect x="370" y="218" width="130" height="14" rx="7" fill="#075E55"/>
+      <text x="435" y="229" text-anchor="middle" font-size="10" font-weight="800" fill="#DCF2EF">HIGH CONVERSION</text>
+    </svg>
+    <div class="caption">Same medium (email), same topic (marketing) &mdash; specificity is the only variable that changes conversion.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · THE FIVE TYPES ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">LEAD MAGNETS</span><span>The Five Types</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Five formats. All of them <span class="em">deliver a complete result.</span></h2>
+
+  <p>The format matters less than the result it delivers. Pick the format your ideal customer can consume fastest &mdash; because speed of value is one of the conversion levers.</p>
+
+  <p>Software tools convert highest because the prospect gets an <em>immediate</em> result the moment they use it. Information products scale best. Service samples create the shortest path to a paid conversion.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D-FIVETYPES · 5 columns showing each type -->
+    <svg viewBox="0 0 654 360" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- col 1: software/tool -->
+      <rect x="0" y="0" width="120" height="348" rx="12" fill="#0E9488"/>
+      <text x="60" y="32" text-anchor="middle" font-size="11" font-weight="800" fill="#DCF2EF" letter-spacing="1">01</text>
+      <text x="60" y="64" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">SOFT-</text>
+      <text x="60" y="82" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">WARE</text>
+      <text x="60" y="100" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">/ TOOL</text>
+      <text x="60" y="138" text-anchor="middle" font-size="11" font-weight="600" fill="#8FD4CC">Calculator,</text>
+      <text x="60" y="156" text-anchor="middle" font-size="11" font-weight="600" fill="#8FD4CC">template,</text>
+      <text x="60" y="174" text-anchor="middle" font-size="11" font-weight="600" fill="#8FD4CC">quiz, or</text>
+      <text x="60" y="192" text-anchor="middle" font-size="11" font-weight="600" fill="#8FD4CC">free trial.</text>
+      <text x="60" y="230" text-anchor="middle" font-size="11" font-weight="800" fill="#DCF2EF">HIGHEST</text>
+      <text x="60" y="248" text-anchor="middle" font-size="11" font-weight="800" fill="#DCF2EF">perceived</text>
+      <text x="60" y="266" text-anchor="middle" font-size="11" font-weight="800" fill="#DCF2EF">value</text>
+      <!-- col 2: information -->
+      <rect x="128" y="0" width="120" height="348" rx="12" fill="#DCF2EF" stroke="#0E9488" stroke-width="2.5"/>
+      <text x="188" y="32" text-anchor="middle" font-size="11" font-weight="800" fill="#075E55" letter-spacing="1">02</text>
+      <text x="188" y="64" text-anchor="middle" font-size="14" font-weight="800" fill="#0E2A2A">INFO</text>
+      <text x="188" y="82" text-anchor="middle" font-size="14" font-weight="800" fill="#0E2A2A">PROD-</text>
+      <text x="188" y="100" text-anchor="middle" font-size="14" font-weight="800" fill="#0E2A2A">UCT</text>
+      <text x="188" y="138" text-anchor="middle" font-size="11" font-weight="600" fill="#234746">Guide, check-</text>
+      <text x="188" y="156" text-anchor="middle" font-size="11" font-weight="600" fill="#234746">list, email</text>
+      <text x="188" y="174" text-anchor="middle" font-size="11" font-weight="600" fill="#234746">course,</text>
+      <text x="188" y="192" text-anchor="middle" font-size="11" font-weight="600" fill="#234746">webinar.</text>
+      <text x="188" y="230" text-anchor="middle" font-size="11" font-weight="800" fill="#0E9488">Easiest to</text>
+      <text x="188" y="248" text-anchor="middle" font-size="11" font-weight="800" fill="#0E9488">create at</text>
+      <text x="188" y="266" text-anchor="middle" font-size="11" font-weight="800" fill="#0E9488">scale</text>
+      <!-- col 3: service sample -->
+      <rect x="256" y="0" width="120" height="348" rx="12" fill="#075E55"/>
+      <text x="316" y="32" text-anchor="middle" font-size="11" font-weight="800" fill="#8FD4CC" letter-spacing="1">03</text>
+      <text x="316" y="64" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">SERVICE</text>
+      <text x="316" y="82" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">SAM-</text>
+      <text x="316" y="100" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">PLE</text>
+      <text x="316" y="138" text-anchor="middle" font-size="11" font-weight="600" fill="#8FD4CC">Free audit,</text>
+      <text x="316" y="156" text-anchor="middle" font-size="11" font-weight="600" fill="#8FD4CC">trial session,</text>
+      <text x="316" y="174" text-anchor="middle" font-size="11" font-weight="600" fill="#8FD4CC">mini-consult,</text>
+      <text x="316" y="192" text-anchor="middle" font-size="11" font-weight="600" fill="#8FD4CC">first lesson.</text>
+      <text x="316" y="230" text-anchor="middle" font-size="11" font-weight="800" fill="#DCF2EF">De-risks the</text>
+      <text x="316" y="248" text-anchor="middle" font-size="11" font-weight="800" fill="#DCF2EF">purchase</text>
+      <text x="316" y="266" text-anchor="middle" font-size="11" font-weight="800" fill="#DCF2EF">decision</text>
+      <!-- col 4: community -->
+      <rect x="384" y="0" width="120" height="348" rx="12" fill="#FFFFFF" stroke="#234746" stroke-width="2.5"/>
+      <text x="444" y="32" text-anchor="middle" font-size="11" font-weight="800" fill="#0E9488" letter-spacing="1">04</text>
+      <text x="444" y="64" text-anchor="middle" font-size="14" font-weight="800" fill="#0E2A2A">COM-</text>
+      <text x="444" y="82" text-anchor="middle" font-size="14" font-weight="800" fill="#0E2A2A">MUN-</text>
+      <text x="444" y="100" text-anchor="middle" font-size="14" font-weight="800" fill="#0E2A2A">ITY</text>
+      <text x="444" y="138" text-anchor="middle" font-size="11" font-weight="600" fill="#234746">Free group,</text>
+      <text x="444" y="156" text-anchor="middle" font-size="11" font-weight="600" fill="#234746">Slack, forum,</text>
+      <text x="444" y="174" text-anchor="middle" font-size="11" font-weight="600" fill="#234746">Discord,</text>
+      <text x="444" y="192" text-anchor="middle" font-size="11" font-weight="600" fill="#234746">membership.</text>
+      <text x="444" y="230" text-anchor="middle" font-size="11" font-weight="800" fill="#6E908E">Highest</text>
+      <text x="444" y="248" text-anchor="middle" font-size="11" font-weight="800" fill="#6E908E">ongoing</text>
+      <text x="444" y="266" text-anchor="middle" font-size="11" font-weight="800" fill="#6E908E">engagement</text>
+      <!-- col 5: physical -->
+      <rect x="512" y="0" width="142" height="348" rx="12" fill="#FFFFFF" stroke="#234746" stroke-width="2.5"/>
+      <text x="583" y="32" text-anchor="middle" font-size="11" font-weight="800" fill="#0E9488" letter-spacing="1">05</text>
+      <text x="583" y="64" text-anchor="middle" font-size="14" font-weight="800" fill="#0E2A2A">PHYS-</text>
+      <text x="583" y="82" text-anchor="middle" font-size="14" font-weight="800" fill="#0E2A2A">ICAL</text>
+      <text x="583" y="138" text-anchor="middle" font-size="11" font-weight="600" fill="#234746">Shipped book,</text>
+      <text x="583" y="156" text-anchor="middle" font-size="11" font-weight="600" fill="#234746">sample, print</text>
+      <text x="583" y="174" text-anchor="middle" font-size="11" font-weight="600" fill="#234746">report, or</text>
+      <text x="583" y="192" text-anchor="middle" font-size="11" font-weight="600" fill="#234746">USB drive.</text>
+      <text x="583" y="230" text-anchor="middle" font-size="11" font-weight="800" fill="#6E908E">Highest</text>
+      <text x="583" y="248" text-anchor="middle" font-size="11" font-weight="800" fill="#6E908E">tangibility,</text>
+      <text x="583" y="266" text-anchor="middle" font-size="11" font-weight="800" fill="#6E908E">highest cost</text>
+    </svg>
+    <div class="caption">Choose the format your ideal buyer can consume in the shortest time for the highest perceived value.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · ONE STEP REMOVED ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">LEAD MAGNETS</span><span>One Step Removed</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Solve the problem <span class="em">one step before</span> your core offer does.</h2>
+
+  <p>If your paid offer teaches people how to run Facebook ads, your lead magnet should solve the problem they hit just before running ads &mdash; not ads themselves. The magnet solves step one; the offer solves step two. The natural next move for anyone who completes the magnet is to buy.</p>
+
+  <p>This is why generic lead magnets leak. A guide called &ldquo;10 Marketing Tips&rdquo; has no natural next step. A guide called &ldquo;How to Get Your First 50 Leads This Week&rdquo; creates someone who now needs help managing those leads &mdash; which is your service.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D-STAIRCASE · 3-step staircase showing magnet position -->
+    <svg viewBox="0 0 654 310" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- step 1: awareness problem (lowest) -->
+      <rect x="0" y="220" width="654" height="82" rx="12" fill="#E9F1F0" stroke="#6E908E" stroke-width="2.5"/>
+      <text x="32" y="254" font-size="12" font-weight="800" fill="#6E908E" letter-spacing="1.5">STEP 0 · THE AWARENESS PROBLEM</text>
+      <text x="32" y="280" font-size="16" font-weight="800" fill="#234746">&ldquo;I don&rsquo;t know what I don&rsquo;t know&rdquo; — general education</text>
+
+      <!-- step 2: lead magnet problem (middle) — HIGHLIGHTED -->
+      <rect x="0" y="116" width="654" height="96" rx="12" fill="#0E9488"/>
+      <text x="32" y="150" font-size="12" font-weight="800" fill="#DCF2EF" letter-spacing="1.5">STEP 1 · YOUR LEAD MAGNET SOLVES THIS &larr;</text>
+      <text x="32" y="178" font-size="17" font-weight="800" fill="#FFFFFF">&ldquo;I need to [immediate specific problem] before I can [next step]&rdquo;</text>
+      <rect x="510" y="130" width="132" height="34" rx="9" fill="#FFFFFF"/>
+      <text x="576" y="152" text-anchor="middle" font-size="12" font-weight="800" fill="#0E9488">FREE RESULT</text>
+
+      <!-- step 3: core offer (top) -->
+      <rect x="0" y="14" width="654" height="94" rx="12" fill="#FFFFFF" stroke="#2A1F08" stroke-width="2.5"/>
+      <text x="32" y="48" font-size="12" font-weight="800" fill="#0E9488" letter-spacing="1.5">STEP 2 · YOUR CORE OFFER SOLVES THIS</text>
+      <text x="32" y="76" font-size="17" font-weight="800" fill="#0E2A2A">&ldquo;I need the full solution at scale&rdquo; — paid, premium</text>
+      <rect x="524" y="28" width="118" height="34" rx="9" fill="#0E2A2A"/>
+      <text x="583" y="50" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">PAID OFFER</text>
+
+      <!-- arrow connecting magnet to offer -->
+      <g stroke="#8FD4CC" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="80" y1="112" x2="80" y2="108"/>
+        <polyline points="70,108 80,98 90,108"/>
+      </g>
+      <text x="100" y="104" font-size="11.5" font-weight="800" fill="#8FD4CC">natural next step</text>
+    </svg>
+    <div class="caption">The person who uses your magnet has just created the exact problem your paid offer solves. The sale is a handoff.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · THREE CONVERSION LEVERS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">LEAD MAGNETS</span><span>Three Levers</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Three levers that move <span class="em">opt-in rate.</span></h2>
+
+  <p>All else equal, these three attributes determine whether a lead magnet earns a contact or gets scrolled past. Pull all three at once.</p>
+
+  <p>Pull all three simultaneously and you have a headline. &ldquo;Get 10 booked calls this week using your existing contacts &mdash; no ads, takes 45 minutes.&rdquo; That is specificity + certainty + speed in a single line.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D-LEVERS · three lever cards -->
+    <svg viewBox="0 0 654 340" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- lever 1: SPECIFICITY -->
+      <rect x="0" y="0" width="198" height="328" rx="13" fill="#0E9488"/>
+      <text x="99" y="36" text-anchor="middle" font-size="11" font-weight="800" fill="#DCF2EF" letter-spacing="2">LEVER 1</text>
+      <text x="99" y="80" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF">SPECIFICITY</text>
+      <!-- up arrow -->
+      <polygon points="99,108 115,132 83,132" fill="#8FD4CC"/>
+      <text x="99" y="164" text-anchor="middle" font-size="11" font-weight="800" fill="#8FD4CC">OPT-IN RATE</text>
+      <text x="99" y="200" text-anchor="middle" font-size="12.5" font-weight="600" fill="#DCF2EF">Name the person</text>
+      <text x="99" y="220" text-anchor="middle" font-size="12.5" font-weight="600" fill="#DCF2EF">AND the problem</text>
+      <text x="99" y="240" text-anchor="middle" font-size="12.5" font-weight="600" fill="#DCF2EF">in the headline.</text>
+      <text x="99" y="270" text-anchor="middle" font-size="11.5" font-style="italic" fill="#8FD4CC">&ldquo;For coaches doing</text>
+      <text x="99" y="288" text-anchor="middle" font-size="11.5" font-style="italic" fill="#8FD4CC">$5K/mo who want</text>
+      <text x="99" y="306" text-anchor="middle" font-size="11.5" font-style="italic" fill="#8FD4CC">to hit $20K&rdquo;</text>
+
+      <!-- lever 2: SPEED -->
+      <rect x="228" y="0" width="198" height="328" rx="13" fill="#FFFFFF" stroke="#0E2A2A" stroke-width="2.5"/>
+      <text x="327" y="36" text-anchor="middle" font-size="11" font-weight="800" fill="#0E9488" letter-spacing="2">LEVER 2</text>
+      <text x="327" y="80" text-anchor="middle" font-size="20" font-weight="800" fill="#0E2A2A">SPEED</text>
+      <polygon points="327,108 343,132 311,132" fill="#0E9488"/>
+      <text x="327" y="164" text-anchor="middle" font-size="11" font-weight="800" fill="#0E9488">OPT-IN RATE</text>
+      <text x="327" y="200" text-anchor="middle" font-size="12.5" font-weight="600" fill="#234746">Faster to consume</text>
+      <text x="327" y="220" text-anchor="middle" font-size="12.5" font-weight="600" fill="#234746">= higher perceived</text>
+      <text x="327" y="240" text-anchor="middle" font-size="12.5" font-weight="600" fill="#234746">value for time.</text>
+      <text x="327" y="270" text-anchor="middle" font-size="11.5" font-style="italic" fill="#6E908E">&ldquo;5-minute setup.&rdquo;</text>
+      <text x="327" y="288" text-anchor="middle" font-size="11.5" font-style="italic" fill="#6E908E">&ldquo;Instant access.&rdquo;</text>
+      <text x="327" y="306" text-anchor="middle" font-size="11.5" font-style="italic" fill="#6E908E">&ldquo;Use today.&rdquo;</text>
+
+      <!-- lever 3: CERTAINTY -->
+      <rect x="456" y="0" width="198" height="328" rx="13" fill="#075E55"/>
+      <text x="555" y="36" text-anchor="middle" font-size="11" font-weight="800" fill="#8FD4CC" letter-spacing="2">LEVER 3</text>
+      <text x="555" y="80" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF">CERTAINTY</text>
+      <polygon points="555,108 571,132 539,132" fill="#8FD4CC"/>
+      <text x="555" y="164" text-anchor="middle" font-size="11" font-weight="800" fill="#8FD4CC">OPT-IN RATE</text>
+      <text x="555" y="200" text-anchor="middle" font-size="12.5" font-weight="600" fill="#DCF2EF">Promise a definite</text>
+      <text x="555" y="220" text-anchor="middle" font-size="12.5" font-weight="600" fill="#DCF2EF">outcome, not a</text>
+      <text x="555" y="240" text-anchor="middle" font-size="12.5" font-weight="600" fill="#DCF2EF">vague possibility.</text>
+      <text x="555" y="270" text-anchor="middle" font-size="11.5" font-style="italic" fill="#8FD4CC">&ldquo;Get 10 leads by</text>
+      <text x="555" y="288" text-anchor="middle" font-size="11.5" font-style="italic" fill="#8FD4CC">Friday&rdquo; &gt;</text>
+      <text x="555" y="306" text-anchor="middle" font-size="11.5" font-style="italic" fill="#8FD4CC">&ldquo;Get more leads&rdquo;</text>
+    </svg>
+    <div class="caption">Specificity addresses the right person. Speed lowers the commitment barrier. Certainty kills hesitation.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · THE SPECIFICITY FORMULA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">LEAD MAGNETS</span><span>The Headline Formula</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The headline formula that <span class="em">does all three jobs.</span></h2>
+
+  <p>Once you have the concept, the headline writes itself. Plug in four tokens. If any slot is vague, the whole headline collapses. Be ruthlessly specific at each one.</p>
+
+  <p class="small">The &ldquo;without X&rdquo; slot is the most underused. It removes the biggest objection before they&rsquo;ve even opted in &mdash; which collapses the perceived effort barrier in the value equation.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D-FORMULA · four-slot headline breakdown -->
+    <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- slots row -->
+      <!-- slot A: WHO -->
+      <rect x="0" y="0" width="148" height="90" rx="12" fill="#0E9488"/>
+      <text x="74" y="26" text-anchor="middle" font-size="11" font-weight="800" fill="#DCF2EF" letter-spacing="1.5">WHO</text>
+      <text x="74" y="54" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">Exact</text>
+      <text x="74" y="74" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">Person</text>
+
+      <text x="158" y="50" text-anchor="middle" font-size="22" font-weight="800" fill="#6E908E">+</text>
+
+      <!-- slot B: RESULT -->
+      <rect x="168" y="0" width="148" height="90" rx="12" fill="#0E9488"/>
+      <text x="242" y="26" text-anchor="middle" font-size="11" font-weight="800" fill="#DCF2EF" letter-spacing="1.5">WHAT</text>
+      <text x="242" y="54" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">Specific</text>
+      <text x="242" y="74" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">Result</text>
+
+      <text x="326" y="50" text-anchor="middle" font-size="22" font-weight="800" fill="#6E908E">+</text>
+
+      <!-- slot C: TIMEFRAME -->
+      <rect x="336" y="0" width="148" height="90" rx="12" fill="#075E55"/>
+      <text x="410" y="26" text-anchor="middle" font-size="11" font-weight="800" fill="#8FD4CC" letter-spacing="1.5">WHEN</text>
+      <text x="410" y="54" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">Time</text>
+      <text x="410" y="74" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">Frame</text>
+
+      <text x="494" y="50" text-anchor="middle" font-size="22" font-weight="800" fill="#6E908E">+</text>
+
+      <!-- slot D: WITHOUT -->
+      <rect x="504" y="0" width="150" height="90" rx="12" fill="#FFFFFF" stroke="#234746" stroke-width="2.5"/>
+      <text x="579" y="26" text-anchor="middle" font-size="11" font-weight="800" fill="#0E9488" letter-spacing="1.5">WITHOUT</text>
+      <text x="579" y="54" text-anchor="middle" font-size="15" font-weight="800" fill="#0E2A2A">Obstacle</text>
+      <text x="579" y="74" text-anchor="middle" font-size="15" font-weight="800" fill="#0E2A2A">Removed</text>
+
+      <!-- down arrow -->
+      <g stroke="#0E9488" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="327" y1="94" x2="327" y2="122"/>
+        <polyline points="317,113 327,126 337,113"/>
+      </g>
+
+      <!-- result: full headline example -->
+      <rect x="0" y="132" width="654" height="90" rx="13" fill="#0E2A2A"/>
+      <text x="327" y="163" text-anchor="middle" font-size="14" font-weight="800" fill="#8FD4CC" letter-spacing="1.5">RESULTING HEADLINE</text>
+      <text x="327" y="192" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">&ldquo;How gym owners get 20 members in 30 days</text>
+      <text x="327" y="212" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">without running a single paid ad&rdquo;</text>
+
+      <!-- test labels -->
+      <rect x="0" y="244" width="308" height="66" rx="11" fill="#DCF2EF" stroke="#0E9488" stroke-width="2"/>
+      <text x="24" y="268" font-size="13" font-weight="800" fill="#0E2A2A">THE VAGUE VERSION:</text>
+      <text x="24" y="290" font-size="13" font-weight="600" fill="#6E908E">&ldquo;Marketing tips for your fitness business&rdquo;</text>
+
+      <rect x="320" y="244" width="334" height="66" rx="11" fill="#0E9488"/>
+      <text x="344" y="268" font-size="13" font-weight="800" fill="#FFFFFF">THE SPECIFIC VERSION:</text>
+      <text x="344" y="290" font-size="12" font-weight="600" fill="#DCF2EF">&ldquo;20 members, 30 days, no ads&rdquo;</text>
+    </svg>
+    <div class="caption">Four tokens. Every slot specific. The vague version and the specific version have the same information — not the same conversion rate.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · THE TWO TESTS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">LEAD MAGNETS</span><span>Two Quality Tests</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Run it through <span class="em">two tests</span> before you build it.</h2>
+
+  <p>Both tests must pass. A lead magnet that fails either one will collect browsers, not buyers, and fill your CRM with names that never close.</p>
+
+  <p class="small" style="margin-top:6px">Applying these two filters before you build saves you from producing content that drains your time and fills your list with people who will never buy.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D-TESTS · 2x2 quadrant: paid / not paid vs complete / incomplete -->
+    <svg viewBox="0 0 654 330" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- axes -->
+      <line x1="62" y1="32" x2="62" y2="290" stroke="#0E2A2A" stroke-width="2.5"/>
+      <line x1="62" y1="290" x2="634" y2="290" stroke="#0E2A2A" stroke-width="2.5"/>
+      <!-- mid lines -->
+      <line x1="348" y1="32" x2="348" y2="290" stroke="#D2E6E3" stroke-width="2"/>
+      <line x1="62" y1="161" x2="634" y2="161" stroke="#D2E6E3" stroke-width="2"/>
+      <!-- axis labels -->
+      <text x="14" y="161" font-size="12" font-weight="800" fill="#0E2A2A" transform="rotate(-90 14 161)" text-anchor="middle">WOULD THEY PAY?</text>
+      <text x="348" y="318" text-anchor="middle" font-size="12" font-weight="800" fill="#0E2A2A">DOES IT GIVE A COMPLETE RESULT?</text>
+      <!-- quadrant labels -->
+      <text x="84" y="56" font-size="10" font-weight="800" fill="#6E908E" letter-spacing="1">YES &uarr;</text>
+      <text x="526" y="56" font-size="10" font-weight="800" fill="#6E908E" letter-spacing="1">YES &uarr; + &rarr;</text>
+      <!-- quadrant fills -->
+      <!-- top-left: pays but incomplete -->
+      <rect x="64" y="34" width="282" height="125" rx="0" fill="#E9F1F0"/>
+      <text x="205" y="90" text-anchor="middle" font-size="14" font-weight="800" fill="#6E908E">TEASER</text>
+      <text x="205" y="110" text-anchor="middle" font-size="12" font-weight="600" fill="#6E908E">feels valuable, incomplete</text>
+      <text x="205" y="130" text-anchor="middle" font-size="12" font-weight="600" fill="#6E908E">result. Opt-in, no convert.</text>
+      <!-- top-right: pays AND complete — IDEAL -->
+      <rect x="350" y="34" width="282" height="125" rx="0" fill="#0E9488"/>
+      <text x="491" y="80" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">&#10003; IDEAL MAGNET</text>
+      <text x="491" y="104" text-anchor="middle" font-size="12.5" font-weight="700" fill="#DCF2EF">Worthy of payment.</text>
+      <text x="491" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#DCF2EF">Gives a full result.</text>
+      <text x="491" y="144" text-anchor="middle" font-size="12.5" font-weight="800" fill="#8FD4CC">BUILD THIS ONE.</text>
+      <!-- bottom-left: wouldn't pay + incomplete -->
+      <rect x="64" y="163" width="282" height="125" rx="0" fill="#E9F1F0"/>
+      <text x="205" y="220" text-anchor="middle" font-size="14" font-weight="800" fill="#6E908E">JUNK MAGNET</text>
+      <text x="205" y="242" text-anchor="middle" font-size="12" font-weight="600" fill="#6E908E">Nobody wanted this.</text>
+      <text x="205" y="262" text-anchor="middle" font-size="12" font-weight="600" fill="#6E908E">Attracts nobody useful.</text>
+      <!-- bottom-right: complete but won't pay -->
+      <rect x="350" y="163" width="282" height="125" rx="0" fill="#DCF2EF"/>
+      <text x="491" y="220" text-anchor="middle" font-size="14" font-weight="800" fill="#234746">COMMODITY</text>
+      <text x="491" y="242" text-anchor="middle" font-size="12" font-weight="600" fill="#234746">Complete, but so is</text>
+      <text x="491" y="262" text-anchor="middle" font-size="12" font-weight="600" fill="#234746">Wikipedia. Revisit topic.</text>
+      <!-- axis corner labels -->
+      <text x="84" y="280" font-size="10" font-weight="700" fill="#6E908E">NO</text>
+      <text x="526" y="280" font-size="10" font-weight="700" fill="#0E9488">YES &rarr;</text>
+    </svg>
+    <div class="caption">Top-right only. If it wouldn&rsquo;t sell as a product, it won&rsquo;t earn an email address either.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · THE FILTER FUNCTION ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">LEAD MAGNETS</span><span>The Filter Function</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The right magnet <span class="em">repels as much as it attracts.</span></h2>
+
+  <p>A lead magnet that appeals to everyone attracts no one worth selling to. The specificity that raises your conversion rate also filters out prospects who could never buy &mdash; so your sales calls close at a higher rate and your list stays clean.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&times;</span><span>Generic magnet: 10,000 opt-ins, 0.3% close rate &mdash; 30 customers from 10,000 contacts you have to manage.</span></div>
+    <div class="r good"><span class="mk">&checkmark;</span><span>Specific magnet: 1,200 opt-ins, 4% close rate &mdash; 48 customers from a list 88% smaller. More revenue, less noise.</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D-FILTER · funnel showing filter function -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- wide top: all visitors -->
+      <polygon points="56,0 598,0 490,120 164,120" fill="#DCF2EF" stroke="#0E9488" stroke-width="2.5"/>
+      <text x="327" y="46" text-anchor="middle" font-size="14" font-weight="800" fill="#0E2A2A">ALL VISITORS</text>
+      <text x="327" y="70" text-anchor="middle" font-size="12" font-weight="600" fill="#234746">curious / browsing / not-yet-qualified</text>
+      <!-- filter zone label -->
+      <text x="527" y="80" font-size="11" font-weight="800" fill="#0E9488">THE MAGNET</text>
+      <text x="527" y="96" font-size="11" font-weight="800" fill="#0E9488">IS THE FILTER</text>
+      <!-- middle: qualified leads -->
+      <polygon points="164,128 490,128 430,220 224,220" fill="#0E9488"/>
+      <text x="327" y="168" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">QUALIFIED LEADS</text>
+      <text x="327" y="190" text-anchor="middle" font-size="12" font-weight="600" fill="#DCF2EF">specific problem + intent to solve it</text>
+      <!-- exiting: filtered out (left/right sides) -->
+      <text x="36" y="172" text-anchor="end" font-size="11" font-weight="700" fill="#6E908E">filtered</text>
+      <text x="36" y="188" text-anchor="end" font-size="11" font-weight="700" fill="#6E908E">out &larr;</text>
+      <text x="618" y="172" font-size="11" font-weight="700" fill="#6E908E">&rarr; filtered</text>
+      <text x="618" y="188" font-size="11" font-weight="700" fill="#6E908E">out</text>
+      <!-- bottom: buyers -->
+      <polygon points="224,228 430,228 390,300 264,300" fill="#075E55"/>
+      <text x="327" y="262" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">BUYERS</text>
+      <text x="327" y="284" text-anchor="middle" font-size="11" font-weight="600" fill="#8FD4CC">problem acute · ready to pay</text>
+    </svg>
+    <div class="caption">A tighter magnet means fewer total leads and more buyers inside that list &mdash; that&rsquo;s the goal.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · CTA + CLOSER ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">LEAD MAGNETS</span><span>The Takeaway</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">One magnet. One audience. <span class="em">One complete result.</span></h2>
+
+  <p>You don&rsquo;t need ten lead magnets. You need one that passes both tests, uses all three levers, solves the problem one step before your core offer, and has a headline that could headline a paid product. That&rsquo;s it. Build it once, drive traffic to it forever.</p>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:16px 0">
+    <!-- D-CHECKLIST · quick 4-point checklist -->
+    <svg viewBox="0 0 654 180" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- row 1 -->
+      <rect x="0" y="0" width="308" height="80" rx="11" fill="#DCF2EF" stroke="#0E9488" stroke-width="2.5"/>
+      <circle cx="30" cy="40" r="16" fill="#0E9488"/>
+      <text x="30" y="46" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">&#10003;</text>
+      <text x="58" y="34" font-size="14" font-weight="800" fill="#0E2A2A">Would they pay for this?</text>
+      <text x="58" y="54" font-size="12" font-weight="600" fill="#234746">If yes, it has perceived value.</text>
+      <!-- row 2 -->
+      <rect x="346" y="0" width="308" height="80" rx="11" fill="#DCF2EF" stroke="#0E9488" stroke-width="2.5"/>
+      <circle cx="376" cy="40" r="16" fill="#0E9488"/>
+      <text x="376" y="46" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">&#10003;</text>
+      <text x="404" y="34" font-size="14" font-weight="800" fill="#0E2A2A">Is the result complete?</text>
+      <text x="404" y="54" font-size="12" font-weight="600" fill="#234746">One full win, not a teaser.</text>
+      <!-- row 3 -->
+      <rect x="0" y="94" width="308" height="80" rx="11" fill="#FFFFFF" stroke="#234746" stroke-width="2.5"/>
+      <circle cx="30" cy="134" r="16" fill="#075E55"/>
+      <text x="30" y="140" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">&#10003;</text>
+      <text x="58" y="128" font-size="14" font-weight="800" fill="#0E2A2A">Is it one step removed?</text>
+      <text x="58" y="148" font-size="12" font-weight="600" fill="#234746">Creates hunger for the offer.</text>
+      <!-- row 4 -->
+      <rect x="346" y="94" width="308" height="80" rx="11" fill="#FFFFFF" stroke="#234746" stroke-width="2.5"/>
+      <circle cx="376" cy="134" r="16" fill="#075E55"/>
+      <text x="376" y="140" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">&#10003;</text>
+      <text x="404" y="128" font-size="14" font-weight="800" fill="#0E2A2A">Is the headline specific?</text>
+      <text x="404" y="148" font-size="12" font-weight="600" fill="#234746">Who + result + time + without.</text>
+    </svg>
+    <div class="caption">Run this four-check test before you spend a single hour building. Four greens means you have a converting magnet.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="band">
+    <div class="t">SPECIFIC RESULT. RIGHT PERSON. ONE STEP REMOVED.</div>
+    <div class="s">the magnet is not the product — it is the handshake</div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Leads &mdash; the book.</h3>
+    <p>Lead magnets, the Core Four, the Rule of 100, and the full lead-generation playbook &mdash; never run out of people to sell to again.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Give a complete result. Create a natural next step. Let the sale follow.</div>
+
+  <div class="stamp">Lead Magnets That Convert</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>

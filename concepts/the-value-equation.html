@@ -22,15 +22,29 @@
   }
   *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
   html,body{ margin:0; padding:0; background:#d8cdf0; }
-  @page{ size:A4; margin:0; }
+  @page{ size:A4 landscape; margin:0; }
 
   .page{
-    width:794px; height:1123px; position:relative; overflow:hidden;
+    width:1123px; height:794px; position:relative; overflow:hidden;
     background:var(--paper); color:var(--ink);
     padding:74px 70px 70px; margin:0 auto;
     page-break-after:always;
   }
   .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page: full-width CTA, upper content in a bounded landscape row */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
 
   .rhead{ position:absolute; top:30px; left:70px; right:70px;
     display:flex; justify-content:space-between; align-items:center;
@@ -137,11 +151,17 @@
   <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>Two Moves</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Everyone says &ldquo;add value.&rdquo; <span class="em">Nobody defines it.</span></h2>
 
   <p class="lead">&ldquo;Give value. Provide more value.&rdquo; Great &mdash; but what <em>is</em> value? What actually makes a product worth more, or less?</p>
   <p>There are two moves. First you <span class="b">build</span> something valuable. Then you <span class="b">enhance</span> it &mdash; with scarcity, urgency, bonuses, guarantees, or simply a sharper name.</p>
 
+  <p>So we&rsquo;ll do both: the equation that <em>defines</em> value, then the enhancer with the most leverage &mdash; <span class="b">guarantees.</span></p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:28px 0">
     <!-- D0 · two moves + 5 enhancers -->
     <svg viewBox="0 0 654 200" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -175,8 +195,8 @@
     </svg>
     <div class="caption">First define value with the equation. Then enhance it &mdash; we&rsquo;ll focus on guarantees.</div>
   </figure>
-
-  <p>So we&rsquo;ll do both: the equation that <em>defines</em> value, then the enhancer with the most leverage &mdash; <span class="b">guarantees.</span></p>
+  </div>
+  </div>
 
   <div class="folio">02</div>
 </section>
@@ -186,10 +206,16 @@
   <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>The Formula</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Value, written as a <span class="em">fraction.</span></h2>
 
   <p>Four variables. Two <span class="b">create</span> value, two <span class="b">destroy</span> it. Draw a line down the middle of the page &mdash; two on top, two on the bottom.</p>
 
+  <p>Do both and you&rsquo;ve built something people pay a premium for &mdash; with margins to match. Most founders only ever work the top.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:18px 0 14px">
     <!-- D-HERO · the value equation fraction -->
     <svg viewBox="0 0 654 426" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -231,8 +257,8 @@
     </svg>
     <div class="caption">Raise the top. Crush the bottom. That&rsquo;s the whole machine.</div>
   </figure>
-
-  <p>Do both and you&rsquo;ve built something people pay a premium for &mdash; with margins to match. Most founders only ever work the top.</p>
+  </div>
+  </div>
 
   <div class="folio">03</div>
 </section>
@@ -242,10 +268,16 @@
   <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>The Top Half</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">The top half &mdash; what <span class="em">creates</span> value.</h2>
 
   <p><span class="b">Dream outcome:</span> the thing they actually want. It separates whole industries &mdash; &ldquo;make a million&rdquo; out-prices &ldquo;lose weight,&rdquo; which is why B2B out-prices B2C.</p>
 
+  <p><span class="b">Perceived likelihood:</span> do they believe it&rsquo;ll work for <em>them?</em> Amazon&rsquo;s reviews do exactly this &mdash; they raise belief, so people pay. This top half is the <em>easy</em> half, and where most founders stop.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:20px 0">
     <!-- D-TOP · two value creators -->
     <svg viewBox="0 0 654 286" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -276,8 +308,8 @@
     </svg>
     <div class="caption">Same surgery, same outcome &mdash; the proven operator charges more and works less.</div>
   </figure>
-
-  <p><span class="b">Perceived likelihood:</span> do they believe it&rsquo;ll work for <em>them?</em> Amazon&rsquo;s reviews do exactly this &mdash; they raise belief, so people pay. This top half is the <em>easy</em> half, and where most founders stop.</p>
+  </div>
+  </div>
 
   <div class="folio">04</div>
 </section>
@@ -287,10 +319,16 @@
   <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>The Bottom Half</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">The bottom half &mdash; what <span class="em">destroys</span> value.</h2>
 
   <p><span class="b">Time delay:</span> how long between paying and getting. Two agencies, same promise &mdash; one rings your phone in 60 days, the other before your card finishes processing.</p>
 
+  <p><span class="b">Effort &amp; sacrifice:</span> what they must <em>start</em> doing and <em>stop</em> doing. Push both toward zero. And deliver <em>a</em> result first &mdash; not the biggest, just a tangible one they can hold.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:20px 0">
     <!-- D-BOTTOM · two value destroyers -->
     <svg viewBox="0 0 654 286" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -327,8 +365,8 @@
     </svg>
     <div class="caption">&ldquo;Six-minute abs&rdquo; would be worth almost anything &mdash; because the bottom is near zero.</div>
   </figure>
-
-  <p><span class="b">Effort &amp; sacrifice:</span> what they must <em>start</em> doing and <em>stop</em> doing. Push both toward zero. And deliver <em>a</em> result first &mdash; not the biggest, just a tangible one they can hold.</p>
+  </div>
+  </div>
 
   <div class="folio">05</div>
 </section>
@@ -338,10 +376,19 @@
   <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>The Moat</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">The fortunes live on the <span class="em">bottom.</span></h2>
 
   <p>Bigger promises and more testimonials are easy &mdash; anyone can do it. Delivering <em>faster</em>, with <em>less effort</em>, takes real operational muscle. That&rsquo;s the moat.</p>
 
+  <div class="band">
+    <div class="t">SAME PROMISE. WHOEVER COLLAPSES TIME &amp; EFFORT WINS.</div>
+    <div class="s">the competitive moats hide on the bottom of the equation</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:22px 0">
     <!-- D-MOAT -->
     <svg viewBox="0 0 654 250" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -369,10 +416,7 @@
     </svg>
     <div class="caption">Same dream outcome as everyone. The winner just collapsed time and effort to nothing.</div>
   </figure>
-
-  <div class="band">
-    <div class="t">SAME PROMISE. WHOEVER COLLAPSES TIME &amp; EFFORT WINS.</div>
-    <div class="s">the competitive moats hide on the bottom of the equation</div>
+  </div>
   </div>
 
   <div class="folio">06</div>
@@ -383,10 +427,16 @@
   <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>It&rsquo;s Also Your Copy</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">The same four variables <span class="em">are your copy.</span></h2>
 
   <p>Value and persuasion are married. The four variables don&rsquo;t just build the offer &mdash; they write the headline.</p>
 
+  <p>Pull the outcome, a number for proof, the time it takes, and the effort it spares. Now you have headlines for ads, emails, sales pages, and hooks.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:20px 0">
     <!-- D-COPY -->
     <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -420,8 +470,8 @@
     </svg>
     <div class="caption">One claim, four variables &mdash; reverse-engineered straight from the value equation.</div>
   </figure>
-
-  <p>Pull the outcome, a number for proof, the time it takes, and the effort it spares. Now you have headlines for ads, emails, sales pages, and hooks.</p>
+  </div>
+  </div>
 
   <div class="folio">07</div>
 </section>
@@ -431,10 +481,16 @@
   <div class="rhead"><span class="v">THE VALUE EQUATION</span><span>Build It</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Build it: list, solve, <span class="em">trim &amp; stack.</span></h2>
 
   <p>Write down every micro-problem a customer hits on the way to the outcome. Then write the dream solution to each &mdash; no limits. You&rsquo;ll end up with a hundred.</p>
 
+  <p>What survives the trim is <span class="b">high-value, high-margin</span> &mdash; the offer you actually want to sell.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:18px 0">
     <!-- D-TRIMSTACK · value x cost 2x2 -->
     <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -466,8 +522,8 @@
     </svg>
     <div class="caption">Keep only what&rsquo;s high-value to them and low-cost to you. Trim the rest, ruthlessly.</div>
   </figure>
-
-  <p>What survives the trim is <span class="b">high-value, high-margin</span> &mdash; the offer you actually want to sell.</p>
+  </div>
+  </div>
 
   <div class="folio">08</div>
 </section>
@@ -477,10 +533,16 @@
   <div class="rhead"><span class="v">GUARANTEES</span><span>The Real Enemy</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">You&rsquo;re not selling against <span class="em">rivals.</span></h2>
 
   <p>You&rsquo;re selling against inaction. Doubt. The comfort of doing nothing. The real enemy is <span class="b">risk</span> &mdash; so lower the bar until they can just step over it.</p>
 
+  <p>You&rsquo;ve done this a hundred times; it&rsquo;s their first. You know more about the outcome than they do &mdash; so it&rsquo;s only fair the risk sits with the side that knows. That&rsquo;s a guarantee.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:24px 0">
     <!-- D-INACTION · threshold lowered -->
     <svg viewBox="0 0 654 230" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -516,8 +578,8 @@
     </svg>
     <div class="caption">A guarantee shifts the risk from the buyer to you &mdash; and the wall drops.</div>
   </figure>
-
-  <p>You&rsquo;ve done this a hundred times; it&rsquo;s their first. You know more about the outcome than they do &mdash; so it&rsquo;s only fair the risk sits with the side that knows. That&rsquo;s a guarantee.</p>
+  </div>
+  </div>
 
   <div class="folio">09</div>
 </section>
@@ -527,10 +589,19 @@
   <div class="rhead"><span class="v">GUARANTEES</span><span>The Four Types</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">The <span class="em">four</span> guarantees.</h2>
 
   <p class="small" style="margin-bottom:8px">A guarantee is purchase insurance &mdash; you assume part of the buyer&rsquo;s risk. Here are the four ways to structure one.</p>
 
+  <div class="band">
+    <div class="t">+20% SALES, A FEW % MORE REFUNDS = NET WIN.</div>
+    <div class="s">a guarantee is a math equation, not an emotional one</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:14px 0 12px">
     <!-- D-GUARANTEES 2x2 -->
     <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -563,10 +634,7 @@
       <text x="360" y="300" font-size="12.5" font-style="italic" fill="#8C7BA8">&ldquo;We take 20% of the upside.&rdquo;</text>
     </svg>
   </figure>
-
-  <div class="band">
-    <div class="t">+20% SALES, A FEW % MORE REFUNDS = NET WIN.</div>
-    <div class="s">a guarantee is a math equation, not an emotional one</div>
+  </div>
   </div>
 
   <div class="folio">10</div>
@@ -577,10 +645,21 @@
   <div class="rhead"><span class="v">GUARANTEES</span><span>Engineer It</span></div>
   <div class="rule"></div>
 
+  <div class="close-top">
+  <div class="close-left">
   <h2 style="margin-top:30px">Then <span class="em">engineer</span> it to win.</h2>
 
   <p><span class="b">Stack them:</span> a 30-day unconditional <em>and</em> a 90-day conditional. The sale becomes a trial &mdash; more closes, a few more refunds, net more money.</p>
 
+  <p class="small" style="margin-bottom:6px"><span class="b">And spell it out.</span> Vague guarantees get banner-blindness. Name the exact outcome &mdash; you don&rsquo;t even need the word &ldquo;guarantee.&rdquo;</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;Results guaranteed.&rdquo; &mdash; means nothing; everyone&rsquo;s heard it.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;If you don&rsquo;t lose six inches off your waist, I&rsquo;ll write you a check for the difference.&rdquo;</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
   <figure style="margin:16px 0">
     <!-- D-ENGINEER · bake success into the guarantee -->
     <svg viewBox="0 0 654 132" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -605,12 +684,7 @@
     </svg>
     <div class="caption">Copy what your winners did, make those the stipulations &mdash; fewest conditions win.</div>
   </figure>
-
-  <p class="small" style="margin-bottom:6px"><span class="b">And spell it out.</span> Vague guarantees get banner-blindness. Name the exact outcome &mdash; you don&rsquo;t even need the word &ldquo;guarantee.&rdquo;</p>
-
-  <div class="cmp">
-    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;Results guaranteed.&rdquo; &mdash; means nothing; everyone&rsquo;s heard it.</span></div>
-    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;If you don&rsquo;t lose six inches off your waist, I&rsquo;ll write you a check for the difference.&rdquo;</span></div>
+  </div>
   </div>
 
   <div class="cta">

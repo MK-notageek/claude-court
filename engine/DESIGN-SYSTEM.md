@@ -4,9 +4,18 @@ Every concept doc is a **single self-contained HTML file** (no JS, no external a
 identically on screen and as print/PDF. It is modelled exactly on `the-value-equation.html` and
 `the-context-gap.html`. Reproduce that structure precisely; only swap the palette tokens.
 
+## Orientation: LANDSCAPE (as of 2026-06-20)
+Docs are **A4 landscape, two-column spreads** — prose left, diagram right.
+- `.page { width:1123px; height:794px; padding:74px 70px 70px; overflow:hidden; page-break-after:always; }`
+- `@page{ size:A4 landscape; margin:0; }`
+- Content (between `.rule` and `.folio`) sits in a flex row: `.spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }` → `.col-text` (~46%, prose, top-aligned) + `.col-fig` (~54%, the figure, centered).
+- Make diagrams responsive so the 654-viewBox SVGs scale into the right column: `.col-fig svg{ width:100%; height:auto; max-height:600px; }`.
+- **Cover (page 1)** and **close/CTA page**: full-width (NOT two-column) — title/glyph fill the landscape frame; CTA band spans.
+- A content page with no diagram → single full-width column.
+
 ## Non-negotiable structure
-- A4 pages: `.page { width:794px; height:1123px; padding:74px 70px 70px; page-break-after:always; }`
-- `html,body{ margin:0; background:<palette.backdrop>; }` and `@page{ size:A4; margin:0; }`
+- A4 landscape pages (see Orientation above): `.page { width:1123px; height:794px; padding:74px 70px 70px; page-break-after:always; }`
+- `html,body{ margin:0; background:<palette.backdrop>; }` and `@page{ size:A4 landscape; margin:0; }`
 - `*{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }`
 - Fonts: `--display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;` `--body:'Georgia','Iowan Old Style','Times New Roman',serif;`
 - Each page has: `.rhead` (running head L=concept name, R=section), `.rule` (2px bar), `.folio` (page number).

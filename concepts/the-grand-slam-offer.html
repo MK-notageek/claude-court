@@ -22,15 +22,29 @@
   }
   *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
   html,body{ margin:0; padding:0; background:#d8cdf0; }
-  @page{ size:A4; margin:0; }
+  @page{ size:A4 landscape; margin:0; }
 
   .page{
-    width:794px; height:1123px; position:relative; overflow:hidden;
+    width:1123px; height:794px; position:relative; overflow:hidden;
     background:var(--paper); color:var(--ink);
     padding:74px 70px 70px; margin:0 auto;
     page-break-after:always;
   }
   .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page: full-width CTA, upper content in a bounded landscape row */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
 
   .rhead{ position:absolute; top:30px; left:70px; right:70px;
     display:flex; justify-content:space-between; align-items:center;
@@ -137,11 +151,17 @@
   <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>Why It Matters</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Compete on price and you <span class="em">already lost.</span></h2>
 
   <p class="lead">A commodity is anything sold on price. The moment you look like everyone else, the buyer&rsquo;s only lever is &ldquo;make it cheaper&rdquo; &mdash; and that&rsquo;s a race to the bottom you win by going broke.</p>
   <p>A <span class="b">Grand Slam Offer</span> breaks the comparison entirely. When nobody else sells what you sell, there is no &ldquo;cheaper&rdquo; &mdash; there&rsquo;s only you. Price stops being the conversation. Value does.</p>
 
+  <p>Charge more and you can afford to <em>deliver</em> more &mdash; better results, better clients, better testimonials. The premium pays for the proof that justifies the premium.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:24px 0">
     <!-- D-COMMODITY · before/after price & margin -->
     <svg viewBox="0 0 654 252" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -174,8 +194,8 @@
     </svg>
     <div class="caption">Same effort, two universes. One defends a shrinking margin; the other sets the price.</div>
   </figure>
-
-  <p>Charge more and you can afford to <em>deliver</em> more &mdash; better results, better clients, better testimonials. The premium pays for the proof that justifies the premium.</p>
+  </div>
+  </div>
 
   <div class="folio">02</div>
 </section>
@@ -185,10 +205,16 @@
   <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>The Market</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">A starving crowd beats a <span class="em">great offer.</span></h2>
 
   <p>The single biggest determinant of success isn&rsquo;t the offer &mdash; it&rsquo;s who you point it at. A mediocre offer to a desperate market still wins. A flawless offer to a market that doesn&rsquo;t care still starves.</p>
 
+  <p>Find a niche that is <span class="b">in pain</span>, <span class="b">has money</span>, is <span class="b">easy to reach</span>, and is <span class="b">growing.</span> Pass all four, plant your flag, and stay. Riches are in the niches.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:20px 0">
     <!-- D-MARKET · 4 indicators + 3 big markets -->
     <svg viewBox="0 0 654 268" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -225,8 +251,8 @@
     </svg>
     <div class="caption">Score every market on four indicators. Then sit it inside one of the three big ones.</div>
   </figure>
-
-  <p>Find a niche that is <span class="b">in pain</span>, <span class="b">has money</span>, is <span class="b">easy to reach</span>, and is <span class="b">growing.</span> Pass all four, plant your flag, and stay. Riches are in the niches.</p>
+  </div>
+  </div>
 
   <div class="folio">03</div>
 </section>
@@ -236,10 +262,16 @@
   <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>The Pipeline</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Five steps from <span class="em">nothing</span> to irresistible.</h2>
 
   <p>An offer this good isn&rsquo;t invented in a flash &mdash; it&rsquo;s assembled. Five moves, in order. Skip one and the whole thing wobbles. Run them straight and you build something the market can&rsquo;t match.</p>
 
+  <p>The first three steps make the offer <em>complete.</em> The last two make it <em>irresistible.</em> Most people quit after solving problems &mdash; the money is in the trim and the name.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:24px 0">
     <!-- D-FIVE-STEPS · vertical flow of 5 boxes -->
     <svg viewBox="0 0 654 430" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -279,8 +311,8 @@
     </svg>
     <div class="caption">Outcome down to name &mdash; run the line in order, top to bottom.</div>
   </figure>
-
-  <p>The first three steps make the offer <em>complete.</em> The last two make it <em>irresistible.</em> Most people quit after solving problems &mdash; the money is in the trim and the name.</p>
+  </div>
+  </div>
 
   <div class="folio">04</div>
 </section>
@@ -290,10 +322,16 @@
   <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>Diverge</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">List every obstacle. Then <span class="em">solve all of them.</span></h2>
 
   <p>Between the buyer and their dream outcome sits a wall of problems. Write down every single one &mdash; the small, embarrassing, &ldquo;they&rsquo;d never admit it&rdquo; ones too. Then write the dream solution to each.</p>
 
+  <p>Don&rsquo;t edit yet. This is the divergent pass &mdash; quantity over quality. You&rsquo;re building a hundred-item menu so the next step has something rich to cut from.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:20px 0">
     <!-- D-PROBSOL · two columns mapping by arrows -->
     <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -335,8 +373,8 @@
     </svg>
     <div class="caption">Every fear, doubt, and excuse becomes a deliverable. Diverge wide &mdash; you&rsquo;ll trim later.</div>
   </figure>
-
-  <p>Don&rsquo;t edit yet. This is the divergent pass &mdash; quantity over quality. You&rsquo;re building a hundred-item menu so the next step has something rich to cut from.</p>
+  </div>
+  </div>
 
   <div class="folio">05</div>
 </section>
@@ -346,10 +384,16 @@
   <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>Converge</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Keep only <span class="em">high value, low cost.</span></h2>
 
   <p>You now have a hundred solutions. You can&rsquo;t deliver all of them, and you shouldn&rsquo;t. Score each on two axes: how much the customer values it, and how much it costs <em>you</em> to provide.</p>
 
+  <p>Stack the survivors into one offer and the perceived value dwarfs the price. What costs <span class="b">you</span> little but means <span class="b">the world</span> to them is exactly where Grand Slam Offers are built.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:18px 0">
     <!-- D-TRIMSTACK · value x cost 2x2 (mirrors value-equation) -->
     <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -381,8 +425,8 @@
     </svg>
     <div class="caption">Upper-left is the gold: things they&rsquo;d pay a fortune for that cost you almost nothing.</div>
   </figure>
-
-  <p>Stack the survivors into one offer and the perceived value dwarfs the price. What costs <span class="b">you</span> little but means <span class="b">the world</span> to them is exactly where Grand Slam Offers are built.</p>
+  </div>
+  </div>
 
   <div class="folio">06</div>
 </section>
@@ -392,10 +436,16 @@
   <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>Enhance It</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">Five ways to make a good offer <span class="em">undeniable.</span></h2>
 
   <p>You&rsquo;ve built the core. Now amplify it. Five enhancers turn a solid offer into one people can&rsquo;t walk away from &mdash; and two of them carry most of the weight.</p>
 
+  <p>Bonuses make the price feel small. Guarantees make the decision feel safe. Get those two right and the other three are polish &mdash; not the engine.</p>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:20px 0">
     <!-- D-ENHANCERS · 5 chips, guarantee + bonuses highlighted -->
     <svg viewBox="0 0 654 318" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -435,8 +485,8 @@
     </svg>
     <div class="caption">All five help. Guarantees and bonuses do the heavy lifting &mdash; spend your effort there.</div>
   </figure>
-
-  <p>Bonuses make the price feel small. Guarantees make the decision feel safe. Get those two right and the other three are polish &mdash; not the engine.</p>
+  </div>
+  </div>
 
   <div class="folio">07</div>
 </section>
@@ -446,10 +496,19 @@
   <div class="rhead"><span class="v">THE GRAND SLAM OFFER</span><span>The Price Loop</span></div>
   <div class="rule"></div>
 
+  <div class="spread">
+  <div class="col-text">
   <h2 style="margin-top:30px">A higher price is a <span class="em">virtuous cycle.</span></h2>
 
   <p>Charging more isn&rsquo;t greed &mdash; it&rsquo;s how you make the result better. Price isn&rsquo;t the last decision you make about an offer. It&rsquo;s the first input to a loop that feeds itself.</p>
 
+  <div class="band">
+    <div class="t">CHARGE MORE. DELIVER MORE. THE LOOP COMPOUNDS.</div>
+    <div class="s">low price kills commitment &mdash; and commitment is what produces results</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
   <figure style="margin:18px 0">
     <!-- D-PRICELOOP · 5-node circular flow -->
     <svg viewBox="0 0 654 360" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
@@ -499,10 +558,7 @@
     </svg>
     <div class="caption">Each turn of the wheel earns the right to charge more on the next.</div>
   </figure>
-
-  <div class="band">
-    <div class="t">CHARGE MORE. DELIVER MORE. THE LOOP COMPOUNDS.</div>
-    <div class="s">low price kills commitment &mdash; and commitment is what produces results</div>
+  </div>
   </div>
 
   <div class="folio">08</div>
