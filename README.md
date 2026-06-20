@@ -16,3 +16,5 @@ pushes (GitHub Pages serves them), and posts the links to Slack `#claude-court`.
 - `concepts/` — every published breakdown (permanent)
 
 Each doc is a transformative educational synthesis of a public framework — never verbatim book text.
+
+<!-- deploy check: 2026-06-20T08:29Z -->
