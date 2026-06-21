@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>More, Better, New — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --panel:#E6E5FB;
+    --ink:#14163A;
+    --ink-soft:#2E335E;
+    --muted:#7A7FA6;
+    --line:#DADCF2;
+    --violet:#4F46E5;
+    --violet-deep:#312C9C;
+    --violet-soft:#A9A8F0;
+    --violet-fill:#E6E5FB;
+    --plum:#9294BB;
+    --plum-fill:#EEEEFB;
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#c3c8ee; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#EEEEFB; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#A9A8F0; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #CECFF0; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#C8C9E8; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 · COVER -->
+<section class="page">
+  <div class="cover-glyph">&rarr;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Leads</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">The only sequence that scales a lead channel</div>
+    <h1 class="title">MORE,<br>BETTER,<br>NEW</h1>
+    <p class="cover-sub">Every stalled business tries to solve a volume problem by adding a new channel. That&rsquo;s the wrong move. There are <b>three levers</b> &mdash; and they only work in one order.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; scale what you have &middot; then expand</span></div>
+  </div>
+  <div class="stamp">More, Better, New</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- PAGE 2 · THE THREE LEVERS -->
+<section class="page">
+  <div class="rhead"><span class="v">MORE, BETTER, NEW</span><span>The Three Levers</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Three levers. <span class="em">One sequence.</span></h2>
+
+  <p class="lead">When leads slow down, most founders reach for something new. A new platform, a new tactic, a new agency. That impulse is almost always wrong.</p>
+  <p>There are exactly three ways to get more customers from any channel. <span class="b">More</span> volume. <span class="b">Better</span> conversion. <span class="b">New</span> channels. The mistake is the order &mdash; jumping to New before exhausting the first two.</p>
+  <p>Pull them in sequence and a single channel can take you to seven figures before you ever touch a second one.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0 14px">
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- step 1: MORE -->
+      <rect x="0" y="30" width="190" height="230" rx="13" fill="#4F46E5"/>
+      <text x="95" y="74" text-anchor="middle" font-size="13" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">LEVER 1</text>
+      <text x="95" y="114" text-anchor="middle" font-size="34" font-weight="800" fill="#FFFFFF">MORE</text>
+      <text x="95" y="152" text-anchor="middle" font-size="13" font-weight="600" fill="#A9A8F0">do more</text>
+      <text x="95" y="170" text-anchor="middle" font-size="13" font-weight="600" fill="#A9A8F0">of what works</text>
+      <text x="95" y="218" text-anchor="middle" font-size="12" font-style="italic" fill="#E6E5FB">volume first</text>
+
+      <!-- arrow 1 -->
+      <g stroke="#14163A" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="196" y1="145" x2="222" y2="145"/><polyline points="212,136 226,145 212,154"/>
+      </g>
+
+      <!-- step 2: BETTER -->
+      <rect x="232" y="30" width="190" height="230" rx="13" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="327" y="74" text-anchor="middle" font-size="13" font-weight="800" fill="#4F46E5" letter-spacing="1.5">LEVER 2</text>
+      <text x="327" y="114" text-anchor="middle" font-size="34" font-weight="800" fill="#14163A">BETTER</text>
+      <text x="327" y="152" text-anchor="middle" font-size="13" font-weight="600" fill="#2E335E">raise conversion</text>
+      <text x="327" y="170" text-anchor="middle" font-size="13" font-weight="600" fill="#2E335E">on each action</text>
+      <text x="327" y="218" text-anchor="middle" font-size="12" font-style="italic" fill="#7A7FA6">quality second</text>
+
+      <!-- arrow 2 -->
+      <g stroke="#14163A" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="428" y1="145" x2="454" y2="145"/><polyline points="444,136 458,145 444,154"/>
+      </g>
+
+      <!-- step 3: NEW -->
+      <rect x="464" y="30" width="190" height="230" rx="13" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2.5"/>
+      <text x="559" y="74" text-anchor="middle" font-size="13" font-weight="800" fill="#4F46E5" letter-spacing="1.5">LEVER 3</text>
+      <text x="559" y="114" text-anchor="middle" font-size="34" font-weight="800" fill="#14163A">NEW</text>
+      <text x="559" y="152" text-anchor="middle" font-size="13" font-weight="600" fill="#2E335E">add a channel</text>
+      <text x="559" y="170" text-anchor="middle" font-size="13" font-weight="600" fill="#2E335E">only then</text>
+      <text x="559" y="218" text-anchor="middle" font-size="12" font-style="italic" fill="#7A7FA6">expand last</text>
+
+      <!-- ordinal label below -->
+      <text x="327" y="285" text-anchor="middle" font-size="12" font-weight="800" fill="#7A7FA6" letter-spacing="1.5">EXHAUST EACH LEVEL BEFORE MOVING RIGHT</text>
+    </svg>
+    <div class="caption">Three levers, one direction. Never pull the right lever before you&rsquo;ve maxed the left one.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- PAGE 3 · MORE -->
+<section class="page">
+  <div class="rhead"><span class="v">MORE, BETTER, NEW</span><span>Lever 1 &middot; More</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">MORE: volume is the <span class="em">first diagnosis.</span></h2>
+
+  <p>Before anything else, ask: am I doing enough? Most people aren&rsquo;t. They send ten cold emails, get no replies, and conclude cold email doesn&rsquo;t work. The channel didn&rsquo;t fail &mdash; the volume did.</p>
+
+  <p>Hormozi&rsquo;s Rule of 100 puts a number on it: <span class="b">100 primary actions per day, for 100 days.</span> Not ten. Not fifty. A hundred. Volume is the only variable guaranteed to produce a data set you can act on.</p>
+
+  <p>Do more of what works before you touch anything else. The answer is almost always sitting inside the existing channel, starved of reps.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- baseline -->
+      <line x1="40" y1="240" x2="634" y2="240" stroke="#14163A" stroke-width="2.5"/>
+      <line x1="40" y1="20" x2="40" y2="240" stroke="#14163A" stroke-width="2.5"/>
+
+      <!-- Y axis label -->
+      <text x="20" y="130" font-size="11" font-weight="800" fill="#14163A" transform="rotate(-90 20 130)" text-anchor="middle">LEADS GENERATED</text>
+
+      <!-- bar: 10/day -->
+      <rect x="80" y="204" width="110" height="36" rx="8" fill="#EEEEFB" stroke="#9294BB" stroke-width="2"/>
+      <text x="135" y="221" text-anchor="middle" font-size="13" font-weight="800" fill="#9294BB">3</text>
+      <text x="135" y="256" text-anchor="middle" font-size="12" font-weight="800" fill="#7A7FA6">10/day</text>
+      <text x="135" y="272" text-anchor="middle" font-size="11" font-weight="600" fill="#7A7FA6">actions</text>
+
+      <!-- bar: 50/day -->
+      <rect x="230" y="132" width="110" height="108" rx="8" fill="#A9A8F0" stroke="#4F46E5" stroke-width="2"/>
+      <text x="285" y="192" text-anchor="middle" font-size="18" font-weight="800" fill="#14163A">14</text>
+      <text x="285" y="256" text-anchor="middle" font-size="12" font-weight="800" fill="#7A7FA6">50/day</text>
+      <text x="285" y="272" text-anchor="middle" font-size="11" font-weight="600" fill="#7A7FA6">actions</text>
+
+      <!-- bar: 100/day -->
+      <rect x="380" y="56" width="110" height="184" rx="8" fill="#4F46E5"/>
+      <text x="435" y="154" text-anchor="middle" font-size="22" font-weight="800" fill="#FFFFFF">30</text>
+      <text x="435" y="256" text-anchor="middle" font-size="12" font-weight="800" fill="#7A7FA6">100/day</text>
+      <text x="435" y="272" text-anchor="middle" font-size="11" font-weight="600" fill="#7A7FA6">actions</text>
+
+      <!-- "rule of 100" tag -->
+      <rect x="510" y="68" width="134" height="56" rx="10" fill="#14163A"/>
+      <text x="577" y="94" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">RULE OF 100</text>
+      <text x="577" y="112" text-anchor="middle" font-size="11" font-weight="600" fill="#A9A8F0">same conversion rate</text>
+
+      <!-- note: same conversion rate assumed -->
+      <text x="577" y="270" text-anchor="middle" font-size="11" font-style="italic" fill="#7A7FA6">3% close rate throughout</text>
+    </svg>
+    <div class="caption">Same channel, same conversion rate &mdash; 10&times; the actions yields 10&times; the leads. Volume is the lever.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- PAGE 4 · BETTER -->
+<section class="page">
+  <div class="rhead"><span class="v">MORE, BETTER, NEW</span><span>Lever 2 &middot; Better</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">BETTER: now make <span class="em">each rep count more.</span></h2>
+
+  <p>Once you&rsquo;re doing the volume, look at the rate. What percentage of contacts become replies? Replies become calls? Calls become clients? Every conversion point is a lever you can tighten.</p>
+
+  <p>A 3% close rate on 100 outreaches gives you 3 leads. Improve the rate to 6% &mdash; same volume, twice the leads. <span class="b">Better is a multiplier on More.</span></p>
+
+  <p>This is where message quality, offer clarity, and follow-up sequences live. You can&rsquo;t improve what you haven&rsquo;t measured &mdash; so the reps from More give you the data that Better needs.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- BEFORE panel -->
+      <rect x="0" y="0" width="300" height="270" rx="13" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="24" y="34" font-size="13" font-weight="800" fill="#9294BB" letter-spacing="1.5">BEFORE &middot; 3% RATE</text>
+
+      <rect x="20" y="52" width="260" height="36" rx="8" fill="#4F46E5"/>
+      <text x="150" y="76" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">100 OUTREACHES</text>
+
+      <g stroke="#7A7FA6" stroke-width="2" fill="none" stroke-dasharray="4 4"><line x1="150" y1="90" x2="150" y2="112"/></g>
+
+      <rect x="55" y="114" width="190" height="36" rx="8" fill="#E6E5FB" stroke="#A9A8F0" stroke-width="2"/>
+      <text x="150" y="138" text-anchor="middle" font-size="13" font-weight="800" fill="#2E335E">20 REPLIES</text>
+
+      <g stroke="#7A7FA6" stroke-width="2" fill="none" stroke-dasharray="4 4"><line x1="150" y1="152" x2="150" y2="174"/></g>
+
+      <rect x="85" y="176" width="130" height="36" rx="8" fill="#EEEEFB" stroke="#9294BB" stroke-width="2"/>
+      <text x="150" y="200" text-anchor="middle" font-size="13" font-weight="800" fill="#9294BB">6 CALLS</text>
+
+      <g stroke="#7A7FA6" stroke-width="2" fill="none" stroke-dasharray="4 4"><line x1="150" y1="214" x2="150" y2="236"/></g>
+
+      <rect x="105" y="238" width="90" height="24" rx="7" fill="#9294BB"/>
+      <text x="150" y="255" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">3 LEADS</text>
+
+      <!-- AFTER panel -->
+      <rect x="354" y="0" width="300" height="270" rx="13" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="378" y="34" font-size="13" font-weight="800" fill="#4F46E5" letter-spacing="1.5">AFTER &middot; 6% RATE</text>
+
+      <rect x="374" y="52" width="260" height="36" rx="8" fill="#4F46E5"/>
+      <text x="504" y="76" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">100 OUTREACHES</text>
+
+      <g stroke="#4F46E5" stroke-width="2" fill="none"><line x1="504" y1="90" x2="504" y2="112"/></g>
+
+      <rect x="394" y="114" width="220" height="36" rx="8" fill="#4F46E5"/>
+      <text x="504" y="138" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">40 REPLIES &#10005;2</text>
+
+      <g stroke="#4F46E5" stroke-width="2" fill="none"><line x1="504" y1="152" x2="504" y2="174"/></g>
+
+      <rect x="414" y="176" width="180" height="36" rx="8" fill="#4F46E5"/>
+      <text x="504" y="200" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">12 CALLS &#10005;2</text>
+
+      <g stroke="#4F46E5" stroke-width="2" fill="none"><line x1="504" y1="214" x2="504" y2="236"/></g>
+
+      <rect x="444" y="238" width="120" height="24" rx="7" fill="#312C9C"/>
+      <text x="504" y="255" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">6 LEADS &#10005;2</text>
+    </svg>
+    <div class="caption">Double the rate, not the budget. Better turns the same 100 actions into twice the clients.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- PAGE 5 · NEW -->
+<section class="page">
+  <div class="rhead"><span class="v">MORE, BETTER, NEW</span><span>Lever 3 &middot; New</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">NEW: add a channel <span class="em">last, not first.</span></h2>
+
+  <p>Only after you&rsquo;ve pushed volume high and tightened conversion should you look at a new channel. By then you have something most founders don&rsquo;t: <span class="b">a playbook that actually works.</span></p>
+
+  <p>A new channel multiplies a working system &mdash; but it amplifies a broken one just as fast. The discipline is earning the right to expand before you expand.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>Adding Instagram Reels when you&rsquo;ve only sent 8 cold emails and given up.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>Adding paid ads after 100/day cold outreach is generating 30 reliable leads &mdash; and you know your cost per lead cold.</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 280" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- WRONG path: jump to new -->
+      <text x="0" y="22" font-size="12.5" font-weight="800" fill="#9294BB" letter-spacing="1">WRONG ORDER</text>
+      <rect x="0" y="34" width="130" height="56" rx="11" fill="#EEEEFB" stroke="#9294BB" stroke-width="2"/>
+      <text x="65" y="58" text-anchor="middle" font-size="12" font-weight="800" fill="#9294BB">CHANNEL A</text>
+      <text x="65" y="76" text-anchor="middle" font-size="11" font-weight="600" fill="#7A7FA6">10 actions/day</text>
+      <!-- jump arrow (diagonal) -->
+      <g stroke="#9294BB" stroke-width="2.5" fill="none" stroke-dasharray="5 4" stroke-linecap="round">
+        <line x1="134" y1="62" x2="206" y2="62"/>
+        <polyline points="196,53 210,62 196,71"/>
+      </g>
+      <rect x="212" y="34" width="130" height="56" rx="11" fill="#EEEEFB" stroke="#9294BB" stroke-width="2"/>
+      <text x="277" y="58" text-anchor="middle" font-size="12" font-weight="800" fill="#9294BB">CHANNEL B</text>
+      <text x="277" y="76" text-anchor="middle" font-size="11" font-weight="600" fill="#7A7FA6">10 actions/day</text>
+      <g stroke="#9294BB" stroke-width="2.5" fill="none" stroke-dasharray="5 4" stroke-linecap="round">
+        <line x1="346" y1="62" x2="418" y2="62"/>
+        <polyline points="408,53 422,62 408,71"/>
+      </g>
+      <rect x="424" y="34" width="130" height="56" rx="11" fill="#EEEEFB" stroke="#9294BB" stroke-width="2"/>
+      <text x="489" y="58" text-anchor="middle" font-size="12" font-weight="800" fill="#9294BB">CHANNEL C</text>
+      <text x="489" y="76" text-anchor="middle" font-size="11" font-weight="600" fill="#7A7FA6">10 actions/day</text>
+      <text x="327" y="110" text-anchor="middle" font-size="11.5" font-weight="800" fill="#9294BB">3 mediocre channels &rarr; ~9 leads total</text>
+
+      <!-- divider -->
+      <line x1="0" y1="128" x2="654" y2="128" stroke="#DADCF2" stroke-width="2"/>
+
+      <!-- RIGHT path: exhaust first -->
+      <text x="0" y="156" font-size="12.5" font-weight="800" fill="#4F46E5" letter-spacing="1">RIGHT ORDER</text>
+      <rect x="0" y="168" width="190" height="68" rx="11" fill="#4F46E5"/>
+      <text x="95" y="196" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">CHANNEL A</text>
+      <text x="95" y="214" text-anchor="middle" font-size="11" font-weight="600" fill="#A9A8F0">100/day · 6% rate</text>
+      <text x="95" y="228" text-anchor="middle" font-size="11" font-weight="800" fill="#E6E5FB">30 leads/day</text>
+
+      <!-- then add B -->
+      <g stroke="#4F46E5" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="194" y1="202" x2="236" y2="202"/>
+        <polyline points="226,193 240,202 226,211"/>
+      </g>
+      <text x="248" y="180" font-size="11" font-weight="800" fill="#4F46E5">MAXED OUT?</text>
+      <text x="248" y="196" font-size="11" font-weight="700" fill="#2E335E">Only now</text>
+      <text x="248" y="212" font-size="11" font-weight="700" fill="#2E335E">add channel B</text>
+
+      <rect x="370" y="168" width="190" height="68" rx="11" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2.5"/>
+      <text x="465" y="196" text-anchor="middle" font-size="12" font-weight="800" fill="#14163A">CHANNEL B</text>
+      <text x="465" y="214" text-anchor="middle" font-size="11" font-weight="600" fill="#2E335E">powered by proven playbook</text>
+      <text x="465" y="228" text-anchor="middle" font-size="11" font-weight="800" fill="#4F46E5">+30 leads/day</text>
+
+      <text x="327" y="265" text-anchor="middle" font-size="11.5" font-weight="800" fill="#4F46E5">Playbook-first expansion &rarr; 60 leads total</text>
+    </svg>
+    <div class="caption">Three thin channels or one thick one, then two. The math always favours depth first.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- PAGE 6 · THE TRAP -->
+<section class="page">
+  <div class="rhead"><span class="v">MORE, BETTER, NEW</span><span>The Shiny Channel Trap</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The trap is <span class="em">shiny and familiar.</span></h2>
+
+  <p>A channel produces one good lead, then goes quiet. The instinct is to call the channel dead and go hunting for the next one. But the channel isn&rsquo;t dead &mdash; the volume wasn&rsquo;t there, or the message wasn&rsquo;t sharp enough.</p>
+
+  <p>Jumping to a new channel feels like progress because it removes the discomfort of doing the boring, grinding volume work on the existing one. <span class="b">That comfort is the trap.</span></p>
+
+  <div class="band">
+    <div class="t">THE CHANNEL DOESN&rsquo;T FAIL. THE FOUNDER QUITS.</div>
+    <div class="s">volume and quality are the variables &mdash; not the platform</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 270" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- timeline axis -->
+      <line x1="30" y1="200" x2="624" y2="200" stroke="#14163A" stroke-width="2.5"/>
+
+      <!-- TRAP path: bouncing across channels -->
+      <text x="30" y="22" font-size="12.5" font-weight="800" fill="#9294BB" letter-spacing="1">THE TRAP: CHANNEL HOPPING</text>
+
+      <!-- channel A short run -->
+      <rect x="40" y="140" width="100" height="60" rx="9" fill="#EEEEFB" stroke="#9294BB" stroke-width="2"/>
+      <text x="90" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#9294BB">Cold Email</text>
+      <text x="90" y="183" text-anchor="middle" font-size="11" font-weight="600" fill="#7A7FA6">2 weeks</text>
+      <!-- quit arrow -->
+      <g stroke="#9294BB" stroke-width="2" stroke-dasharray="4 3" fill="none" stroke-linecap="round">
+        <line x1="144" y1="170" x2="186" y2="140"/><polyline points="175,136 190,138 186,153"/>
+      </g>
+      <text x="165" y="128" text-anchor="middle" font-size="10" font-weight="800" fill="#9294BB">"doesn&rsquo;t work"</text>
+
+      <!-- channel B short run -->
+      <rect x="194" y="140" width="100" height="60" rx="9" fill="#EEEEFB" stroke="#9294BB" stroke-width="2"/>
+      <text x="244" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#9294BB">Instagram</text>
+      <text x="244" y="183" text-anchor="middle" font-size="11" font-weight="600" fill="#7A7FA6">3 weeks</text>
+      <g stroke="#9294BB" stroke-width="2" stroke-dasharray="4 3" fill="none" stroke-linecap="round">
+        <line x1="298" y1="170" x2="340" y2="140"/><polyline points="329,136 344,138 340,153"/>
+      </g>
+      <text x="318" y="128" text-anchor="middle" font-size="10" font-weight="800" fill="#9294BB">"algorithm"</text>
+
+      <!-- channel C short run -->
+      <rect x="348" y="140" width="100" height="60" rx="9" fill="#EEEEFB" stroke="#9294BB" stroke-width="2"/>
+      <text x="398" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#9294BB">YouTube</text>
+      <text x="398" y="183" text-anchor="middle" font-size="11" font-weight="600" fill="#7A7FA6">4 weeks</text>
+      <g stroke="#9294BB" stroke-width="2" stroke-dasharray="4 3" fill="none" stroke-linecap="round">
+        <line x1="452" y1="170" x2="494" y2="140"/><polyline points="483,136 498,138 494,153"/>
+      </g>
+      <text x="475" y="128" text-anchor="middle" font-size="10" font-weight="800" fill="#9294BB">"too slow"</text>
+
+      <!-- channel D short run -->
+      <rect x="502" y="140" width="100" height="60" rx="9" fill="#EEEEFB" stroke="#9294BB" stroke-width="2"/>
+      <text x="552" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#9294BB">Paid Ads</text>
+      <text x="552" y="183" text-anchor="middle" font-size="11" font-weight="600" fill="#7A7FA6">2 weeks</text>
+
+      <!-- RESULT: zero growth line -->
+      <line x1="40" y1="208" x2="610" y2="208" stroke="#9294BB" stroke-width="3"/>
+      <text x="327" y="250" text-anchor="middle" font-size="12" font-weight="800" fill="#9294BB">9 months of "trying everything" &rarr; ZERO compounding</text>
+    </svg>
+    <div class="caption">Hopping channels resets the clock each time. The compounding never starts.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- PAGE 7 · COMPOUNDING -->
+<section class="page">
+  <div class="rhead"><span class="v">MORE, BETTER, NEW</span><span>The Compounding Effect</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Each lever <span class="em">multiplies</span> the last.</h2>
+
+  <p>More × Better × New isn&rsquo;t addition &mdash; it&rsquo;s multiplication. You don&rsquo;t add 30 + 30 + 30. You multiply volume by rate by channels.</p>
+
+  <p>100 actions/day at 3% close on one channel = 3 leads. Push to 100 actions at 6% close = 6. Add a second channel at the same rate = <span class="b">12 leads a day from the same inputs,</span> multiplied three ways.</p>
+
+  <p>The sequence enforces this arithmetic. Jumping to New early just distributes a low rate across more channels.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 292" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- math equation visual -->
+      <!-- box: VOLUME -->
+      <rect x="0" y="60" width="150" height="80" rx="11" fill="#4F46E5"/>
+      <text x="75" y="92" text-anchor="middle" font-size="12" font-weight="800" fill="#A9A8F0">VOLUME</text>
+      <text x="75" y="118" text-anchor="middle" font-size="22" font-weight="800" fill="#FFFFFF">100/day</text>
+
+      <text x="162" y="104" text-anchor="middle" font-size="28" font-weight="800" fill="#14163A">&times;</text>
+
+      <!-- box: RATE -->
+      <rect x="176" y="60" width="150" height="80" rx="11" fill="#4F46E5"/>
+      <text x="251" y="92" text-anchor="middle" font-size="12" font-weight="800" fill="#A9A8F0">RATE</text>
+      <text x="251" y="118" text-anchor="middle" font-size="22" font-weight="800" fill="#FFFFFF">6%</text>
+
+      <text x="338" y="104" text-anchor="middle" font-size="28" font-weight="800" fill="#14163A">&times;</text>
+
+      <!-- box: CHANNELS -->
+      <rect x="352" y="60" width="150" height="80" rx="11" fill="#4F46E5"/>
+      <text x="427" y="92" text-anchor="middle" font-size="12" font-weight="800" fill="#A9A8F0">CHANNELS</text>
+      <text x="427" y="118" text-anchor="middle" font-size="22" font-weight="800" fill="#FFFFFF">2</text>
+
+      <text x="514" y="104" text-anchor="middle" font-size="28" font-weight="800" fill="#14163A">=</text>
+
+      <!-- result box -->
+      <rect x="530" y="44" width="124" height="112" rx="11" fill="#312C9C"/>
+      <text x="592" y="82" text-anchor="middle" font-size="12" font-weight="800" fill="#A9A8F0">LEADS</text>
+      <text x="592" y="116" text-anchor="middle" font-size="34" font-weight="800" fill="#FFFFFF">12</text>
+      <text x="592" y="140" text-anchor="middle" font-size="11" font-weight="600" fill="#A9A8F0">per day</text>
+
+      <!-- comparison: baseline -->
+      <rect x="0" y="168" width="654" height="52" rx="11" fill="#EEEEFB" stroke="#DADCF2" stroke-width="2"/>
+      <text x="24" y="190" font-size="12.5" font-weight="800" fill="#9294BB">BASELINE (untouched):</text>
+      <text x="24" y="208" font-size="12.5" font-weight="700" fill="#9294BB">100/day &times; 3% &times; 1 channel = 3 leads/day</text>
+      <text x="630" y="199" text-anchor="end" font-size="22" font-weight="800" fill="#9294BB">3</text>
+
+      <!-- vs result -->
+      <rect x="0" y="232" width="654" height="52" rx="11" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2"/>
+      <text x="24" y="254" font-size="12.5" font-weight="800" fill="#14163A">AFTER MORE + BETTER + NEW:</text>
+      <text x="24" y="272" font-size="12.5" font-weight="700" fill="#14163A">100/day &times; 6% &times; 2 channels = 12 leads/day</text>
+      <text x="630" y="263" text-anchor="end" font-size="22" font-weight="800" fill="#4F46E5">12</text>
+    </svg>
+    <div class="caption">3 leads becomes 12 &mdash; a 4&times; lift &mdash; by pulling three levers in order, not one new shiny one.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- PAGE 8 · DIAGNOSTICS -->
+<section class="page">
+  <div class="rhead"><span class="v">MORE, BETTER, NEW</span><span>Which Lever to Pull</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Ask two questions. <span class="em">Pull the right lever.</span></h2>
+
+  <p>The diagnostic is simple. Start with volume. If you&rsquo;re not at 100 primary actions per day, you haven&rsquo;t earned the right to blame the channel &mdash; do more.</p>
+
+  <p>If you&rsquo;re already at volume, look at the rate. <span class="b">Where does the funnel leak?</span> Low reply rate = message problem. Low close rate = offer problem. Low retention = delivery problem. Fix the leak before pouring more in.</p>
+
+  <p>Only when volume is maxed and rate is tight does adding a new channel make sense. By that point you&rsquo;re not guessing &mdash; you have a repeatable system to transplant.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 310" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- decision flow -->
+      <!-- Q1 -->
+      <rect x="177" y="0" width="300" height="56" rx="11" fill="#14163A"/>
+      <text x="327" y="24" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">ARE YOU DOING 100 ACTIONS/DAY?</text>
+      <text x="327" y="44" text-anchor="middle" font-size="11.5" font-weight="600" fill="#A9A8F0">primary actions on this channel</text>
+
+      <!-- NO branch -->
+      <g stroke="#9294BB" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="177" y1="28" x2="110" y2="28"/><line x1="110" y1="28" x2="110" y2="86"/>
+        <polyline points="101,76 110,90 119,76"/>
+      </g>
+      <text x="110" y="78" text-anchor="middle" font-size="11" font-weight="800" fill="#9294BB">NO</text>
+      <rect x="20" y="92" width="178" height="56" rx="11" fill="#EEEEFB" stroke="#9294BB" stroke-width="2"/>
+      <text x="109" y="116" text-anchor="middle" font-size="13" font-weight="800" fill="#9294BB">PULL &middot; MORE</text>
+      <text x="109" y="134" text-anchor="middle" font-size="11.5" font-weight="600" fill="#7A7FA6">add volume first</text>
+
+      <!-- YES branch -->
+      <g stroke="#4F46E5" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="327" y1="56" x2="327" y2="86"/>
+        <polyline points="318,76 327,90 336,76"/>
+      </g>
+      <text x="348" y="78" font-size="11" font-weight="800" fill="#4F46E5">YES</text>
+
+      <!-- Q2 -->
+      <rect x="177" y="92" width="300" height="56" rx="11" fill="#14163A"/>
+      <text x="327" y="116" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">IS YOUR CONVERSION RATE ABOVE</text>
+      <text x="327" y="136" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">YOUR BEST MONTH?</text>
+
+      <!-- NO branch Q2 -->
+      <g stroke="#9294BB" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="177" y1="120" x2="110" y2="120"/><line x1="110" y1="120" x2="110" y2="196"/>
+        <polyline points="101,186 110,200 119,186"/>
+      </g>
+      <text x="110" y="190" text-anchor="middle" font-size="11" font-weight="800" fill="#9294BB">NO</text>
+      <rect x="20" y="202" width="178" height="56" rx="11" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2"/>
+      <text x="109" y="226" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">PULL &middot; BETTER</text>
+      <text x="109" y="244" text-anchor="middle" font-size="11.5" font-weight="600" fill="#2E335E">fix the conversion leak</text>
+
+      <!-- YES branch Q2 -->
+      <g stroke="#4F46E5" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="327" y1="148" x2="327" y2="196"/>
+        <polyline points="318,186 327,200 336,186"/>
+      </g>
+      <text x="348" y="180" font-size="11" font-weight="800" fill="#4F46E5">YES</text>
+
+      <!-- RESULT: NEW -->
+      <rect x="177" y="202" width="300" height="56" rx="11" fill="#4F46E5"/>
+      <text x="327" y="226" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">PULL &middot; NEW</text>
+      <text x="327" y="244" text-anchor="middle" font-size="11.5" font-weight="600" fill="#A9A8F0">now add the next channel</text>
+
+      <text x="327" y="294" text-anchor="middle" font-size="11.5" font-weight="800" fill="#7A7FA6" letter-spacing="1">ONLY REACH FOR NEW WHEN THE FIRST TWO ARE MAXED</text>
+    </svg>
+    <div class="caption">Two questions and a decision tree. Simple enough to run every week.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- PAGE 9 · CLOSE + CTA -->
+<section class="page">
+  <div class="rhead"><span class="v">MORE, BETTER, NEW</span><span>The Takeaway</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">One channel, done right, <span class="em">is enough.</span></h2>
+
+  <p>You don&rsquo;t have a channel problem. You have a discipline problem dressed up as a strategy problem. The sequence is settled &mdash; More, then Better, then New. The only open question is whether you grind each step before reaching for the next.</p>
+
+  <p class="small">Pick your primary channel. Commit to 100 actions a day for 100 days before evaluating. That single constraint will out-earn every new tactic your competitors are chasing.</p>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:16px 0">
+    <svg viewBox="0 0 654 130" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0" y="20" width="192" height="76" rx="11" fill="#4F46E5"/>
+      <text x="96" y="50" text-anchor="middle" font-size="13" font-weight="800" fill="#A9A8F0">STEP 1</text>
+      <text x="96" y="76" text-anchor="middle" font-size="17" font-weight="800" fill="#FFFFFF">DO MORE</text>
+      <g stroke="#14163A" stroke-width="3" fill="none" stroke-linecap="round"><line x1="196" y1="58" x2="220" y2="58"/><polyline points="210,49 224,58 210,67"/></g>
+      <rect x="228" y="20" width="192" height="76" rx="11" fill="#4F46E5"/>
+      <text x="324" y="50" text-anchor="middle" font-size="13" font-weight="800" fill="#A9A8F0">STEP 2</text>
+      <text x="324" y="76" text-anchor="middle" font-size="17" font-weight="800" fill="#FFFFFF">DO BETTER</text>
+      <g stroke="#14163A" stroke-width="3" fill="none" stroke-linecap="round"><line x1="424" y1="58" x2="448" y2="58"/><polyline points="438,49 452,58 438,67"/></g>
+      <rect x="456" y="20" width="198" height="76" rx="11" fill="#312C9C"/>
+      <text x="555" y="50" text-anchor="middle" font-size="13" font-weight="800" fill="#A9A8F0">STEP 3</text>
+      <text x="555" y="76" text-anchor="middle" font-size="17" font-weight="800" fill="#FFFFFF">GO NEW</text>
+    </svg>
+    <div class="caption">The sequence is the strategy. Stick to the order and the math does the rest.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Leads &mdash; the book.</h3>
+    <p>The full Core Four, the Rule of 100, lead magnets, the More-Better-New scaling sequence &mdash; get so many leads you&rsquo;ll never wonder where the next customer comes from.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">One channel. Max the volume. Tighten the rate. Then expand.</div>
+
+  <div class="stamp">More, Better, New</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>

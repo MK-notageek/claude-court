@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>LTGP : CAC — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --panel:#DBF2E4;
+    --ink:#0C2A18;
+    --ink-soft:#21452F;
+    --muted:#6B9078;
+    --line:#D0E9D8;
+    --violet:#059669;
+    --violet-deep:#045C42;
+    --violet-soft:#88D2A6;
+    --violet-fill:#DBF2E4;
+    --plum:#6B9078;
+    --plum-fill:#EBF5EE;
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#b6dcc2; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#E9F7EE; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#88D2A6; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #C5DDD0; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#B8D8C8; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 · COVER -->
+<section class="page">
+  <div class="cover-glyph">&#247;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Leads</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">The one ratio that decides if your business is real</div>
+    <h1 class="title">LTGP<br>:<br>CAC</h1>
+    <p class="cover-sub">Every business is a machine that turns acquisition cost into lifetime profit. <b>The ratio between those two numbers</b> tells you whether you have a business &mdash; or a very expensive hobby.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; know your numbers &middot; scale with confidence</span></div>
+  </div>
+  <div class="stamp">LTGP : CAC</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- PAGE 2 · THE RATIO -->
+<section class="page">
+  <div class="rhead"><span class="v">LTGP : CAC</span><span>The Ratio</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">One ratio. <span class="em">Every business.</span></h2>
+
+  <p class="lead">Lifetime Gross Profit divided by Customer Acquisition Cost. That fraction tells you how many dollars you make for every dollar you spend getting a customer.</p>
+
+  <p>A ratio of 1:1 means you break even on acquisition &mdash; growth costs you nothing, but earns you nothing either. Below 1:1 and you&rsquo;re buying customers at a loss. Above 3:1 and you have a machine worth feeding.</p>
+
+  <p>The ratio doesn&rsquo;t lie. Every pricing decision, every retention initiative, every ad dollar and referral program is ultimately in service of widening this gap.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0 14px">
+    <svg viewBox="0 0 654 380" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- LTGP : CAC fraction visual -->
+      <text x="6" y="222" font-size="42" font-weight="800" fill="#0C2A18">RATIO</text>
+      <text x="170" y="222" font-size="42" font-weight="800" fill="#059669">=</text>
+
+      <!-- top tag -->
+      <text x="220" y="68" font-size="13" font-weight="800" fill="#059669" letter-spacing="1.5">&#9650; MAXIMIZE &mdash; WHAT YOU EARN</text>
+
+      <!-- LTGP box -->
+      <rect x="220" y="86" width="234" height="90" rx="12" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="337" y="124" text-anchor="middle" font-size="14" font-weight="800" fill="#0C2A18">LIFETIME</text>
+      <text x="337" y="148" text-anchor="middle" font-size="14" font-weight="800" fill="#0C2A18">GROSS PROFIT</text>
+      <text x="465" y="133" text-anchor="middle" font-size="22" font-weight="800" fill="#0C2A18">(LTGP)</text>
+
+      <!-- fraction bar -->
+      <rect x="220" y="206" width="420" height="6" rx="3" fill="#0C2A18"/>
+
+      <!-- CAC box -->
+      <rect x="220" y="244" width="234" height="90" rx="12" fill="#EBF5EE" stroke="#6B9078" stroke-width="2.5"/>
+      <text x="337" y="282" text-anchor="middle" font-size="14" font-weight="800" fill="#21452F">CUSTOMER</text>
+      <text x="337" y="306" text-anchor="middle" font-size="14" font-weight="800" fill="#21452F">ACQ. COST</text>
+      <text x="465" y="295" text-anchor="middle" font-size="22" font-weight="800" fill="#21452F">(CAC)</text>
+
+      <!-- bottom tag -->
+      <text x="220" y="360" font-size="13" font-weight="800" fill="#6B9078" letter-spacing="1.5">&#9660; MINIMIZE &mdash; WHAT YOU SPEND</text>
+    </svg>
+    <div class="caption">One fraction. Two levers. Every sustainable business makes the top bigger than the bottom.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- PAGE 3 · WHAT IS LTGP -->
+<section class="page">
+  <div class="rhead"><span class="v">LTGP : CAC</span><span>Lifetime Gross Profit</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">LTGP: every dollar a <span class="em">customer ever gives you.</span></h2>
+
+  <p>Lifetime Gross Profit is not revenue. It&rsquo;s what&rsquo;s left after the direct cost of delivering your product or service across the entire relationship. If a client pays $1,000/month and stays 18 months, and delivery costs $300/month, their LTGP is <span class="b">$12,600.</span></p>
+
+  <p>Three variables move LTGP: <span class="b">price,</span> <span class="b">margin,</span> and <span class="b">duration.</span> Any one of them, raised, expands the top of the ratio without touching what you spend on acquisition.</p>
+
+  <p>Most founders try to fix their unit economics through more sales. The quieter path is raising LTGP on the customers they already have.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- LTGP = price x margin x months -->
+      <!-- box: PRICE/MO -->
+      <rect x="0" y="40" width="180" height="86" rx="12" fill="#059669"/>
+      <text x="90" y="76" text-anchor="middle" font-size="13" font-weight="800" fill="#88D2A6">PRICE / MO</text>
+      <text x="90" y="106" text-anchor="middle" font-size="26" font-weight="800" fill="#FFFFFF">$1,000</text>
+
+      <text x="195" y="90" text-anchor="middle" font-size="26" font-weight="800" fill="#0C2A18">&times;</text>
+
+      <!-- box: GROSS MARGIN -->
+      <rect x="214" y="40" width="180" height="86" rx="12" fill="#059669"/>
+      <text x="304" y="76" text-anchor="middle" font-size="13" font-weight="800" fill="#88D2A6">GROSS MARGIN</text>
+      <text x="304" y="106" text-anchor="middle" font-size="26" font-weight="800" fill="#FFFFFF">70%</text>
+
+      <text x="411" y="90" text-anchor="middle" font-size="26" font-weight="800" fill="#0C2A18">&times;</text>
+
+      <!-- box: AVG MONTHS -->
+      <rect x="428" y="40" width="180" height="86" rx="12" fill="#059669"/>
+      <text x="518" y="76" text-anchor="middle" font-size="13" font-weight="800" fill="#88D2A6">AVG MONTHS</text>
+      <text x="518" y="106" text-anchor="middle" font-size="26" font-weight="800" fill="#FFFFFF">18</text>
+
+      <!-- equals + result -->
+      <text x="327" y="160" text-anchor="middle" font-size="22" font-weight="800" fill="#0C2A18">= LTGP of</text>
+      <rect x="177" y="174" width="300" height="66" rx="12" fill="#045C42"/>
+      <text x="327" y="216" text-anchor="middle" font-size="34" font-weight="800" fill="#FFFFFF">$12,600</text>
+
+      <!-- three lever labels -->
+      <text x="90" y="162" text-anchor="middle" font-size="11" font-weight="800" fill="#6B9078">raise price</text>
+      <text x="304" y="162" text-anchor="middle" font-size="11" font-weight="800" fill="#6B9078">cut COGS</text>
+      <text x="518" y="162" text-anchor="middle" font-size="11" font-weight="800" fill="#6B9078">retain longer</text>
+
+      <text x="327" y="268" text-anchor="middle" font-size="12.5" font-weight="800" fill="#6B9078" letter-spacing="1">ANY ONE LEVER RAISED &rarr; HIGHER LTGP</text>
+    </svg>
+    <div class="caption">$1,000 &times; 70% &times; 18 months = $12,600 LTGP. Pull any lever and the number grows.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- PAGE 4 · WHAT IS CAC -->
+<section class="page">
+  <div class="rhead"><span class="v">LTGP : CAC</span><span>Customer Acquisition Cost</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">CAC: the real cost of <span class="em">one new customer.</span></h2>
+
+  <p>Customer Acquisition Cost is all the money spent to get one paying client: ads, sales salaries, commissions, tools, agency fees, even the founder&rsquo;s time. Divide total spend by customers acquired. That&rsquo;s your CAC.</p>
+
+  <p>Most founders undercount it. They track ad spend but not the SDR salary, the CRM cost, or the two hours they spent on calls that didn&rsquo;t close. <span class="b">An understated CAC is a lie you tell yourself.</span></p>
+
+  <p>The lower your CAC, the more of each LTGP dollar you keep as margin to fund growth, hire, or distribute as profit.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 296" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- CAC calculation visual: bar of total spend / customers -->
+      <!-- total spend breakdown -->
+      <text x="0" y="22" font-size="12.5" font-weight="800" fill="#6B9078" letter-spacing="1">TOTAL ACQUISITION SPEND (MONTHLY)</text>
+
+      <!-- spend bars -->
+      <rect x="0" y="36" width="180" height="46" rx="9" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="20" y="56" font-size="12.5" font-weight="800" fill="#0C2A18">AD SPEND</text>
+      <text x="170" y="56" text-anchor="end" font-size="12.5" font-weight="800" fill="#059669">$4,000</text>
+      <text x="20" y="72" font-size="11" font-weight="600" fill="#6B9078">Meta &amp; Google</text>
+
+      <rect x="0" y="90" width="180" height="46" rx="9" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="20" y="110" font-size="12.5" font-weight="800" fill="#0C2A18">SALES SALARY</text>
+      <text x="170" y="110" text-anchor="end" font-size="12.5" font-weight="800" fill="#059669">$3,000</text>
+      <text x="20" y="126" font-size="11" font-weight="600" fill="#6B9078">setters &amp; closers</text>
+
+      <rect x="0" y="144" width="180" height="46" rx="9" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="20" y="164" font-size="12.5" font-weight="800" fill="#0C2A18">TOOLS &amp; FEES</text>
+      <text x="170" y="164" text-anchor="end" font-size="12.5" font-weight="800" fill="#059669">$1,000</text>
+      <text x="20" y="180" font-size="11" font-weight="600" fill="#6B9078">CRM, software, agency</text>
+
+      <!-- total -->
+      <rect x="0" y="198" width="180" height="46" rx="9" fill="#045C42"/>
+      <text x="20" y="218" font-size="12.5" font-weight="800" fill="#88D2A6">TOTAL</text>
+      <text x="170" y="218" text-anchor="end" font-size="13" font-weight="800" fill="#FFFFFF">$8,000</text>
+      <text x="20" y="234" font-size="11" font-weight="600" fill="#88D2A6">per month</text>
+
+      <!-- divider: ÷ customers -->
+      <text x="210" y="180" font-size="36" font-weight="800" fill="#0C2A18">&#247;</text>
+
+      <rect x="254" y="144" width="130" height="96" rx="11" fill="#059669"/>
+      <text x="319" y="180" text-anchor="middle" font-size="13" font-weight="800" fill="#88D2A6">CUSTOMERS</text>
+      <text x="319" y="216" text-anchor="middle" font-size="30" font-weight="800" fill="#FFFFFF">16</text>
+      <text x="319" y="232" text-anchor="middle" font-size="11" font-weight="600" fill="#DBF2E4">acquired</text>
+
+      <text x="406" y="180" font-size="36" font-weight="800" fill="#0C2A18">=</text>
+
+      <!-- CAC result -->
+      <rect x="444" y="120" width="210" height="120" rx="12" fill="#0C2A18"/>
+      <text x="549" y="162" text-anchor="middle" font-size="14" font-weight="800" fill="#88D2A6">CAC</text>
+      <text x="549" y="200" text-anchor="middle" font-size="36" font-weight="800" fill="#FFFFFF">$500</text>
+      <text x="549" y="224" text-anchor="middle" font-size="11" font-weight="600" fill="#6B9078">per customer</text>
+
+      <text x="327" y="280" text-anchor="middle" font-size="12" font-weight="800" fill="#6B9078" letter-spacing="1">EVERY DOLLAR SPENT ON ACQUISITION COUNTS</text>
+    </svg>
+    <div class="caption">$8,000 total spend &divide; 16 customers = $500 CAC. Include every cost or the ratio lies.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- PAGE 5 · THE 3:1 RULE -->
+<section class="page">
+  <div class="rhead"><span class="v">LTGP : CAC</span><span>The 3:1 Rule</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The threshold: <span class="em">3:1 or bust.</span></h2>
+
+  <p>Hormozi&rsquo;s floor is LTGP:CAC &ge; 3:1. For every dollar spent on acquisition, earn at least three dollars of lifetime gross profit. Below 3:1 you&rsquo;re grinding to stay in place &mdash; growth drains cash faster than profit refills it.</p>
+
+  <p><span class="b">At 3:1</span> you have margin to reinvest, hire, and weather variance. <span class="b">At 5:1</span> you can be aggressive &mdash; pour fuel on growth and it lights fast. Above 10:1 either your prices are too low or you&rsquo;re not investing enough in acquisition.</p>
+
+  <div class="band">
+    <div class="t">BELOW 3:1? FIX THE UNIT BEFORE YOU SCALE.</div>
+    <div class="s">scaling a broken ratio just multiplies the losses</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- baseline -->
+      <line x1="30" y1="240" x2="624" y2="240" stroke="#0C2A18" stroke-width="2.5"/>
+
+      <!-- 1:1 bar -->
+      <rect x="50" y="176" width="110" height="64" rx="9" fill="#EBF5EE" stroke="#6B9078" stroke-width="2"/>
+      <text x="105" y="210" text-anchor="middle" font-size="14" font-weight="800" fill="#6B9078">1:1</text>
+      <text x="105" y="256" text-anchor="middle" font-size="11.5" font-weight="800" fill="#6B9078">BREAK EVEN</text>
+      <text x="105" y="272" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6B9078">no room to grow</text>
+
+      <!-- 2:1 bar -->
+      <rect x="190" y="112" width="110" height="128" rx="9" fill="#EBF5EE" stroke="#6B9078" stroke-width="2"/>
+      <text x="245" y="184" text-anchor="middle" font-size="14" font-weight="800" fill="#6B9078">2:1</text>
+      <text x="245" y="256" text-anchor="middle" font-size="11.5" font-weight="800" fill="#6B9078">FRAGILE</text>
+      <text x="245" y="272" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6B9078">tight margins</text>
+
+      <!-- 3:1 bar (threshold) -->
+      <rect x="330" y="48" width="110" height="192" rx="9" fill="#059669"/>
+      <text x="385" y="118" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">3:1</text>
+      <text x="385" y="256" text-anchor="middle" font-size="11.5" font-weight="800" fill="#059669">VIABLE</text>
+      <text x="385" y="272" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6B9078">reinvest &amp; grow</text>
+
+      <!-- 5:1 bar -->
+      <rect x="470" y="8" width="110" height="232" rx="9" fill="#045C42"/>
+      <text x="525" y="90" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">5:1</text>
+      <text x="525" y="256" text-anchor="middle" font-size="11.5" font-weight="800" fill="#045C42">SCALE NOW</text>
+      <text x="525" y="272" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6B9078">pour on fuel</text>
+
+      <!-- 3:1 threshold line -->
+      <line x1="30" y1="48" x2="340" y2="48" stroke="#059669" stroke-width="2" stroke-dasharray="6 4"/>
+      <text x="26" y="44" text-anchor="end" font-size="11" font-weight="800" fill="#059669">3:1 FLOOR</text>
+    </svg>
+    <div class="caption">3:1 is the floor. Below it, fix unit economics. Above 5:1, step on the gas.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- PAGE 6 · INCREASING LTGP -->
+<section class="page">
+  <div class="rhead"><span class="v">LTGP : CAC</span><span>Raising the Top</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Four ways to <span class="em">raise LTGP</span> without more customers.</h2>
+
+  <p>The fastest path to a healthier ratio isn&rsquo;t always cheaper ads. It&rsquo;s making the customer you already have worth more over their lifetime.</p>
+
+  <p>Raise the <span class="b">price.</span> Extend the <span class="b">duration</span> through better onboarding and proactive results. Add <span class="b">upsells</span> so customers naturally buy more as they succeed. And cut <span class="b">delivery cost</span> without cutting quality. Any combination works &mdash; pick the lever with the least friction for your model.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 310" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- 2x2 grid: four LTGP levers -->
+      <!-- top-left: RAISE PRICE -->
+      <rect x="0" y="0" width="310" height="144" rx="13" fill="#059669"/>
+      <text x="24" y="36" font-size="13" font-weight="800" fill="#DBF2E4" letter-spacing="1.5">LEVER 1</text>
+      <text x="24" y="70" font-size="22" font-weight="800" fill="#FFFFFF">RAISE PRICE</text>
+      <text x="24" y="96" font-size="13" font-weight="600" fill="#88D2A6">deliver more value,</text>
+      <text x="24" y="114" font-size="13" font-weight="600" fill="#88D2A6">charge what it&rsquo;s worth</text>
+      <text x="24" y="136" font-size="12" font-style="italic" fill="#DBF2E4">10% price rise = 10% LTGP rise</text>
+
+      <!-- top-right: ADD UPSELLS -->
+      <rect x="344" y="0" width="310" height="144" rx="13" fill="#FFFFFF" stroke="#0C2A18" stroke-width="2.5"/>
+      <text x="368" y="36" font-size="13" font-weight="800" fill="#059669" letter-spacing="1.5">LEVER 2</text>
+      <text x="368" y="70" font-size="22" font-weight="800" fill="#0C2A18">ADD UPSELLS</text>
+      <text x="368" y="96" font-size="13" font-weight="600" fill="#21452F">buyers who win want</text>
+      <text x="368" y="114" font-size="13" font-weight="600" fill="#21452F">to buy more from you</text>
+      <text x="368" y="136" font-size="12" font-style="italic" fill="#6B9078">next product, premium tier</text>
+
+      <!-- bottom-left: RETAIN LONGER -->
+      <rect x="0" y="164" width="310" height="144" rx="13" fill="#FFFFFF" stroke="#0C2A18" stroke-width="2.5"/>
+      <text x="24" y="200" font-size="13" font-weight="800" fill="#059669" letter-spacing="1.5">LEVER 3</text>
+      <text x="24" y="234" font-size="22" font-weight="800" fill="#0C2A18">RETAIN LONGER</text>
+      <text x="24" y="260" font-size="13" font-weight="600" fill="#21452F">onboarding, check-ins,</text>
+      <text x="24" y="278" font-size="13" font-weight="600" fill="#21452F">proactive results</text>
+      <text x="24" y="300" font-size="12" font-style="italic" fill="#6B9078">1 extra month = huge LTGP jump</text>
+
+      <!-- bottom-right: CUT DELIVERY COST -->
+      <rect x="344" y="164" width="310" height="144" rx="13" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="368" y="200" font-size="13" font-weight="800" fill="#059669" letter-spacing="1.5">LEVER 4</text>
+      <text x="368" y="234" font-size="22" font-weight="800" fill="#0C2A18">CUT COGS</text>
+      <text x="368" y="260" font-size="13" font-weight="600" fill="#21452F">systematise delivery,</text>
+      <text x="368" y="278" font-size="13" font-weight="600" fill="#21452F">reduce cost per client</text>
+      <text x="368" y="300" font-size="12" font-style="italic" fill="#6B9078">same revenue, higher margin</text>
+    </svg>
+    <div class="caption">Four levers, each growing LTGP without touching the acquisition side at all.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- PAGE 7 · DECREASING CAC -->
+<section class="page">
+  <div class="rhead"><span class="v">LTGP : CAC</span><span>Shrinking the Bottom</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Lower CAC: make <span class="em">getting customers cheaper.</span></h2>
+
+  <p>The other side of the ratio is the denominator. Three paths bring CAC down without starving the top of funnel.</p>
+
+  <p><span class="b">Referrals:</span> a customer who sends a friend has near-zero acquisition cost. Build a referral ask into every win milestone. <span class="b">Organic content:</span> each piece of content depreciates slowly &mdash; unlike paid impressions that disappear when the budget stops. <span class="b">Conversion rate:</span> the same ad budget producing twice the closes halves CAC without spending a dollar less.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>Spend more on ads to get more leads. CAC stays the same, cash bleeds faster.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>Improve the offer, double close rate, get twice the clients from the same spend. CAC drops in half.</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- three CAC reduction paths -->
+      <!-- REFERRALS -->
+      <rect x="0" y="0" width="196" height="260" rx="12" fill="#0C2A18"/>
+      <text x="98" y="40" text-anchor="middle" font-size="13" font-weight="800" fill="#88D2A6" letter-spacing="1.5">PATH 1</text>
+      <text x="98" y="80" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF">REFERRALS</text>
+      <text x="98" y="120" text-anchor="middle" font-size="12.5" font-weight="600" fill="#6B9078">happy clients</text>
+      <text x="98" y="138" text-anchor="middle" font-size="12.5" font-weight="600" fill="#6B9078">send friends</text>
+      <rect x="28" y="160" width="140" height="38" rx="9" fill="#059669"/>
+      <text x="98" y="184" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">CAC &asymp; $0</text>
+      <text x="98" y="240" text-anchor="middle" font-size="11" font-style="italic" fill="#6B9078">ask at every win</text>
+
+      <!-- ORGANIC -->
+      <rect x="228" y="0" width="196" height="260" rx="12" fill="#FFFFFF" stroke="#0C2A18" stroke-width="2.5"/>
+      <text x="326" y="40" text-anchor="middle" font-size="13" font-weight="800" fill="#059669" letter-spacing="1.5">PATH 2</text>
+      <text x="326" y="80" text-anchor="middle" font-size="20" font-weight="800" fill="#0C2A18">CONTENT</text>
+      <text x="326" y="120" text-anchor="middle" font-size="12.5" font-weight="600" fill="#21452F">content that pays</text>
+      <text x="326" y="138" text-anchor="middle" font-size="12.5" font-weight="600" fill="#21452F">indefinitely</text>
+      <rect x="256" y="160" width="140" height="38" rx="9" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="326" y="184" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">CAC decreasing</text>
+      <text x="326" y="240" text-anchor="middle" font-size="11" font-style="italic" fill="#6B9078">compounding asset</text>
+
+      <!-- CONVERSION RATE -->
+      <rect x="456" y="0" width="198" height="260" rx="12" fill="#059669"/>
+      <text x="555" y="40" text-anchor="middle" font-size="13" font-weight="800" fill="#DBF2E4" letter-spacing="1.5">PATH 3</text>
+      <text x="555" y="70" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF">BETTER</text>
+      <text x="555" y="94" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF">CONVERSION</text>
+      <text x="555" y="134" text-anchor="middle" font-size="12.5" font-weight="600" fill="#88D2A6">close more from</text>
+      <text x="555" y="152" text-anchor="middle" font-size="12.5" font-weight="600" fill="#88D2A6">same budget</text>
+      <rect x="484" y="172" width="142" height="38" rx="9" fill="#045C42"/>
+      <text x="555" y="196" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">CAC halved</text>
+      <text x="555" y="240" text-anchor="middle" font-size="11" font-style="italic" fill="#DBF2E4">no extra spend</text>
+    </svg>
+    <div class="caption">Three paths down. Referrals are cheapest. Content compounds. Conversion multiplies.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- PAGE 8 · THE FLYWHEEL -->
+<section class="page">
+  <div class="rhead"><span class="v">LTGP : CAC</span><span>The Flywheel</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Better unit economics <span class="em">fund themselves.</span></h2>
+
+  <p>When the ratio exceeds 3:1, the surplus unlocks speed. More cash-per-customer means you can out-bid competitors for the same lead. Your ad account is profitable at CPCs that send others to the sidelines.</p>
+
+  <p>High LTGP also means you can acquire customers at break-even &mdash; or even at a loss &mdash; because you know the back end pays it back. That&rsquo;s the flywheel: a healthier ratio makes acquisition more aggressive, which drives volume, which improves your data, which tightens conversion, which lowers CAC further.</p>
+
+  <p>The ratio improves from both ends simultaneously once the engine is turning.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 310" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- flywheel circle -->
+      <circle cx="327" cy="155" r="118" fill="none" stroke="#88D2A6" stroke-width="3" stroke-dasharray="7 9"/>
+      <!-- arrowheads on ring (clockwise) -->
+      <g fill="#059669">
+        <polygon points="445,155 433,148 433,162"/>
+        <polygon points="327,273 320,261 334,261"/>
+        <polygon points="209,155 221,162 221,148"/>
+        <polygon points="327,37 334,49 320,49"/>
+      </g>
+      <!-- center label -->
+      <text x="327" y="147" text-anchor="middle" font-size="14" font-weight="800" fill="#0C2A18">RATIO</text>
+      <text x="327" y="170" text-anchor="middle" font-size="24" font-weight="800" fill="#059669">FLYWHEEL</text>
+
+      <!-- node: HIGHER LTGP (top) -->
+      <rect x="237" y="0" width="180" height="56" rx="11" fill="#059669"/>
+      <text x="327" y="24" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">HIGHER LTGP</text>
+      <text x="327" y="42" text-anchor="middle" font-size="11" font-weight="600" fill="#DBF2E4">more profit per client</text>
+
+      <!-- node: BID HIGHER (right) -->
+      <rect x="482" y="127" width="172" height="56" rx="11" fill="#FFFFFF" stroke="#21452F" stroke-width="2.5"/>
+      <text x="568" y="151" text-anchor="middle" font-size="12" font-weight="800" fill="#0C2A18">BID HIGHER</text>
+      <text x="568" y="169" text-anchor="middle" font-size="11" font-weight="600" fill="#6B9078">beat rivals on CPCs</text>
+
+      <!-- node: MORE VOLUME (bottom) -->
+      <rect x="237" y="254" width="180" height="56" rx="11" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="327" y="278" text-anchor="middle" font-size="12" font-weight="800" fill="#0C2A18">MORE VOLUME</text>
+      <text x="327" y="296" text-anchor="middle" font-size="11" font-weight="600" fill="#21452F">data, reps, improvement</text>
+
+      <!-- node: LOWER CAC (left) -->
+      <rect x="0" y="127" width="172" height="56" rx="11" fill="#045C42"/>
+      <text x="86" y="151" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">LOWER CAC</text>
+      <text x="86" y="169" text-anchor="middle" font-size="11" font-weight="600" fill="#88D2A6">better conversion data</text>
+    </svg>
+    <div class="caption">Each turn of the wheel makes acquisition cheaper and customers more profitable. That&rsquo;s the moat.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- PAGE 9 · CLOSE + CTA -->
+<section class="page">
+  <div class="rhead"><span class="v">LTGP : CAC</span><span>The Takeaway</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">Know the ratio. <span class="em">Widen the gap.</span></h2>
+
+  <p>LTGP:CAC is the scoreboard underneath every business. If you don&rsquo;t know your number today, calculate it this week. If it&rsquo;s below 3:1, stop scaling ads and fix the unit. If it&rsquo;s above 5:1, feed the machine as fast as you can afford.</p>
+
+  <p class="small">The businesses that compound fastest aren&rsquo;t the ones with the cleverest growth hacks. They&rsquo;re the ones that quietly built a 5:1 ratio and never stopped improving it.</p>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:16px 0">
+    <svg viewBox="0 0 654 130" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- quick check -->
+      <rect x="0" y="20" width="196" height="90" rx="11" fill="#EBF5EE" stroke="#6B9078" stroke-width="2"/>
+      <text x="98" y="50" text-anchor="middle" font-size="13" font-weight="800" fill="#6B9078">BELOW 3:1</text>
+      <text x="98" y="76" text-anchor="middle" font-size="13" font-weight="800" fill="#21452F">FIX UNIT</text>
+      <text x="98" y="98" text-anchor="middle" font-size="11" font-weight="600" fill="#6B9078">raise LTGP or cut CAC</text>
+      <rect x="226" y="20" width="196" height="90" rx="11" fill="#059669"/>
+      <text x="324" y="50" text-anchor="middle" font-size="13" font-weight="800" fill="#DBF2E4">AT 3–5:1</text>
+      <text x="324" y="76" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">GROW STEADY</text>
+      <text x="324" y="98" text-anchor="middle" font-size="11" font-weight="600" fill="#88D2A6">reinvest &amp; optimise</text>
+      <rect x="452" y="20" width="202" height="90" rx="11" fill="#045C42"/>
+      <text x="553" y="50" text-anchor="middle" font-size="13" font-weight="800" fill="#88D2A6">ABOVE 5:1</text>
+      <text x="553" y="76" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">POUR FUEL</text>
+      <text x="553" y="98" text-anchor="middle" font-size="11" font-weight="600" fill="#88D2A6">max the acquisition</text>
+    </svg>
+    <div class="caption">Three zones, three instructions. The ratio tells you exactly what to do next.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Leads &mdash; the book.</h3>
+    <p>The full unit economics playbook &mdash; LTGP, CAC, lead magnets, and every lever to make your acquisition machine print money instead of burning it.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Know the ratio. Fix the unit. Then scale until it screams.</div>
+
+  <div class="stamp">LTGP : CAC</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>
