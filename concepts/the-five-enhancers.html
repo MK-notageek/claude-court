@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Scarcity, Urgency &amp; the Five Enhancers — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFDFD;
+    --panel:#FBE0E0;
+    --ink:#340F12;
+    --ink-soft:#5E2328;
+    --muted:#A66A6F;
+    --line:#F0D6D8;
+    --violet:#DC2626;
+    --violet-deep:#991218;
+    --violet-soft:#F0A0A0;
+    --violet-fill:#FBE0E0;
+    --plum:#A66A6F;
+    --plum-fill:#F5E8E9;
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#e8c4c4; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:72px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#FBEDED; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#F0A0A0; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #EAD0D2; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#E8C4C6; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">&#9733;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Offers</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Five levers that make a good offer irresistible</div>
+    <h1 class="title">THE FIVE<br>ENHANCERS</h1>
+    <p class="cover-sub">You&rsquo;ve built the offer. Now <b>make it impossible to ignore.</b> Five levers &mdash; scarcity, urgency, bonuses, guarantees, naming &mdash; each one multiplies purchases without touching the core product.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; enhance the offer &middot; close more sales</span></div>
+  </div>
+  <div class="stamp">The Five Enhancers</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · THE FIVE OVERVIEW ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FIVE ENHANCERS</span><span>The Map</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">A good offer plus <span class="em">five levers.</span></h2>
+
+  <p class="lead">The value equation builds an offer worth buying. The enhancers make it impossible to put down.</p>
+  <p>Each enhancer attacks a different psychological barrier. One compresses supply, one compresses time, one stacks perceived value, one removes risk, and one makes the offer stick in memory. Together they create urgency, desire, confidence, and recall &mdash; the four forces behind a purchase decision.</p>
+  <p>Use them in sequence. Build the offer first. Then stack the enhancers. Never the reverse.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0 14px">
+    <!-- D-OVERVIEW: five numbered blocks -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- 01 SCARCITY -->
+      <rect x="0" y="0" width="196" height="130" rx="12" fill="#DC2626"/>
+      <text x="24" y="34" font-size="12" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">01</text>
+      <text x="24" y="64" font-size="19" font-weight="800" fill="#FFFFFF">SCARCITY</text>
+      <text x="24" y="90" font-size="13" font-weight="600" fill="#F0A0A0">limited supply</text>
+      <text x="24" y="114" font-size="11.5" font-style="italic" fill="#FBE0E0">&ldquo;Only 12 spots.&rdquo;</text>
+
+      <!-- 02 URGENCY -->
+      <rect x="214" y="0" width="196" height="130" rx="12" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="238" y="34" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.5">02</text>
+      <text x="238" y="64" font-size="19" font-weight="800" fill="#340F12">URGENCY</text>
+      <text x="238" y="90" font-size="13" font-weight="600" fill="#5E2328">limited time</text>
+      <text x="238" y="114" font-size="11.5" font-style="italic" fill="#A66A6F">&ldquo;Price doubles Friday.&rdquo;</text>
+
+      <!-- 03 BONUSES -->
+      <rect x="428" y="0" width="226" height="130" rx="12" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="452" y="34" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.5">03</text>
+      <text x="452" y="64" font-size="19" font-weight="800" fill="#340F12">BONUSES</text>
+      <text x="452" y="90" font-size="13" font-weight="600" fill="#5E2328">stack the value</text>
+      <text x="452" y="114" font-size="11.5" font-style="italic" fill="#A66A6F">&ldquo;Plus three fast-starts.&rdquo;</text>
+
+      <!-- 04 GUARANTEES -->
+      <rect x="0" y="148" width="310" height="130" rx="12" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="24" y="182" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.5">04</text>
+      <text x="24" y="212" font-size="19" font-weight="800" fill="#340F12">GUARANTEES</text>
+      <text x="24" y="238" font-size="13" font-weight="600" fill="#5E2328">reverse the risk</text>
+      <text x="24" y="262" font-size="11.5" font-style="italic" fill="#A66A6F">&ldquo;Get results or we work free.&rdquo;</text>
+
+      <!-- 05 NAMING -->
+      <rect x="328" y="148" width="326" height="130" rx="12" fill="#991218"/>
+      <text x="352" y="182" font-size="12" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">05</text>
+      <text x="352" y="212" font-size="19" font-weight="800" fill="#FFFFFF">NAMING</text>
+      <text x="352" y="238" font-size="13" font-weight="600" fill="#F0A0A0">make it stick</text>
+      <text x="352" y="262" font-size="11.5" font-style="italic" fill="#FBE0E0">&ldquo;The 6-Figure Sprint System.&rdquo;</text>
+    </svg>
+    <div class="caption">Each enhancer attacks a different reason people don&rsquo;t buy. Stack all five and there&rsquo;s nothing left to object to.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · SCARCITY ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FIVE ENHANCERS</span><span>01 &middot; Scarcity</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Scarcity: limited <span class="em">supply.</span></h2>
+
+  <p>When supply is constrained, value rises. Not because the product changed &mdash; because availability changed. Humans weight losses more heavily than gains, so the threat of missing out moves people faster than the promise of getting in.</p>
+
+  <p>Real scarcity is always better than manufactured scarcity. Limit cohort size because you can only serve 20 well. Limit bonuses because they expire naturally. Limit the price because you&rsquo;re raising it.</p>
+
+  <p><span class="b">The rule:</span> if you announce scarcity, enforce it. A deadline that resets is a discount in disguise &mdash; and it trains buyers to wait forever.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D-SCARCITY: supply-demand bar comparison -->
+    <svg viewBox="0 0 654 272" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- baseline -->
+      <line x1="30" y1="220" x2="620" y2="220" stroke="#340F12" stroke-width="2.5"/>
+
+      <!-- ABUNDANT bar: long, low urgency -->
+      <rect x="60" y="100" width="200" height="120" rx="10" fill="#F5E8E9" stroke="#A66A6F" stroke-width="2.5"/>
+      <text x="160" y="148" text-anchor="middle" font-size="14" font-weight="800" fill="#5E2328">UNLIMITED</text>
+      <text x="160" y="170" text-anchor="middle" font-size="14" font-weight="800" fill="#5E2328">SPOTS</text>
+      <text x="160" y="245" text-anchor="middle" font-size="12" font-weight="800" fill="#A66A6F">&ldquo;I&rsquo;ll join later&rdquo;</text>
+
+      <!-- divider -->
+      <g stroke="#F0D6D8" stroke-width="2" stroke-dasharray="5 6">
+        <line x1="300" y1="60" x2="300" y2="220"/>
+      </g>
+
+      <!-- SCARCE bar: tall, high urgency -->
+      <rect x="380" y="40" width="200" height="180" rx="10" fill="#DC2626"/>
+      <text x="480" y="92" text-anchor="middle" font-size="13" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">12 SPOTS LEFT</text>
+      <text x="480" y="130" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF">SCARCITY</text>
+      <text x="480" y="158" text-anchor="middle" font-size="14" font-weight="700" fill="#F0A0A0">ACTIVE</text>
+      <text x="480" y="185" text-anchor="middle" font-size="12" font-weight="600" fill="#FBE0E0">urgency spikes</text>
+      <text x="480" y="245" text-anchor="middle" font-size="12" font-weight="800" fill="#DC2626">&ldquo;I need to decide now&rdquo;</text>
+
+      <!-- legend -->
+      <rect x="0" y="0" width="654" height="28" rx="9" fill="#FBE0E0" stroke="#F0D6D8" stroke-width="2"/>
+      <text x="327" y="19" text-anchor="middle" font-size="12" font-weight="800" fill="#340F12" letter-spacing="1">SAME PRODUCT &middot; DIFFERENT AVAILABILITY &middot; DIFFERENT URGENCY</text>
+    </svg>
+    <div class="caption">Real scarcity is a service constraint, not a trick. Enforce it every time or it evaporates.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · URGENCY ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FIVE ENHANCERS</span><span>02 &middot; Urgency</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Urgency: limited <span class="em">time.</span></h2>
+
+  <p>Scarcity compresses supply. Urgency compresses time. A deadline forces a decision &mdash; every day that passes without one is a day the prospect talked themselves out of buying.</p>
+
+  <p>Four types of legitimate urgency: <span class="b">cohort-based</span> (next intake closes Monday), <span class="b">price-based</span> (rates increase as demand does), <span class="b">bonus-based</span> (fast-action gifts disappear at midnight), and <span class="b">seasonal</span> (end of financial year, launch window). Any one of these is enough.</p>
+
+  <p>The failure mode: soft deadlines. &ldquo;Act soon&rdquo; means nothing. A date, a time, a consequence &mdash; that&rsquo;s urgency. Vague urgency is just filler copy.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D-URGENCY: four types -->
+    <svg viewBox="0 0 654 280" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- COHORT -->
+      <rect x="0" y="0" width="310" height="126" rx="12" fill="#DC2626"/>
+      <text x="24" y="34" font-size="12" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">COHORT-BASED</text>
+      <text x="24" y="66" font-size="17" font-weight="800" fill="#FFFFFF">Next intake</text>
+      <text x="24" y="90" font-size="17" font-weight="800" fill="#FFFFFF">closes Monday.</text>
+      <text x="24" y="116" font-size="12.5" font-style="italic" fill="#FBE0E0">enrollment is a cycle, not a tap</text>
+
+      <!-- PRICE -->
+      <rect x="330" y="0" width="324" height="126" rx="12" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="354" y="34" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.5">PRICE-BASED</text>
+      <text x="354" y="66" font-size="17" font-weight="800" fill="#340F12">Rate increases</text>
+      <text x="354" y="90" font-size="17" font-weight="800" fill="#340F12">as demand grows.</text>
+      <text x="354" y="116" font-size="12.5" font-style="italic" fill="#A66A6F">early movers get rewarded</text>
+
+      <!-- BONUS -->
+      <rect x="0" y="148" width="310" height="126" rx="12" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="24" y="182" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.5">BONUS-BASED</text>
+      <text x="24" y="214" font-size="17" font-weight="800" fill="#340F12">Fast-action gift</text>
+      <text x="24" y="238" font-size="17" font-weight="800" fill="#340F12">gone at midnight.</text>
+      <text x="24" y="264" font-size="12.5" font-style="italic" fill="#A66A6F">the bonus vanishes, not the deal</text>
+
+      <!-- SEASONAL -->
+      <rect x="330" y="148" width="324" height="126" rx="12" fill="#991218"/>
+      <text x="354" y="182" font-size="12" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">SEASONAL</text>
+      <text x="354" y="214" font-size="17" font-weight="800" fill="#FFFFFF">Year-end window</text>
+      <text x="354" y="238" font-size="17" font-weight="800" fill="#FFFFFF">closes Dec 31.</text>
+      <text x="354" y="264" font-size="12.5" font-style="italic" fill="#FBE0E0">nature sets the deadline for you</text>
+    </svg>
+    <div class="caption">Pick one urgency type per offer. Combine two if they&rsquo;re genuinely true. Never fake either one.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · BONUSES ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FIVE ENHANCERS</span><span>03 &middot; Bonuses</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Bonuses: stack the <span class="em">value.</span></h2>
+
+  <p>People rarely buy the core offer alone &mdash; they buy the <em>stack.</em> Bonuses raise perceived value far above their cost, because the buyer sees the &ldquo;what I get&rdquo; list, not your cost of delivery.</p>
+
+  <p>Three rules for high-converting bonuses. <span class="b">One:</span> each bonus should address a specific objection or fear the buyer holds. <span class="b">Two:</span> name and price every bonus individually so the total becomes undeniable. <span class="b">Three:</span> make at least one bonus more exciting than the core offer &mdash; it makes the sale easy.</p>
+
+  <p>A poorly chosen bonus dilutes the offer. &ldquo;We&rsquo;ll throw in a mug&rdquo; signals low confidence. Each bonus must solve a real problem that exists on the path to the outcome.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D-BONUSES: stacked value total -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- core offer row -->
+      <rect x="0" y="0" width="654" height="50" rx="10" fill="#DC2626"/>
+      <text x="22" y="20" font-size="11" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">CORE OFFER</text>
+      <text x="22" y="40" font-size="16" font-weight="800" fill="#FFFFFF">12-Week Coaching Programme</text>
+      <text x="620" y="30" text-anchor="end" font-size="17" font-weight="800" fill="#FFFFFF">$2,000</text>
+
+      <!-- bonus rows -->
+      <rect x="0" y="58" width="654" height="44" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="22" y="76" font-size="11" font-weight="800" fill="#DC2626" letter-spacing="1">BONUS 1 &middot; Fast-Start Checklist</text>
+      <text x="22" y="94" font-size="12.5" font-weight="600" fill="#5E2328">removes the &ldquo;I don&rsquo;t know where to begin&rdquo; objection</text>
+      <text x="620" y="86" text-anchor="end" font-size="15" font-weight="800" fill="#DC2626">+$300</text>
+
+      <rect x="0" y="110" width="654" height="44" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="22" y="128" font-size="11" font-weight="800" fill="#DC2626" letter-spacing="1">BONUS 2 &middot; Private Community Access</text>
+      <text x="22" y="146" font-size="12.5" font-weight="600" fill="#5E2328">removes the &ldquo;I&rsquo;ll be alone in this&rdquo; objection</text>
+      <text x="620" y="138" text-anchor="end" font-size="15" font-weight="800" fill="#DC2626">+$500</text>
+
+      <rect x="0" y="162" width="654" height="44" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="22" y="180" font-size="11" font-weight="800" fill="#DC2626" letter-spacing="1">BONUS 3 &middot; Done-for-You Swipe File</text>
+      <text x="22" y="198" font-size="12.5" font-weight="600" fill="#5E2328">removes the &ldquo;I&rsquo;m not a good writer&rdquo; objection</text>
+      <text x="620" y="190" text-anchor="end" font-size="15" font-weight="800" fill="#DC2626">+$400</text>
+
+      <!-- total + divider -->
+      <line x1="0" y1="220" x2="654" y2="220" stroke="#340F12" stroke-width="2.5"/>
+      <text x="22" y="250" font-size="14" font-weight="800" fill="#A66A6F">TOTAL PERCEIVED VALUE</text>
+      <text x="620" y="250" text-anchor="end" font-size="20" font-weight="800" fill="#340F12">$3,200</text>
+      <text x="22" y="278" font-size="18" font-weight="800" fill="#DC2626">YOU PAY TODAY</text>
+      <text x="620" y="278" text-anchor="end" font-size="20" font-weight="800" fill="#DC2626">$2,000</text>
+    </svg>
+    <div class="caption">Each bonus targets one objection. The stack makes $2,000 feel like a discount off $3,200.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · GUARANTEES ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FIVE ENHANCERS</span><span>04 &middot; Guarantees</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Guarantees: <span class="em">reverse the risk.</span></h2>
+
+  <p>The first three enhancers create desire. Guarantees destroy the last reason to hesitate. Your prospect has been burned before. They believe you, they want the outcome, but they won&rsquo;t bet against their track record of disappointment.</p>
+
+  <p>A guarantee says: <em>I&rsquo;ll carry that risk, not you.</em> You&rsquo;ve done this a hundred times. This is their first. The more you know the outcome, the more you can afford the guarantee.</p>
+
+  <p><span class="b">Be specific.</span> Vague promises get tuned out. The more precisely you name the outcome you guarantee &mdash; with a number, a timeline, a condition &mdash; the more believable and powerful it becomes.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D-GUARANTEES: 2x2 of the four types -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- UNCONDITIONAL -->
+      <rect x="0" y="0" width="310" height="140" rx="12" fill="#DC2626"/>
+      <text x="24" y="34" font-size="12" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">UNCONDITIONAL</text>
+      <text x="24" y="66" font-size="18" font-weight="800" fill="#FFFFFF">Money back.</text>
+      <text x="24" y="90" font-size="18" font-weight="800" fill="#FFFFFF">No questions.</text>
+      <text x="24" y="124" font-size="12.5" font-style="italic" fill="#FBE0E0">the highest trust signal you can send</text>
+
+      <!-- CONDITIONAL -->
+      <rect x="330" y="0" width="324" height="140" rx="12" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="354" y="34" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.5">CONDITIONAL</text>
+      <text x="354" y="66" font-size="18" font-weight="800" fill="#340F12">Do the work.</text>
+      <text x="354" y="90" font-size="18" font-weight="800" fill="#340F12">Get the result.</text>
+      <text x="354" y="124" font-size="12.5" font-style="italic" fill="#A66A6F">or we work free until you do</text>
+
+      <!-- ANTI-GUARANTEE -->
+      <rect x="0" y="158" width="310" height="140" rx="12" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="24" y="192" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.5">ANTI-GUARANTEE</text>
+      <text x="24" y="224" font-size="18" font-weight="800" fill="#340F12">No refunds.</text>
+      <text x="24" y="248" font-size="18" font-weight="800" fill="#340F12">Committed buyers only.</text>
+      <text x="24" y="282" font-size="12.5" font-style="italic" fill="#A66A6F">filters for serious applicants</text>
+
+      <!-- IMPLIED -->
+      <rect x="330" y="158" width="324" height="140" rx="12" fill="#991218"/>
+      <text x="354" y="192" font-size="12" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">IMPLIED</text>
+      <text x="354" y="224" font-size="18" font-weight="800" fill="#FFFFFF">We win when</text>
+      <text x="354" y="248" font-size="18" font-weight="800" fill="#FFFFFF">you win.</text>
+      <text x="354" y="282" font-size="12.5" font-style="italic" fill="#FBE0E0">performance-based, skin in the game</text>
+    </svg>
+    <div class="caption">Use the strongest guarantee you can honour. A guarantee is a math equation — more closes, a few more refunds, net win.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · NAMING ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FIVE ENHANCERS</span><span>05 &middot; Naming</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Naming: make it <span class="em">stick.</span></h2>
+
+  <p>A generic name loses sales before anyone hears the pitch. A magnetic name communicates the dream outcome before the prospect even asks &ldquo;what is it?&rdquo;. The MAGIC formula builds that name.</p>
+
+  <p>The formula has five parts. <span class="b">M</span>agnet: who it&rsquo;s for. <span class="b">A</span>vatar: the specific dream outcome. <span class="b">G</span>oal: the timeframe. <span class="b">I</span>ndicator: the mechanism. <span class="b">C</span>ontainer: what it is (system, blueprint, sprint, formula).</p>
+
+  <p>You don&rsquo;t need all five in every name. Hit three or four and you have something worth printing on a slide. It should be something you can say in one breath and they can repeat back correctly.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D-NAMING: MAGIC breakdown -->
+    <svg viewBox="0 0 654 310" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- headline example -->
+      <rect x="0" y="0" width="654" height="66" rx="11" fill="#FBE0E0" stroke="#F0D6D8" stroke-width="2"/>
+      <text x="24" y="28" font-size="13" font-weight="800" fill="#A66A6F" letter-spacing="1.5">THE NAME IT BUILDS</text>
+      <text x="24" y="54" font-size="18" font-weight="800" fill="#340F12">The 30-Day Coach Revenue Sprint System</text>
+
+      <!-- MAGIC rows -->
+      <rect x="0" y="82" width="654" height="44" rx="9" fill="#FFFDFD" stroke="#F0D6D8" stroke-width="2"/>
+      <text x="22" y="100" font-size="24" font-weight="800" fill="#DC2626">M</text>
+      <text x="52" y="100" font-size="13" font-weight="800" fill="#340F12">MAGNET</text>
+      <text x="52" y="118" font-size="12.5" font-weight="600" fill="#5E2328">who it&rsquo;s for, explicitly</text>
+      <text x="420" y="108" font-size="14" font-weight="700" fill="#A66A6F" font-style="italic">&ldquo;Coach&rdquo;</text>
+
+      <rect x="0" y="134" width="654" height="44" rx="9" fill="#FFFDFD" stroke="#F0D6D8" stroke-width="2"/>
+      <text x="22" y="152" font-size="24" font-weight="800" fill="#DC2626">A</text>
+      <text x="52" y="152" font-size="13" font-weight="800" fill="#340F12">AVATAR</text>
+      <text x="52" y="170" font-size="12.5" font-weight="600" fill="#5E2328">the dream outcome they most want</text>
+      <text x="420" y="160" font-size="14" font-weight="700" fill="#A66A6F" font-style="italic">&ldquo;Revenue&rdquo;</text>
+
+      <rect x="0" y="186" width="654" height="44" rx="9" fill="#FFFDFD" stroke="#F0D6D8" stroke-width="2"/>
+      <text x="22" y="204" font-size="24" font-weight="800" fill="#DC2626">G</text>
+      <text x="52" y="204" font-size="13" font-weight="800" fill="#340F12">GOAL</text>
+      <text x="52" y="222" font-size="12.5" font-weight="600" fill="#5E2328">the timeframe — compresses time delay</text>
+      <text x="420" y="212" font-size="14" font-weight="700" fill="#A66A6F" font-style="italic">&ldquo;30-Day&rdquo;</text>
+
+      <rect x="0" y="238" width="654" height="44" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="22" y="256" font-size="24" font-weight="800" fill="#DC2626">I</text>
+      <text x="52" y="256" font-size="13" font-weight="800" fill="#340F12">INDICATOR</text>
+      <text x="52" y="274" font-size="12.5" font-weight="600" fill="#5E2328">the mechanism &mdash; why it works differently</text>
+      <text x="420" y="264" font-size="14" font-weight="700" fill="#A66A6F" font-style="italic">&ldquo;Sprint&rdquo;</text>
+
+      <rect x="0" y="290" width="654" height="20" rx="7" fill="#DC2626"/>
+      <text x="22" y="305" font-size="13" font-weight="800" fill="#FFFFFF">C = CONTAINER: System / Blueprint / Formula / Method / Programme</text>
+    </svg>
+    <div class="caption">A name built from MAGIC sells before the pitch starts — and gets repeated without prompting.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · STACKING ALL FIVE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FIVE ENHANCERS</span><span>Stack Them</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Stack all five. <span class="em">Leave nothing on the table.</span></h2>
+
+  <p>The enhancers multiply each other. Scarcity and urgency together create a two-sided vice: not enough spots, and the clock is running. Bonuses make the stack feel lopsided in the buyer&rsquo;s favour. A guarantee neutralises the remaining fear. A magnetic name makes it easy to say yes out loud.</p>
+
+  <p>The order matters. <span class="b">Build the core offer first.</span> A bad offer with five enhancers is just a flashier bad offer. The enhancers amplify &mdash; they don&rsquo;t save.</p>
+
+  <div class="band">
+    <div class="t">GOOD OFFER &times; FIVE ENHANCERS = IRRESISTIBLE.</div>
+    <div class="s">bad offer &times; five enhancers = faster rejection</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0">
+    <!-- D-STACK: five enhancers as additive multipliers -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- base bar -->
+      <rect x="0" y="0" width="654" height="40" rx="9" fill="#F5E8E9" stroke="#A66A6F" stroke-width="2.5"/>
+      <text x="327" y="26" text-anchor="middle" font-size="15" font-weight="800" fill="#5E2328">CORE OFFER &mdash; VALUE EQUATION COMPLETE</text>
+
+      <!-- enhancer layers building up -->
+      <rect x="0" y="50" width="654" height="36" rx="8" fill="#FBE0E0" stroke="#F0A0A0" stroke-width="2"/>
+      <text x="327" y="74" text-anchor="middle" font-size="14" font-weight="800" fill="#DC2626">+ SCARCITY &mdash; only 20 places this cohort</text>
+
+      <rect x="0" y="96" width="654" height="36" rx="8" fill="#FBE0E0" stroke="#F0A0A0" stroke-width="2"/>
+      <text x="327" y="120" text-anchor="middle" font-size="14" font-weight="800" fill="#DC2626">+ URGENCY &mdash; price increases Friday at midnight</text>
+
+      <rect x="0" y="142" width="654" height="36" rx="8" fill="#FBE0E0" stroke="#F0A0A0" stroke-width="2"/>
+      <text x="327" y="166" text-anchor="middle" font-size="14" font-weight="800" fill="#DC2626">+ BONUSES &mdash; three fast-action gifts ($1,200 value)</text>
+
+      <rect x="0" y="188" width="654" height="36" rx="8" fill="#FBE0E0" stroke="#F0A0A0" stroke-width="2"/>
+      <text x="327" y="212" text-anchor="middle" font-size="14" font-weight="800" fill="#DC2626">+ GUARANTEE &mdash; results in 90 days or full refund</text>
+
+      <rect x="0" y="234" width="654" height="48" rx="9" fill="#DC2626"/>
+      <text x="327" y="255" text-anchor="middle" font-size="13" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">+ NAMING</text>
+      <text x="327" y="276" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">The 90-Day Revenue Accelerator Blueprint</text>
+    </svg>
+    <div class="caption">Each layer narrows the gap between interest and action. The last layer — naming — makes saying yes easy.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · CLOSE + CTA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FIVE ENHANCERS</span><span>The Takeaway</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">You&rsquo;re one layer away from <span class="em">unstoppable.</span></h2>
+
+  <p>Most businesses stop at the core offer and wonder why they&rsquo;re fighting for every sale. The enhancers aren&rsquo;t manipulation &mdash; they&rsquo;re respect. You&rsquo;re removing every rational and emotional reason to delay a decision that would genuinely help someone.</p>
+
+  <p class="small">Start with real scarcity. Add a real deadline. Stack three bonuses that target real objections. Guarantee the outcome you&rsquo;re confident in. Name it so people say it in their sleep. Now sell.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;Join our coaching programme today.&rdquo; — no enhancers; no pressure; no sale.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;The 90-Day Revenue Blueprint: 20 spots, fast-action bonuses end Friday, guaranteed results.&rdquo;</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:10px 0 4px">
+    <!-- D-CLOSE: before/after conversion -->
+    <svg viewBox="0 0 654 130" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- BEFORE bar -->
+      <text x="0" y="22" font-size="12" font-weight="800" fill="#A66A6F" letter-spacing="1">NO ENHANCERS</text>
+      <rect x="0" y="30" width="160" height="32" rx="7" fill="#F5E8E9" stroke="#A66A6F" stroke-width="2.5"/>
+      <text x="80" y="52" text-anchor="middle" font-size="14" font-weight="800" fill="#5E2328">2% CVR</text>
+
+      <!-- arrow -->
+      <g stroke="#DC2626" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="172" y1="46" x2="202" y2="46"/><polyline points="192,37 206,46 192,55"/>
+      </g>
+      <text x="188" y="34" text-anchor="middle" font-size="11" font-weight="800" fill="#DC2626">ENHANCE</text>
+
+      <!-- AFTER bar -->
+      <text x="216" y="22" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1">ALL FIVE STACKED</text>
+      <rect x="216" y="30" width="438" height="32" rx="7" fill="#DC2626"/>
+      <text x="435" y="52" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">8&ndash;12% CVR &mdash; same traffic, 4&ndash;6&times; revenue</text>
+
+      <!-- bottom note -->
+      <rect x="0" y="82" width="654" height="40" rx="9" fill="#340F12"/>
+      <text x="327" y="107" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">Same audience. Same traffic. Four to six times the revenue. That&rsquo;s the math of enhancers.</text>
+    </svg>
+    <div class="caption">Conversion doubles — and doubles again — when every barrier to buying has been addressed.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Offers &mdash; the book.</h3>
+    <p>The full five-enhancer playbook, the value equation, the grand slam offer structure, and every tool you need to build an offer so good people feel stupid saying no.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Build the offer. Stack the enhancers. Make it impossible to say no.</div>
+
+  <div class="stamp">The Five Enhancers</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>

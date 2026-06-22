@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Client-Financed Acquisition — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --panel:#DBF2E4;
+    --ink:#0C2A18;
+    --ink-soft:#21452F;
+    --muted:#6B9078;
+    --line:#D0E9D8;
+    --violet:#059669;
+    --violet-deep:#045C42;
+    --violet-soft:#88D2A6;
+    --violet-fill:#DBF2E4;
+    --plum:#6B9078;
+    --plum-fill:#E4F0E8;
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#b6dcc2; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#E9F7EE; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#88D2A6; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #C8DDD2; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#A8CEBA; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">$</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Leads</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Grow your business using your customers&rsquo; money</div>
+    <h1 class="title">CLIENT-<br>FINANCED<br>ACQUISITION</h1>
+    <p class="cover-sub">Most businesses bleed cash buying customers. The smartest ones engineer it so <b>customer revenue pays for more customers</b> &mdash; a loop that scales without a cash advance.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; structure offers &middot; make growth free</span></div>
+  </div>
+  <div class="stamp">Client-Financed Acquisition</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · THE PROBLEM ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CLIENT-FINANCED ACQUISITION</span><span>The Problem</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Growth costs money. <span class="em">Until it doesn&rsquo;t.</span></h2>
+
+  <p class="lead">The standard playbook: spend $100 to acquire a customer, hope they&rsquo;re worth $300 over time, and pray you survive the gap.</p>
+  <p>Most businesses die in that gap. They&rsquo;re profitable on paper &mdash; their unit economics work &mdash; but they run out of cash before the lifetime value arrives. Scale accelerates the bleeding.</p>
+  <p>The fix isn&rsquo;t a bigger war chest. It&rsquo;s re-engineering the <span class="b">timing.</span> Make the money arrive before &mdash; or the instant &mdash; you spend it.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <!-- D0: the cash gap problem -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- timeline -->
+      <line x1="30" y1="200" x2="624" y2="200" stroke="#0C2A18" stroke-width="2.5"/>
+      <!-- cash out spike -->
+      <rect x="60" y="100" width="90" height="100" rx="8" fill="#E4F0E8" stroke="#6B9078" stroke-width="2.5"/>
+      <text x="105" y="88" text-anchor="middle" font-size="12" font-weight="800" fill="#6B9078" letter-spacing="1">AD SPEND</text>
+      <text x="105" y="158" text-anchor="middle" font-size="20" font-weight="800" fill="#21452F">-$100</text>
+      <!-- gap arrow -->
+      <g stroke="#A66A6F" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-dasharray="5 6">
+        <line x1="155" y1="150" x2="380" y2="150"/>
+      </g>
+      <text x="267" y="138" text-anchor="middle" font-size="12" font-weight="800" fill="#6B9078">THE CASH GAP</text>
+      <text x="267" y="172" text-anchor="middle" font-size="11" font-weight="600" fill="#6B9078">weeks or months</text>
+      <!-- revenue arrives late -->
+      <rect x="386" y="80" width="90" height="120" rx="8" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="431" y="68" text-anchor="middle" font-size="12" font-weight="800" fill="#059669" letter-spacing="1">LTGP</text>
+      <text x="431" y="138" text-anchor="middle" font-size="20" font-weight="800" fill="#0C2A18">+$300</text>
+      <text x="431" y="158" text-anchor="middle" font-size="11" font-style="italic" fill="#21452F">eventually</text>
+      <!-- danger zone -->
+      <rect x="154" y="202" width="230" height="28" rx="6" fill="#A66A6F"/>
+      <text x="269" y="221" text-anchor="middle" font-size="12.5" font-weight="800" fill="#FFFFFF">&#9888; MOST BUSINESSES DIE HERE</text>
+      <!-- scale label -->
+      <text x="560" y="80" text-anchor="middle" font-size="11.5" font-weight="800" fill="#6B9078">Scale &rarr;</text>
+      <text x="560" y="96" text-anchor="middle" font-size="11" font-weight="600" fill="#6B9078">bigger gap,</text>
+      <text x="560" y="112" text-anchor="middle" font-size="11" font-weight="600" fill="#6B9078">faster bleed</text>
+    </svg>
+    <div class="caption">Profitable at the unit level. Bankrupt at the timing level. The gap kills growth.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · THE CORE INSIGHT ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CLIENT-FINANCED ACQUISITION</span><span>The Insight</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Customer #1 <span class="em">buys</span> customer #2.</h2>
+
+  <p>The constraint isn&rsquo;t growth &mdash; it&rsquo;s the sequence of cash. Flip the sequence and growth funds itself. The front-end of your offer stack covers your acquisition cost; the back-end is where you profit.</p>
+
+  <p>This isn&rsquo;t a loan, a grant, or a new investor. <span class="b">Your customers become your growth capital.</span> Every dollar they spend on entry goes straight back into getting the next customer through the door.</p>
+
+  <div class="band">
+    <div class="t">CAC &le; FRONT-END REVENUE. PROFIT LIVES IN THE BACK.</div>
+    <div class="s">the only math that makes scaling feel like printing</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D-INSIGHT: fraction showing the reframe -->
+    <svg viewBox="0 0 654 340" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- OLD MODEL label -->
+      <text x="10" y="24" font-size="12" font-weight="800" fill="#6B9078" letter-spacing="1.5">OLD MODEL</text>
+      <rect x="0" y="36" width="290" height="120" rx="12" fill="#E4F0E8" stroke="#6B9078" stroke-width="2.5"/>
+      <text x="145" y="76" text-anchor="middle" font-size="14" font-weight="800" fill="#21452F">SPEND ON ADS</text>
+      <line x1="20" y1="96" x2="270" y2="96" stroke="#6B9078" stroke-width="2.5"/>
+      <text x="145" y="120" text-anchor="middle" font-size="14" font-weight="800" fill="#21452F">HOPE FOR PROFIT</text>
+      <text x="145" y="144" text-anchor="middle" font-size="11" font-style="italic" fill="#6B9078">months later, maybe</text>
+
+      <!-- arrow -->
+      <g stroke="#059669" stroke-width="3.5" fill="none" stroke-linecap="round">
+        <line x1="302" y1="96" x2="338" y2="96"/><polyline points="325,84 342,96 325,108"/>
+      </g>
+      <text x="320" y="76" text-anchor="middle" font-size="11" font-weight="800" fill="#059669">FLIP IT</text>
+
+      <!-- NEW MODEL -->
+      <text x="354" y="24" font-size="12" font-weight="800" fill="#059669" letter-spacing="1.5">CFA MODEL</text>
+      <rect x="344" y="36" width="310" height="120" rx="12" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="499" y="68" text-anchor="middle" font-size="14" font-weight="800" fill="#0C2A18">FRONT-END SALE</text>
+      <text x="499" y="90" text-anchor="middle" font-size="12" font-style="italic" fill="#21452F">covers acquisition cost</text>
+      <line x1="364" y1="106" x2="634" y2="106" stroke="#059669" stroke-width="2.5"/>
+      <text x="499" y="128" text-anchor="middle" font-size="14" font-weight="800" fill="#0C2A18">BACK-END SALE</text>
+      <text x="499" y="150" text-anchor="middle" font-size="12" font-style="italic" fill="#21452F">100% margin upside</text>
+
+      <!-- the loop -->
+      <rect x="0" y="210" width="654" height="118" rx="13" fill="#059669"/>
+      <text x="327" y="248" text-anchor="middle" font-size="13" font-weight="800" fill="#88D2A6" letter-spacing="1.5">THE LOOP</text>
+      <text x="327" y="278" text-anchor="middle" font-size="22" font-weight="800" fill="#FFFFFF">Front-end revenue &rarr; buys more ads &rarr; more customers</text>
+      <text x="327" y="308" text-anchor="middle" font-size="14" font-weight="700" fill="#88D2A6">zero incremental cash out of pocket as you scale</text>
+    </svg>
+    <div class="caption">Same products. Same customers. Different order of money — that&rsquo;s the whole model.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · THE SLO MATH ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CLIENT-FINANCED ACQUISITION</span><span>The SLO Math</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The self-liquidating <span class="em">offer.</span></h2>
+
+  <p>A Self-Liquidating Offer (SLO) is a low-cost product positioned right after your lead magnet. Its price matches your cost per lead. The ad spend disappears &mdash; liquidated &mdash; before the real sale even begins.</p>
+
+  <p><span class="b">Classic numbers:</span> $10 lead magnet opt-in, $37 SLO, $500 core offer. If your cost-per-lead is $30, the SLO covers it. The core offer is pure margin.</p>
+
+  <p>The SLO doesn&rsquo;t need to be hugely profitable. It needs to break <em>even.</em> That&rsquo;s the whole game &mdash; break even on acquisition, keep everything else.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D-SLO: the fraction + flow -->
+    <svg viewBox="0 0 654 310" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- COST PER LEAD column -->
+      <text x="10" y="28" font-size="12" font-weight="800" fill="#6B9078" letter-spacing="1.5">YOUR AD COST</text>
+      <rect x="0" y="40" width="198" height="90" rx="11" fill="#E4F0E8" stroke="#6B9078" stroke-width="2.5"/>
+      <text x="99" y="82" text-anchor="middle" font-size="32" font-weight="800" fill="#21452F">$30</text>
+      <text x="99" y="112" text-anchor="middle" font-size="12" font-weight="600" fill="#6B9078">cost per opt-in</text>
+
+      <!-- equals sign -->
+      <text x="215" y="95" font-size="36" font-weight="800" fill="#0C2A18" text-anchor="middle">=</text>
+
+      <!-- SLO column -->
+      <text x="238" y="28" font-size="12" font-weight="800" fill="#059669" letter-spacing="1.5">SLO PRICE</text>
+      <rect x="238" y="40" width="198" height="90" rx="11" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="337" y="82" text-anchor="middle" font-size="32" font-weight="800" fill="#059669">$37</text>
+      <text x="337" y="112" text-anchor="middle" font-size="12" font-weight="600" fill="#21452F">self-liquidating product</text>
+
+      <!-- result -->
+      <text x="450" y="82" font-size="22" font-weight="800" fill="#0C2A18" text-anchor="middle">&rarr;</text>
+      <rect x="474" y="40" width="180" height="90" rx="11" fill="#059669"/>
+      <text x="564" y="72" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">NET COST</text>
+      <text x="564" y="96" text-anchor="middle" font-size="32" font-weight="800" fill="#88D2A6">$0</text>
+      <text x="564" y="118" text-anchor="middle" font-size="11" font-weight="700" fill="#88D2A6">ad fully covered</text>
+
+      <!-- core offer below -->
+      <rect x="0" y="162" width="654" height="130" rx="12" fill="#FFFFFF" stroke="#0C2A18" stroke-width="2.5"/>
+      <text x="30" y="198" font-size="13" font-weight="800" fill="#059669" letter-spacing="1.5">CORE OFFER &rarr; THE PROFIT LAYER</text>
+      <text x="30" y="230" font-size="22" font-weight="800" fill="#0C2A18">$500 programme &mdash; every cent is margin.</text>
+      <text x="30" y="257" font-size="14" font-weight="600" fill="#21452F">CAC already paid. This is the back-end. Zero debt. All upside.</text>
+      <rect x="534" y="198" width="100" height="70" rx="10" fill="#059669"/>
+      <text x="584" y="231" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">100%</text>
+      <text x="584" y="250" text-anchor="middle" font-size="11" font-weight="700" fill="#88D2A6">NET MARGIN</text>
+    </svg>
+    <div class="caption">SLO wipes the ad bill. Core offer is all margin. That&rsquo;s a business, not a gamble.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · THE THREE-LAYER STACK ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CLIENT-FINANCED ACQUISITION</span><span>The Three Layers</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Stack three layers, <span class="em">each funding the next.</span></h2>
+
+  <p>The full structure has three moves. The <span class="b">lead magnet</span> collects attention for free or near-free. The <span class="b">SLO</span> converts that attention into a small purchase that pays for the lead. The <span class="b">core offer</span> is where you actually build wealth.</p>
+
+  <p>Each layer does a job. The lead magnet proves you can help. The SLO proves they will pay. The core offer proves how much. Don&rsquo;t skip to the third &mdash; earn it with the first two.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <!-- D-STACK: three-tier flow -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Layer 1: Lead Magnet -->
+      <rect x="0" y="0" width="654" height="76" rx="11" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="26" y="30" font-size="12" font-weight="800" fill="#045C42" letter-spacing="1.5">LAYER 1 &middot; LEAD MAGNET</text>
+      <text x="26" y="56" font-size="18" font-weight="800" fill="#0C2A18">Free guide, quiz, or mini-course</text>
+      <text x="572" y="30" text-anchor="end" font-size="13" font-weight="800" fill="#6B9078">COST</text>
+      <text x="572" y="56" text-anchor="end" font-size="18" font-weight="800" fill="#6B9078">$0</text>
+
+      <!-- arrow down -->
+      <g stroke="#059669" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="327" y1="78" x2="327" y2="108"/><polyline points="316,100 327,112 338,100"/>
+      </g>
+      <text x="380" y="100" font-size="12" font-weight="700" fill="#6B9078">opt-in converts interest into a name</text>
+
+      <!-- Layer 2: SLO -->
+      <rect x="0" y="114" width="654" height="76" rx="11" fill="#059669"/>
+      <text x="26" y="144" font-size="12" font-weight="800" fill="#88D2A6" letter-spacing="1.5">LAYER 2 &middot; SELF-LIQUIDATING OFFER</text>
+      <text x="26" y="170" font-size="18" font-weight="800" fill="#FFFFFF">Low-price product: $27&ndash;$97</text>
+      <text x="572" y="144" text-anchor="end" font-size="13" font-weight="800" fill="#88D2A6">COVERS</text>
+      <text x="572" y="170" text-anchor="end" font-size="18" font-weight="800" fill="#FFFFFF">CAC</text>
+
+      <!-- arrow down -->
+      <g stroke="#059669" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="327" y1="192" x2="327" y2="222"/><polyline points="316,214 327,226 338,214"/>
+      </g>
+      <text x="380" y="214" font-size="12" font-weight="700" fill="#6B9078">a buyer proves they spend, not just browse</text>
+
+      <!-- Layer 3: Core Offer -->
+      <rect x="0" y="228" width="654" height="62" rx="11" fill="#045C42"/>
+      <text x="26" y="252" font-size="12" font-weight="800" fill="#88D2A6" letter-spacing="1.5">LAYER 3 &middot; CORE OFFER</text>
+      <text x="26" y="278" font-size="18" font-weight="800" fill="#FFFFFF">High-ticket programme or service: $500+</text>
+      <text x="572" y="252" text-anchor="end" font-size="13" font-weight="800" fill="#88D2A6">PROFIT</text>
+      <text x="572" y="278" text-anchor="end" font-size="18" font-weight="800" fill="#88D2A6">100%</text>
+    </svg>
+    <div class="caption">Layer 1 earns trust. Layer 2 funds the list. Layer 3 builds the business.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · BEFORE vs AFTER CASH FLOW ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CLIENT-FINANCED ACQUISITION</span><span>Before vs After</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Same month. <span class="em">Different math.</span></h2>
+
+  <p>Without CFA, spending $10,000 on ads means $10,000 out the door before a single dollar returns. With CFA, the SLO revenue hits the same month &mdash; often the same week &mdash; as the ad spend.</p>
+
+  <p>The constraint changes completely. The old business has a <span class="b">capital problem.</span> The CFA business has a <span class="b">conversion problem</span> &mdash; a solvable one, with clear levers.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D-BEFORE-AFTER: side-by-side cash flow bars -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- BEFORE column -->
+      <text x="150" y="22" text-anchor="middle" font-size="12" font-weight="800" fill="#6B9078" letter-spacing="1.5">WITHOUT CFA</text>
+      <!-- cash out bar (tall red-ish) -->
+      <rect x="60" y="40" width="180" height="100" rx="8" fill="#E4F0E8" stroke="#6B9078" stroke-width="2.5"/>
+      <text x="150" y="86" text-anchor="middle" font-size="16" font-weight="800" fill="#21452F">MONTH 1</text>
+      <text x="150" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#6B9078">-$10,000 out</text>
+      <rect x="60" y="152" width="180" height="60" rx="8" fill="#DBF2E4" stroke="#6B9078" stroke-width="2"/>
+      <text x="150" y="186" text-anchor="middle" font-size="14" font-weight="700" fill="#21452F">MONTH 3+: +$18k</text>
+      <!-- gap brace -->
+      <g stroke="#6B9078" stroke-width="2" fill="none" stroke-dasharray="4 5">
+        <line x1="246" y1="90" x2="246" y2="182"/>
+      </g>
+      <text x="252" y="140" font-size="11" font-weight="800" fill="#6B9078">GAP</text>
+
+      <!-- divider -->
+      <line x1="327" y1="20" x2="327" y2="280" stroke="#D0E9D8" stroke-width="2.5"/>
+
+      <!-- AFTER column -->
+      <text x="490" y="22" text-anchor="middle" font-size="12" font-weight="800" fill="#059669" letter-spacing="1.5">WITH CFA</text>
+      <!-- same month both bars -->
+      <rect x="390" y="80" width="200" height="74" rx="8" fill="#E4F0E8" stroke="#6B9078" stroke-width="2"/>
+      <text x="490" y="116" text-anchor="middle" font-size="14" font-weight="700" fill="#21452F">-$10,000 ads</text>
+      <rect x="390" y="40" width="200" height="36" rx="8" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="490" y="64" text-anchor="middle" font-size="14" font-weight="700" fill="#059669">+$9,800 SLO</text>
+      <!-- bracket showing same month -->
+      <g stroke="#059669" stroke-width="2" fill="none">
+        <line x1="596" y1="40" x2="610" y2="40"/>
+        <line x1="610" y1="40" x2="610" y2="154"/>
+        <line x1="596" y1="154" x2="610" y2="154"/>
+      </g>
+      <text x="618" y="97" font-size="11" font-weight="800" fill="#059669" transform="rotate(90 618 97)" text-anchor="middle">SAME MONTH</text>
+      <!-- net label -->
+      <rect x="390" y="178" width="200" height="52" rx="9" fill="#059669"/>
+      <text x="490" y="203" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">NET OUT: ~$200</text>
+      <text x="490" y="222" text-anchor="middle" font-size="11" font-weight="700" fill="#88D2A6">core offer upside untouched</text>
+
+      <!-- verdict -->
+      <rect x="0" y="252" width="654" height="40" rx="9" fill="#0C2A18"/>
+      <text x="327" y="278" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">Scale 10&times;? Without CFA: need $100k. With CFA: need $2k.</text>
+    </svg>
+    <div class="caption">Same outcome. Radically different capital requirement. That&rsquo;s why CFA businesses outgrow everyone.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · UNIT ECONOMICS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CLIENT-FINANCED ACQUISITION</span><span>Unit Economics</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Run the <span class="em">numbers first.</span></h2>
+
+  <p>CFA only works if the unit math holds. Three things must be true: your SLO conversion rate is high enough to cover your cost per click, your core offer converts a meaningful share of SLO buyers, and the back-end is priced to build real wealth.</p>
+
+  <p>Typical benchmarks: <span class="b">20&ndash;40% of opt-ins buy the SLO.</span> <span class="b">5&ndash;15% of SLO buyers take the core offer.</span> From there, small improvements in either number compound rapidly.</p>
+
+  <p>The lever people ignore: <span class="b">raise the SLO price.</span> A $27 SLO that converts 30% of opt-ins at a $12 cost-per-click doesn&rsquo;t liquidate. A $47 SLO at the same rate does.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0">
+    <!-- D-UNIT: stacked bar comparison at two price points -->
+    <svg viewBox="0 0 654 280" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- labels -->
+      <text x="10" y="24" font-size="12" font-weight="800" fill="#6B9078" letter-spacing="1">SLO @ $27 &mdash; 30% CVR &mdash; $12 CPC</text>
+      <text x="10" y="56" font-size="12" font-weight="800" fill="#6B9078">Revenue / 100 opt-ins</text>
+      <rect x="10" y="66" width="243" height="34" rx="7" fill="#E4F0E8" stroke="#6B9078" stroke-width="2"/>
+      <text x="22" y="89" font-size="13" font-weight="800" fill="#21452F">SLO: 30 &times; $27 = $810</text>
+      <text x="10" y="122" font-size="12" font-weight="800" fill="#6B9078">Ad cost / 100 opt-ins</text>
+      <rect x="10" y="132" width="300" height="34" rx="7" fill="#E4F0E8" stroke="#6B9078" stroke-width="2.5"/>
+      <text x="22" y="155" font-size="13" font-weight="800" fill="#21452F">Cost: 100 &times; $12 = $1,200</text>
+      <rect x="10" y="186" width="654" height="34" rx="9" fill="#6B9078"/>
+      <text x="327" y="209" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">&#9660; DOESN&rsquo;T LIQUIDATE: $390 shortfall per 100 leads</text>
+
+      <!-- second scenario: SLO @ $47 -->
+      <text x="10" y="244" font-size="12" font-weight="800" fill="#059669" letter-spacing="1">SLO @ $47 &mdash; same CVR &amp; CPC</text>
+      <rect x="10" y="254" width="420" height="24" rx="7" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="22" y="271" font-size="12" font-weight="800" fill="#059669">SLO: 30 &times; $47 = $1,410 &rarr; covers $1,200 cost &#10003; LIQUIDATED</text>
+    </svg>
+    <div class="caption">Price the SLO to cover CPL. Conversion rate alone won&rsquo;t save you — pricing will.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · THE SCALING FLYWHEEL ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CLIENT-FINANCED ACQUISITION</span><span>The Flywheel</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Once it liquidates, <span class="em">the flywheel turns.</span></h2>
+
+  <p>Break-even acquisition is not the endgame &mdash; it&rsquo;s the launch condition. Once the SLO covers your ad bill, you can reinvest <em>all</em> back-end profit into more ads. More ads bring more opt-ins. More opt-ins produce more SLO revenue. More SLO revenue funds more ads.</p>
+
+  <p>The ceiling is no longer <span class="b">how much cash you have.</span> The ceiling is <span class="b">how large your market is.</span> That&rsquo;s a better problem to have.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D-FLYWHEEL: circular flow -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- ring -->
+      <circle cx="327" cy="148" r="108" fill="none" stroke="#88D2A6" stroke-width="3" stroke-dasharray="6 8"/>
+      <!-- arrowheads on ring -->
+      <g fill="#059669">
+        <polygon points="435,148 423,141 423,155"/>
+        <polygon points="327,256 320,244 334,244"/>
+        <polygon points="219,148 231,155 231,141"/>
+        <polygon points="327,40 334,52 320,52"/>
+      </g>
+
+      <!-- centre -->
+      <text x="327" y="140" text-anchor="middle" font-size="14" font-weight="800" fill="#0C2A18">SELF-FUNDING</text>
+      <text x="327" y="162" text-anchor="middle" font-size="14" font-weight="800" fill="#059669">GROWTH</text>
+
+      <!-- node: ADS (top) -->
+      <rect x="255" y="2" width="144" height="58" rx="11" fill="#059669"/>
+      <text x="327" y="28" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">MORE ADS</text>
+      <text x="327" y="48" text-anchor="middle" font-size="11" font-weight="600" fill="#DBF2E4">funded by SLO revenue</text>
+
+      <!-- node: LEADS (right) -->
+      <rect x="490" y="119" width="158" height="58" rx="11" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="569" y="145" text-anchor="middle" font-size="15" font-weight="800" fill="#0C2A18">MORE LEADS</text>
+      <text x="569" y="163" text-anchor="middle" font-size="11" font-weight="600" fill="#6B9078">opt-ins pour in</text>
+
+      <!-- node: SLO SALES (bottom) -->
+      <rect x="249" y="230" width="156" height="58" rx="11" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="327" y="256" text-anchor="middle" font-size="15" font-weight="800" fill="#0C2A18">SLO SALES</text>
+      <text x="327" y="274" text-anchor="middle" font-size="11" font-weight="600" fill="#6B9078">cover the ad bill again</text>
+
+      <!-- node: CORE OFFERS (left) -->
+      <rect x="6" y="119" width="158" height="58" rx="11" fill="#045C42"/>
+      <text x="85" y="145" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">CORE OFFERS</text>
+      <text x="85" y="163" text-anchor="middle" font-size="11" font-weight="600" fill="#88D2A6">pure profit stacks up</text>
+    </svg>
+    <div class="caption">The flywheel starts slowly. Once it liquidates, it accelerates without needing a capital infusion.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · WHAT BREAKS IT ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CLIENT-FINANCED ACQUISITION</span><span>What Breaks It</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Three things that <span class="em">kill the loop.</span></h2>
+
+  <p>CFA fails in predictable ways. Each failure mode has one fix.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span><strong>SLO too cheap:</strong> $7 SLO on a $25 CPL. Math never works. Raise the price or lower the cost.</span></div>
+    <div class="r bad"><span class="mk">&#10007;</span><span><strong>SLO disconnected:</strong> lead magnet promises health tips, SLO sells productivity software. Buyers bounce. Match the promise exactly.</span></div>
+    <div class="r bad"><span class="mk">&#10007;</span><span><strong>No back-end:</strong> the SLO becomes the core offer. Margins are thin. Customers have no place to go deeper. Build the next layer first.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>Price to liquidate. Align all layers. Build the back-end before you scale the front. Then pour fuel on it.</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0">
+    <!-- D-BREAKS: the three failure modes as flow with X marks -->
+    <svg viewBox="0 0 654 272" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Failure 1 box -->
+      <rect x="0" y="0" width="198" height="82" rx="11" fill="#E4F0E8" stroke="#6B9078" stroke-width="2.5"/>
+      <text x="20" y="28" font-size="12" font-weight="800" fill="#6B9078" letter-spacing="1">FAIL 1</text>
+      <text x="20" y="52" font-size="15" font-weight="800" fill="#21452F">SLO under-</text>
+      <text x="20" y="72" font-size="15" font-weight="800" fill="#21452F">priced</text>
+
+      <!-- Failure 2 box -->
+      <rect x="228" y="0" width="198" height="82" rx="11" fill="#E4F0E8" stroke="#6B9078" stroke-width="2.5"/>
+      <text x="248" y="28" font-size="12" font-weight="800" fill="#6B9078" letter-spacing="1">FAIL 2</text>
+      <text x="248" y="52" font-size="15" font-weight="800" fill="#21452F">Misaligned</text>
+      <text x="248" y="72" font-size="15" font-weight="800" fill="#21452F">offer stack</text>
+
+      <!-- Failure 3 box -->
+      <rect x="456" y="0" width="198" height="82" rx="11" fill="#E4F0E8" stroke="#6B9078" stroke-width="2.5"/>
+      <text x="476" y="28" font-size="12" font-weight="800" fill="#6B9078" letter-spacing="1">FAIL 3</text>
+      <text x="476" y="52" font-size="15" font-weight="800" fill="#21452F">No back-end</text>
+      <text x="476" y="72" font-size="15" font-weight="800" fill="#21452F">to sell into</text>
+
+      <!-- x marks -->
+      <text x="99" y="126" text-anchor="middle" font-size="34" font-weight="800" fill="#6B9078">&#10007;</text>
+      <text x="327" y="126" text-anchor="middle" font-size="34" font-weight="800" fill="#6B9078">&#10007;</text>
+      <text x="555" y="126" text-anchor="middle" font-size="34" font-weight="800" fill="#6B9078">&#10007;</text>
+
+      <!-- fix arrow -->
+      <g stroke="#059669" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="327" y1="140" x2="327" y2="166"/><polyline points="316,158 327,170 338,158"/>
+      </g>
+
+      <!-- fix band -->
+      <rect x="0" y="172" width="654" height="100" rx="12" fill="#059669"/>
+      <text x="327" y="208" text-anchor="middle" font-size="13" font-weight="800" fill="#88D2A6" letter-spacing="1.5">THE FIX</text>
+      <text x="327" y="238" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF">Price to liquidate. Align layers. Build the back-end.</text>
+      <text x="327" y="262" text-anchor="middle" font-size="13" font-weight="600" fill="#88D2A6">In that order, every time.</text>
+    </svg>
+    <div class="caption">Three failure modes. All three are design decisions — every one is fixable before you spend a dollar.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">09</div>
+</section>
+
+<!-- ============================== PAGE 10 · CLOSE + CTA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CLIENT-FINANCED ACQUISITION</span><span>The Takeaway</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">You don&rsquo;t need <span class="em">more capital.</span> You need a better sequence.</h2>
+
+  <p>The businesses that seem to grow effortlessly aren&rsquo;t better funded &mdash; they&rsquo;re better structured. Their front-end pays for their ads. Their back-end pays for their lives. Growth compounds instead of draining.</p>
+
+  <p class="small">Build the lead magnet. Build the SLO. Price it to cover your CPL. Build the core offer. Then spend on ads and let the machine breathe.</p>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:10px 0 4px">
+    <!-- D-CLOSE: simple equation summary -->
+    <svg viewBox="0 0 654 130" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0" y="20" width="142" height="90" rx="11" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="71" y="52" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">LEAD</text>
+      <text x="71" y="70" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">MAGNET</text>
+      <text x="71" y="96" text-anchor="middle" font-size="11" font-style="italic" fill="#6B9078">earns trust</text>
+
+      <text x="172" y="70" text-anchor="middle" font-size="26" font-weight="800" fill="#0C2A18">+</text>
+
+      <rect x="194" y="20" width="142" height="90" rx="11" fill="#059669"/>
+      <text x="265" y="52" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">SELF-LIQ.</text>
+      <text x="265" y="70" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">OFFER</text>
+      <text x="265" y="96" text-anchor="middle" font-size="11" font-style="italic" fill="#88D2A6">kills CAC</text>
+
+      <text x="366" y="70" text-anchor="middle" font-size="26" font-weight="800" fill="#0C2A18">+</text>
+
+      <rect x="388" y="20" width="142" height="90" rx="11" fill="#045C42"/>
+      <text x="459" y="52" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">CORE</text>
+      <text x="459" y="70" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">OFFER</text>
+      <text x="459" y="96" text-anchor="middle" font-size="11" font-style="italic" fill="#88D2A6">builds wealth</text>
+
+      <text x="550" y="70" text-anchor="middle" font-size="26" font-weight="800" fill="#059669">=</text>
+
+      <rect x="572" y="20" width="82" height="90" rx="11" fill="#0C2A18"/>
+      <text x="613" y="60" text-anchor="middle" font-size="13" font-weight="800" fill="#88D2A6">FREE</text>
+      <text x="613" y="78" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">GROWTH</text>
+    </svg>
+    <div class="caption">Three layers. One equation. Growth that costs nothing to scale.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Leads &mdash; the book.</h3>
+    <p>Client-financed acquisition, the self-liquidating offer, LTGP:CAC, and the full lead generation playbook &mdash; get more leads than you can handle and never pay out-of-pocket for growth again.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Build the stack. Liquidate the ads. Let customers fund the next customer.</div>
+
+  <div class="stamp">Client-Financed Acquisition</div>
+  <div class="folio">10</div>
+</section>
+
+</body>
+</html>
