@@ -1,7 +1,7 @@
 {
   "_comment": "Claude Court concept bank. The daily routine picks the 2 lowest-priority UNUSED concepts (status != 'done'), generates them, then flips status to 'done' with the date + url. When all are done, reset every status to 'pending' to start a fresh cycle. 'palette' rotates the look so docs don't feel cloned.",
   "version": 1,
-  "last_run": "2026-06-22",
+  "last_run": "2026-06-23",
   "concepts": [
     { "slug": "the-value-equation", "title": "The Value Equation", "source": "$100M Offers", "palette": "violet", "status": "done", "note": "Pre-existing exemplar at repo root the-value-equation.html", "url": "https://mk-notageek.github.io/claude-court/concepts/the-value-equation.html" },
     { "slug": "the-trust-bet", "title": "The Trust Bet", "source": "Hormozi / trust", "palette": "violet", "status": "done", "note": "Pre-existing exemplar", "url": "https://mk-notageek.github.io/claude-court/concepts/the-trust-bet.html" },
@@ -14,8 +14,8 @@
     { "slug": "ltgp-cac", "title": "LTGP : CAC", "source": "$100M Leads", "palette": "emerald", "status": "done", "date": "2026-06-21", "url": "https://mk-notageek.github.io/claude-court/concepts/ltgp-cac.html" },
     { "slug": "client-financed-acquisition", "title": "Client-Financed Acquisition", "source": "$100M Leads", "palette": "emerald", "status": "done", "date": "2026-06-22", "url": "https://mk-notageek.github.io/claude-court/concepts/client-financed-acquisition.html" },
     { "slug": "the-five-enhancers", "title": "Scarcity, Urgency & the Five Enhancers", "source": "$100M Offers", "palette": "crimson", "status": "done", "date": "2026-06-22", "url": "https://mk-notageek.github.io/claude-court/concepts/the-five-enhancers.html" },
-    { "slug": "the-virtuous-cycle-of-price", "title": "The Virtuous Cycle of Price", "source": "$100M Offers", "palette": "violet", "status": "pending" },
-    { "slug": "magic-naming", "title": "The MAGIC Naming Formula", "source": "$100M Offers", "palette": "amber", "status": "pending" },
+    { "slug": "the-virtuous-cycle-of-price", "title": "The Virtuous Cycle of Price", "source": "$100M Offers", "palette": "violet", "status": "done", "date": "2026-06-23", "url": "https://mk-notageek.github.io/claude-court/concepts/the-virtuous-cycle-of-price.html" },
+    { "slug": "magic-naming", "title": "The MAGIC Naming Formula", "source": "$100M Offers", "palette": "amber", "status": "done", "date": "2026-06-23", "url": "https://mk-notageek.github.io/claude-court/concepts/magic-naming.html" },
     { "slug": "the-closer-framework", "title": "The CLOSER Framework", "source": "$100M Closing", "palette": "indigo", "status": "pending" },
     { "slug": "objection-handling", "title": "The Four Core Objections", "source": "$100M Closing", "palette": "crimson", "status": "pending" },
     { "slug": "the-attraction-offer", "title": "The Attraction Offer", "source": "$100M Money Models", "palette": "teal", "status": "pending" },

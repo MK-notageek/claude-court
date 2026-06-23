@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Virtuous Cycle of Price — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --panel:#F4F0FC;
+    --ink:#1C1235;
+    --ink-soft:#473A63;
+    --muted:#8C7BA8;
+    --line:#E5DCF6;
+    --violet:#7C3AED;
+    --violet-deep:#4C1D95;
+    --violet-soft:#C9B8F5;
+    --violet-fill:#EDE7FB;
+    --plum:#9A86B8;
+    --plum-fill:#F0EBF6;
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#d8cdf0; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#F3EEFC; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#E9DEFB; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #DCCEEA; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#D9CCEF; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">&#8593;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Offers</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Why raising your price is the growth move</div>
+    <h1 class="title">THE<br>VIRTUOUS<br>CYCLE<br>OF PRICE</h1>
+    <p class="cover-sub">Price is not just a number on an invoice. It is a <b>filter, a signal, and a compounding engine.</b> Raise it correctly and the market funds your ascent. Lower it out of fear, and you accelerate the spiral down.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; price &middot; commitment &middot; results &middot; proof</span></div>
+  </div>
+  <div class="stamp">The Virtuous Cycle of Price</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · COUNTERINTUITIVE TRUTH ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VIRTUOUS CYCLE OF PRICE</span><span>The Counterintuitive Truth</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The instinct to <span class="em">discount</span> is the trap.</h2>
+
+  <p class="lead">When growth stalls, every operator&rsquo;s gut says the same thing: lower the price. Make it easier to say yes. Remove the barrier.</p>
+  <p>Hormozi&rsquo;s finding is the opposite. <span class="b">Low prices don&rsquo;t attract more buyers &mdash; they attract worse ones.</span> The leads who haggle hardest are the ones least likely to do the work. Higher prices pre-qualify commitment before the contract is even signed.</p>
+  <p class="small">The buyer who flinches at the price and then buys anyway is already halfway out the door. The buyer who pays without negotiating is already halfway to the result.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0">
+    <!-- Before/after panels: low price vs raised price -->
+    <svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- LEFT PANEL: low price -->
+      <rect x="0" y="0" width="278" height="400" rx="14" fill="#F0EBF6" stroke="#DCCEEA" stroke-width="2.5"/>
+      <rect x="0" y="0" width="278" height="48" rx="14" fill="#9A86B8"/>
+      <rect x="0" y="34" width="278" height="14" rx="0" fill="#9A86B8"/>
+      <text x="139" y="32" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF" letter-spacing="1.5">LOW PRICE</text>
+
+      <!-- metric rows left -->
+      <text x="22" y="82" font-size="11.5" font-weight="800" fill="#8C7BA8" letter-spacing="1">LEADS</text>
+      <rect x="22" y="90" width="230" height="18" rx="5" fill="#DCCEEA"/>
+      <text x="256" y="104" text-anchor="end" font-size="11" font-weight="800" fill="#9A86B8">MANY</text>
+
+      <text x="22" y="130" font-size="11.5" font-weight="800" fill="#8C7BA8" letter-spacing="1">FOLLOW-THROUGH</text>
+      <rect x="22" y="138" width="80" height="18" rx="5" fill="#DCCEEA"/>
+      <text x="256" y="152" text-anchor="end" font-size="11" font-weight="800" fill="#9A86B8">POOR</text>
+
+      <text x="22" y="178" font-size="11.5" font-weight="800" fill="#8C7BA8" letter-spacing="1">REFUND RATE</text>
+      <rect x="22" y="186" width="190" height="18" rx="5" fill="#DCCEEA"/>
+      <text x="256" y="200" text-anchor="end" font-size="11" font-weight="800" fill="#9A86B8">HIGH</text>
+
+      <text x="22" y="226" font-size="11.5" font-weight="800" fill="#8C7BA8" letter-spacing="1">REVIEWS</text>
+      <rect x="22" y="234" width="60" height="18" rx="5" fill="#DCCEEA"/>
+      <text x="256" y="248" text-anchor="end" font-size="11" font-weight="800" fill="#9A86B8">BAD</text>
+
+      <text x="22" y="274" font-size="11.5" font-weight="800" fill="#8C7BA8" letter-spacing="1">MARGINS</text>
+      <rect x="22" y="282" width="40" height="18" rx="5" fill="#DCCEEA"/>
+      <text x="256" y="296" text-anchor="end" font-size="11" font-weight="800" fill="#9A86B8">THIN</text>
+
+      <!-- result badge left -->
+      <rect x="18" y="332" width="242" height="46" rx="10" fill="#FFFFFF" stroke="#DCCEEA" stroke-width="2"/>
+      <text x="139" y="352" text-anchor="middle" font-size="12" font-weight="800" fill="#9A86B8">&#10007; CYCLE BREAKS</text>
+      <text x="139" y="370" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">no proof, no premium, no ascent</text>
+
+      <!-- RIGHT PANEL: raised price -->
+      <rect x="322" y="0" width="278" height="400" rx="14" fill="#EDE7FB" stroke="#C9B8F5" stroke-width="2.5"/>
+      <rect x="322" y="0" width="278" height="48" rx="14" fill="#7C3AED"/>
+      <rect x="322" y="34" width="278" height="14" rx="0" fill="#7C3AED"/>
+      <text x="461" y="32" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF" letter-spacing="1.5">RAISED PRICE</text>
+
+      <!-- metric rows right -->
+      <text x="344" y="82" font-size="11.5" font-weight="800" fill="#7C3AED" letter-spacing="1">LEADS</text>
+      <rect x="344" y="90" width="110" height="18" rx="5" fill="#C9B8F5"/>
+      <text x="578" y="104" text-anchor="end" font-size="11" font-weight="800" fill="#7C3AED">FEWER</text>
+
+      <text x="344" y="130" font-size="11.5" font-weight="800" fill="#7C3AED" letter-spacing="1">FOLLOW-THROUGH</text>
+      <rect x="344" y="138" width="210" height="18" rx="5" fill="#7C3AED"/>
+      <text x="578" y="152" text-anchor="end" font-size="11" font-weight="800" fill="#4C1D95">HIGH</text>
+
+      <text x="344" y="178" font-size="11.5" font-weight="800" fill="#7C3AED" letter-spacing="1">REFUND RATE</text>
+      <rect x="344" y="186" width="55" height="18" rx="5" fill="#C9B8F5"/>
+      <text x="578" y="200" text-anchor="end" font-size="11" font-weight="800" fill="#7C3AED">LOW</text>
+
+      <text x="344" y="226" font-size="11.5" font-weight="800" fill="#7C3AED" letter-spacing="1">REVIEWS</text>
+      <rect x="344" y="234" width="220" height="18" rx="5" fill="#7C3AED"/>
+      <text x="578" y="248" text-anchor="end" font-size="11" font-weight="800" fill="#4C1D95">RAVE</text>
+
+      <text x="344" y="274" font-size="11.5" font-weight="800" fill="#7C3AED" letter-spacing="1">MARGINS</text>
+      <rect x="344" y="282" width="200" height="18" rx="5" fill="#7C3AED"/>
+      <text x="578" y="296" text-anchor="end" font-size="11" font-weight="800" fill="#4C1D95">STRONG</text>
+
+      <!-- result badge right -->
+      <rect x="340" y="332" width="242" height="46" rx="10" fill="#7C3AED" stroke="#4C1D95" stroke-width="2"/>
+      <text x="461" y="352" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">&#10003; CYCLE STARTS</text>
+      <text x="461" y="370" text-anchor="middle" font-size="11" font-weight="700" fill="#E9DEFB">proof compounds, price climbs</text>
+    </svg>
+    <div class="caption">Same operator. Same offer. The price level determines which version of the story you live.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · THE CYCLE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VIRTUOUS CYCLE OF PRICE</span><span>The Cycle Itself</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Four nodes. All <span class="em">self-reinforcing.</span></h2>
+
+  <p class="lead">The cycle is not linear &mdash; it loops. Each node creates the conditions for the next. The engine, once started, compounds.</p>
+  <p><span class="b">Raise Price</span> filters for committed buyers. Committed buyers <span class="b">produce better results.</span> Better results generate <span class="b">stronger proof.</span> Stronger proof justifies a higher price &mdash; and the loop restarts, one level up.</p>
+  <p class="small">Most businesses break the cycle at the first node, discounting at the first sign of sales resistance. The cycle never starts. The proof never accumulates. The price never rises.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:10px 0">
+    <!-- Clockwise circular flow, 4 nodes -->
+    <svg viewBox="0 0 560 520" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Connecting arcs between nodes, drawn as curved paths -->
+      <!-- Top node to Right node -->
+      <path d="M 330 100 Q 460 160 440 270" fill="none" stroke="#7C3AED" stroke-width="3" stroke-dasharray="0"/>
+      <!-- Right node to Bottom node -->
+      <path d="M 420 330 Q 400 450 310 460" fill="none" stroke="#7C3AED" stroke-width="3"/>
+      <!-- Bottom node to Left node -->
+      <path d="M 230 460 Q 120 450 100 340" fill="none" stroke="#7C3AED" stroke-width="3"/>
+      <!-- Left node to Top node -->
+      <path d="M 110 270 Q 100 150 220 100" fill="none" stroke="#7C3AED" stroke-width="3"/>
+
+      <!-- Arrow heads on the arcs -->
+      <!-- Top→Right arrowhead at ~(440,270) -->
+      <polygon points="430,268 445,282 450,263" fill="#7C3AED"/>
+      <!-- Right→Bottom arrowhead at ~(310,460) -->
+      <polygon points="307,448 325,462 310,474" fill="#7C3AED"/>
+      <!-- Bottom→Left arrowhead at ~(100,340) -->
+      <polygon points="88,342 105,328 102,347" fill="#7C3AED"/>
+      <!-- Left→Top arrowhead at ~(220,100) -->
+      <polygon points="215,88 228,102 235,85" fill="#7C3AED"/>
+
+      <!-- Arrow transition labels -->
+      <text x="468" y="208" font-size="11" font-weight="700" fill="#8C7BA8" text-anchor="middle">committed</text>
+      <text x="468" y="222" font-size="11" font-weight="700" fill="#8C7BA8" text-anchor="middle">buyers</text>
+
+      <text x="370" y="492" font-size="11" font-weight="700" fill="#8C7BA8" text-anchor="middle">documented</text>
+      <text x="370" y="506" font-size="11" font-weight="700" fill="#8C7BA8" text-anchor="middle">results</text>
+
+      <text x="88" y="404" font-size="11" font-weight="700" fill="#8C7BA8" text-anchor="middle">case</text>
+      <text x="88" y="418" font-size="11" font-weight="700" fill="#8C7BA8" text-anchor="middle">studies</text>
+
+      <text x="150" y="168" font-size="11" font-weight="700" fill="#8C7BA8" text-anchor="middle">price</text>
+      <text x="150" y="182" font-size="11" font-weight="700" fill="#8C7BA8" text-anchor="middle">justified</text>
+
+      <!-- NODE 1: TOP — RAISE PRICE (violet filled) -->
+      <rect x="185" y="44" width="190" height="80" rx="14" fill="#7C3AED"/>
+      <text x="280" y="78" text-anchor="middle" font-size="11" font-weight="800" fill="#E9DEFB" letter-spacing="1.5">NODE 1</text>
+      <text x="280" y="103" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">RAISE PRICE</text>
+
+      <!-- NODE 2: RIGHT — BETTER CLIENTS -->
+      <rect x="375" y="250" width="185" height="80" rx="14" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="467" y="284" text-anchor="middle" font-size="11" font-weight="800" fill="#7C3AED" letter-spacing="1.5">NODE 2</text>
+      <text x="467" y="307" text-anchor="middle" font-size="16" font-weight="800" fill="#1C1235">BETTER CLIENTS</text>
+
+      <!-- NODE 3: BOTTOM — BETTER RESULTS -->
+      <rect x="173" y="424" width="194" height="80" rx="14" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="270" y="458" text-anchor="middle" font-size="11" font-weight="800" fill="#7C3AED" letter-spacing="1.5">NODE 3</text>
+      <text x="270" y="481" text-anchor="middle" font-size="16" font-weight="800" fill="#1C1235">BETTER RESULTS</text>
+
+      <!-- NODE 4: LEFT — STRONGER PROOF -->
+      <rect x="0" y="250" width="190" height="80" rx="14" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="95" y="284" text-anchor="middle" font-size="11" font-weight="800" fill="#7C3AED" letter-spacing="1.5">NODE 4</text>
+      <text x="95" y="307" text-anchor="middle" font-size="16" font-weight="800" fill="#1C1235">STRONGER PROOF</text>
+
+      <!-- Center label -->
+      <circle cx="280" cy="290" r="52" fill="#EDE7FB" stroke="#C9B8F5" stroke-width="2"/>
+      <text x="280" y="284" text-anchor="middle" font-size="13" font-weight="800" fill="#7C3AED">SELF-</text>
+      <text x="280" y="302" text-anchor="middle" font-size="13" font-weight="800" fill="#7C3AED">REINFORCING</text>
+    </svg>
+    <div class="caption">Clockwise from top: Price &rarr; Clients &rarr; Results &rarr; Proof &rarr; Price (higher). Each revolution lifts the floor.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · NODE 1→2: PRICE AS FILTER ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VIRTUOUS CYCLE OF PRICE</span><span>Node 1 &rarr; 2: Price as a Filter</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Price is your <span class="em">intake filter.</span></h2>
+
+  <p class="lead">Someone who paid $10,000 for a coaching program shows up to every session. Someone who paid $29 a month cancels after skipping week two.</p>
+  <p>The psychology is simple: the higher the price, the more pain the buyer feels if they <em>don&rsquo;t</em> act. <span class="b">Pain drives action.</span> Sunk cost, status, and self-image all conspire to make the premium buyer show up, do the work, and finish.</p>
+  <p class="small">You cannot manufacture commitment through clever onboarding sequences. The filter has to happen at the point of purchase. Price is the filter.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <!-- Horizontal bar chart: compliance rate at 3 price points -->
+    <svg viewBox="0 0 580 380" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Title -->
+      <text x="290" y="28" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235" letter-spacing="1">CLIENT COMPLIANCE RATE BY PRICE POINT</text>
+
+      <!-- Y axis -->
+      <line x1="120" y1="48" x2="120" y2="308" stroke="#1C1235" stroke-width="2"/>
+      <!-- X axis -->
+      <line x1="120" y1="308" x2="560" y2="308" stroke="#1C1235" stroke-width="2"/>
+
+      <!-- X axis label -->
+      <text x="340" y="338" text-anchor="middle" font-size="11" font-weight="800" fill="#8C7BA8" letter-spacing="1">COMPLIANCE RATE</text>
+
+      <!-- Grid lines -->
+      <line x1="120" y1="308" x2="560" y2="308" stroke="#E5DCF6" stroke-width="1.5"/>
+      <line x1="120" y1="248" x2="560" y2="248" stroke="#E5DCF6" stroke-width="1.5"/>
+      <line x1="120" y1="188" x2="560" y2="188" stroke="#E5DCF6" stroke-width="1.5"/>
+      <line x1="120" y1="128" x2="560" y2="128" stroke="#E5DCF6" stroke-width="1.5"/>
+      <line x1="120" y1="68" x2="560" y2="68" stroke="#E5DCF6" stroke-width="1.5"/>
+
+      <!-- X axis percentage labels -->
+      <text x="120" y="324" text-anchor="middle" font-size="10" font-weight="700" fill="#8C7BA8">0%</text>
+      <text x="230" y="324" text-anchor="middle" font-size="10" font-weight="700" fill="#8C7BA8">25%</text>
+      <text x="340" y="324" text-anchor="middle" font-size="10" font-weight="700" fill="#8C7BA8">50%</text>
+      <text x="450" y="324" text-anchor="middle" font-size="10" font-weight="700" fill="#8C7BA8">75%</text>
+      <text x="560" y="324" text-anchor="middle" font-size="10" font-weight="700" fill="#8C7BA8">100%</text>
+
+      <!-- BAR 1: $29/mo — 22% compliance -->
+      <rect x="8" y="88" width="108" height="58" rx="8" fill="#F0EBF6" stroke="#DCCEEA" stroke-width="2"/>
+      <text x="62" y="111" text-anchor="middle" font-size="14" font-weight="800" fill="#9A86B8">$29</text>
+      <text x="62" y="128" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">/month</text>
+      <!-- bar: 22% of 440px = ~97px -->
+      <rect x="124" y="100" width="97" height="36" rx="6" fill="#DCCEEA"/>
+      <text x="230" y="122" font-size="13" font-weight="800" fill="#9A86B8">22%</text>
+      <text x="230" y="138" font-size="10" font-weight="700" fill="#8C7BA8">complete the program</text>
+
+      <!-- BAR 2: $297/mo — 58% compliance -->
+      <rect x="8" y="178" width="108" height="58" rx="8" fill="#EDE7FB" stroke="#C9B8F5" stroke-width="2"/>
+      <text x="62" y="201" text-anchor="middle" font-size="14" font-weight="800" fill="#7C3AED">$297</text>
+      <text x="62" y="218" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">/month</text>
+      <!-- bar: 58% of 440 = ~255px -->
+      <rect x="124" y="190" width="255" height="36" rx="6" fill="#C9B8F5"/>
+      <text x="389" y="212" font-size="13" font-weight="800" fill="#7C3AED">58%</text>
+      <text x="389" y="228" font-size="10" font-weight="700" fill="#8C7BA8">complete the program</text>
+
+      <!-- BAR 3: $2,970 — 89% compliance -->
+      <rect x="8" y="268" width="108" height="58" rx="8" fill="#7C3AED" stroke="#4C1D95" stroke-width="2"/>
+      <text x="62" y="293" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">$2,970</text>
+      <text x="62" y="310" text-anchor="middle" font-size="11" font-weight="700" fill="#E9DEFB">flat fee</text>
+      <!-- bar: 89% of 440 = ~392px -->
+      <rect x="124" y="280" width="392" height="36" rx="6" fill="#7C3AED"/>
+      <text x="525" y="303" font-size="13" font-weight="800" fill="#FFFFFF">89%</text>
+
+      <!-- annotation -->
+      <text x="290" y="362" text-anchor="middle" font-size="11" font-weight="700" fill="#7C3AED" letter-spacing=".5">Higher price &rarr; higher perceived cost of inaction &rarr; more follow-through</text>
+    </svg>
+    <div class="caption">Price point determines effort level. The same system, with committed buyers, produces dramatically different outcomes.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · NODE 2→3: BETTER CLIENTS, BETTER RESULTS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VIRTUOUS CYCLE OF PRICE</span><span>Node 2 &rarr; 3: The Effort Multiplier</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The same product, <span class="em">better results.</span></h2>
+
+  <p class="lead">The dirty secret of premium brands: they do look better, because the buyer uses them correctly.</p>
+  <p>In coaching, consulting, fitness, and marketing, the outcome is <em>co-produced.</em> The operator brings the system. The client brings the effort. <span class="b">High-price buyers bring more effort</span> &mdash; so the &ldquo;same&rdquo; system produces better results at a higher price point.</p>
+  <p class="small">This is why your low-ticket clients always seem to get worse outcomes. It&rsquo;s not the product. It&rsquo;s the effort level that the price attracts. You can&rsquo;t coach someone into caring more than they paid.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0">
+    <!-- 2x2 quadrant: client effort vs operator quality -->
+    <svg viewBox="0 0 580 420" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Axis lines -->
+      <line x1="60" y1="30" x2="60" y2="370" stroke="#1C1235" stroke-width="2.5"/>
+      <line x1="60" y1="370" x2="560" y2="370" stroke="#1C1235" stroke-width="2.5"/>
+      <!-- Mid lines -->
+      <line x1="310" y1="30" x2="310" y2="370" stroke="#E5DCF6" stroke-width="2"/>
+      <line x1="60" y1="200" x2="560" y2="200" stroke="#E5DCF6" stroke-width="2"/>
+
+      <!-- Quadrant fills -->
+      <!-- top-right: premium zone (violet) -->
+      <rect x="310" y="30" width="250" height="170" fill="#EDE7FB"/>
+      <!-- top-left: wasted system -->
+      <rect x="60" y="30" width="250" height="170" fill="#F4F0FC"/>
+      <!-- bottom-right: wasted effort -->
+      <rect x="310" y="200" width="250" height="170" fill="#F4F0FC"/>
+      <!-- bottom-left: worst case -->
+      <rect x="60" y="200" width="250" height="170" fill="#F0EBF6"/>
+
+      <!-- Quadrant labels -->
+      <text x="435" y="90" text-anchor="middle" font-size="12.5" font-weight="800" fill="#7C3AED">PREMIUM ZONE</text>
+      <text x="435" y="110" text-anchor="middle" font-size="11" font-weight="700" fill="#7C3AED">Great system +</text>
+      <text x="435" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#7C3AED">committed client</text>
+      <text x="435" y="150" text-anchor="middle" font-size="18" font-weight="800" fill="#4C1D95">BEST RESULTS</text>
+      <text x="435" y="172" text-anchor="middle" font-size="11" font-weight="700" fill="#7C3AED">testimonials &amp; referrals</text>
+
+      <text x="185" y="94" text-anchor="middle" font-size="12" font-weight="800" fill="#8C7BA8">WASTED SYSTEM</text>
+      <text x="185" y="112" text-anchor="middle" font-size="10.5" font-weight="700" fill="#8C7BA8">Great operator, low effort</text>
+      <text x="185" y="144" text-anchor="middle" font-size="16" font-weight="800" fill="#9A86B8">PARTIAL RESULTS</text>
+      <text x="185" y="164" text-anchor="middle" font-size="10.5" font-weight="700" fill="#8C7BA8">frustrated on both sides</text>
+
+      <text x="435" y="262" text-anchor="middle" font-size="12" font-weight="800" fill="#8C7BA8">WASTED EFFORT</text>
+      <text x="435" y="280" text-anchor="middle" font-size="10.5" font-weight="700" fill="#8C7BA8">High client effort, poor system</text>
+      <text x="435" y="312" text-anchor="middle" font-size="16" font-weight="800" fill="#9A86B8">AVERAGE RESULTS</text>
+      <text x="435" y="332" text-anchor="middle" font-size="10.5" font-weight="700" fill="#8C7BA8">unrealized potential</text>
+
+      <text x="185" y="270" text-anchor="middle" font-size="12" font-weight="800" fill="#9A86B8">DEAD ZONE</text>
+      <text x="185" y="290" text-anchor="middle" font-size="10.5" font-weight="700" fill="#8C7BA8">Low effort, poor system</text>
+      <text x="185" y="322" text-anchor="middle" font-size="16" font-weight="800" fill="#DCCEEA">NO RESULTS</text>
+      <text x="185" y="342" text-anchor="middle" font-size="10.5" font-weight="700" fill="#8C7BA8">refunds &amp; bad reviews</text>
+
+      <!-- Axis labels -->
+      <text x="310" y="400" text-anchor="middle" font-size="11.5" font-weight="800" fill="#1C1235">CLIENT EFFORT &nbsp;&rarr;&nbsp; HIGH</text>
+      <text x="14" y="200" text-anchor="middle" font-size="11.5" font-weight="800" fill="#1C1235" transform="rotate(-90 14 200)">OPERATOR QUALITY &rarr; HIGH</text>
+
+      <!-- Star marker in premium zone -->
+      <text x="500" y="60" text-anchor="middle" font-size="28" fill="#7C3AED">&#9733;</text>
+      <text x="500" y="80" text-anchor="middle" font-size="10" font-weight="800" fill="#4C1D95">YOU WANT TO LIVE HERE</text>
+    </svg>
+    <div class="caption">High-price buyers self-select into the top-right. You bring the system; the price brings the effort.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · NODE 3→4: RESULTS BECOME PROOF ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VIRTUOUS CYCLE OF PRICE</span><span>Node 3 &rarr; 4: Results Become Proof</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">One result beats ten <span class="em">testimonials.</span></h2>
+
+  <p class="lead">Results that actually happen generate case studies that close future sales. A documented transformation is the most powerful sales asset in existence.</p>
+  <p>When your price is high and your clients comply, you build <span class="b">undeniable proof.</span> Each new case study makes the next sale easier &mdash; and the case study library compounds over time. What cost you ten cold calls to close last year closes on one warm call this year.</p>
+  <p class="small">Most operators collect a handful of vague testimonials and call it social proof. A real case study names the person, the starting point, the exact outcome, and the time it took. That specificity is what shatters objections.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <!-- Flow: result → case study → future sale + compounding bar chart -->
+    <svg viewBox="0 0 580 390" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Flow row -->
+      <rect x="0" y="20" width="118" height="66" rx="11" fill="#EDE7FB" stroke="#C9B8F5" stroke-width="2"/>
+      <text x="59" y="47" text-anchor="middle" font-size="11.5" font-weight="800" fill="#1C1235">CLIENT</text>
+      <text x="59" y="64" text-anchor="middle" font-size="11.5" font-weight="800" fill="#1C1235">RESULT</text>
+
+      <g stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round">
+        <line x1="120" y1="53" x2="144" y2="53"/>
+        <polygon points="136,46 148,53 136,60" fill="#7C3AED" stroke="none"/>
+      </g>
+
+      <rect x="148" y="20" width="118" height="66" rx="11" fill="#EDE7FB" stroke="#C9B8F5" stroke-width="2"/>
+      <text x="207" y="47" text-anchor="middle" font-size="11.5" font-weight="800" fill="#1C1235">CASE</text>
+      <text x="207" y="64" text-anchor="middle" font-size="11.5" font-weight="800" fill="#1C1235">STUDY</text>
+
+      <g stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round">
+        <line x1="268" y1="53" x2="292" y2="53"/>
+        <polygon points="284,46 296,53 284,60" fill="#7C3AED" stroke="none"/>
+      </g>
+
+      <rect x="296" y="20" width="118" height="66" rx="11" fill="#EDE7FB" stroke="#C9B8F5" stroke-width="2"/>
+      <text x="355" y="47" text-anchor="middle" font-size="11.5" font-weight="800" fill="#1C1235">FUTURE</text>
+      <text x="355" y="64" text-anchor="middle" font-size="11.5" font-weight="800" fill="#1C1235">SALE</text>
+
+      <g stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round">
+        <line x1="416" y1="53" x2="440" y2="53"/>
+        <polygon points="432,46 444,53 432,60" fill="#7C3AED" stroke="none"/>
+      </g>
+
+      <rect x="444" y="20" width="136" height="66" rx="11" fill="#7C3AED"/>
+      <text x="512" y="47" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFFFF">NEW</text>
+      <text x="512" y="64" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFFFF">RESULT</text>
+
+      <!-- Compounding bar chart: case studies over time -->
+      <text x="290" y="128" text-anchor="middle" font-size="12" font-weight="800" fill="#1C1235" letter-spacing="1">CASE STUDY LIBRARY COMPOUNDS OVER TIME</text>
+
+      <!-- Y axis -->
+      <line x1="60" y1="150" x2="60" y2="340" stroke="#1C1235" stroke-width="2"/>
+      <!-- X axis -->
+      <line x1="60" y1="340" x2="560" y2="340" stroke="#1C1235" stroke-width="2"/>
+
+      <!-- Year labels -->
+      <text x="175" y="360" text-anchor="middle" font-size="11" font-weight="800" fill="#8C7BA8">YEAR 1</text>
+      <text x="322" y="360" text-anchor="middle" font-size="11" font-weight="800" fill="#8C7BA8">YEAR 2</text>
+      <text x="468" y="360" text-anchor="middle" font-size="11" font-weight="800" fill="#8C7BA8">YEAR 3</text>
+
+      <!-- Bars (3 groups: case studies, close rate, avg deal) -->
+      <!-- Year 1 -->
+      <rect x="110" y="278" width="50" height="62" rx="6" fill="#C9B8F5"/>
+      <text x="135" y="272" text-anchor="middle" font-size="10" font-weight="800" fill="#9A86B8">4</text>
+      <rect x="165" y="252" width="50" height="88" rx="6" fill="#EDE7FB" stroke="#C9B8F5" stroke-width="1.5"/>
+      <text x="190" y="246" text-anchor="middle" font-size="10" font-weight="800" fill="#9A86B8">32%</text>
+
+      <!-- Year 2 -->
+      <rect x="258" y="220" width="50" height="120" rx="6" fill="#7C3AED"/>
+      <text x="283" y="214" text-anchor="middle" font-size="10" font-weight="800" fill="#7C3AED">14</text>
+      <rect x="313" y="190" width="50" height="150" rx="6" fill="#EDE7FB" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="338" y="184" text-anchor="middle" font-size="10" font-weight="800" fill="#7C3AED">58%</text>
+
+      <!-- Year 3 -->
+      <rect x="406" y="158" width="50" height="182" rx="6" fill="#4C1D95"/>
+      <text x="431" y="152" text-anchor="middle" font-size="10" font-weight="800" fill="#4C1D95">31</text>
+      <rect x="461" y="128" width="50" height="212" rx="6" fill="#EDE7FB" stroke="#4C1D95" stroke-width="1.5"/>
+      <text x="486" y="122" text-anchor="middle" font-size="10" font-weight="800" fill="#4C1D95">84%</text>
+
+      <!-- Legend -->
+      <rect x="62" y="152" width="14" height="14" rx="3" fill="#7C3AED"/>
+      <text x="82" y="164" font-size="10" font-weight="700" fill="#1C1235">Case studies</text>
+      <rect x="170" y="152" width="14" height="14" rx="3" fill="#EDE7FB" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="190" y="164" font-size="10" font-weight="700" fill="#1C1235">Close rate</text>
+    </svg>
+    <div class="caption">Each documented result reduces friction on the next sale. The library is a compounding asset &mdash; not a marketing tactic.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · NODE 4→1: PROOF JUSTIFIES PRICE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VIRTUOUS CYCLE OF PRICE</span><span>Node 4 &rarr; 1: Proof Justifies Price</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Proof eliminates <span class="em">price resistance.</span></h2>
+
+  <p class="lead">When you can point to specific, documented results, the sales conversation changes completely. The prospect isn&rsquo;t buying hope &mdash; they&rsquo;re buying a track record.</p>
+  <p>&ldquo;Our last 12 clients averaged $47k in new revenue within 90 days&rdquo; is not a price objection. It&rsquo;s an <span class="b">ROI argument.</span> The buyer now has to justify <em>not</em> buying, rather than justify the purchase.</p>
+  <p class="small">Proof lets you raise the price again &mdash; restarting the cycle one level higher. Every revolution of the flywheel sets a new price floor that your competitors cannot touch without the same proof library.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0">
+    <!-- Before/after: sales conversation without vs with proof -->
+    <svg viewBox="0 0 600 390" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- WITHOUT PROOF panel -->
+      <rect x="0" y="0" width="278" height="370" rx="13" fill="#F0EBF6" stroke="#DCCEEA" stroke-width="2"/>
+      <rect x="0" y="0" width="278" height="46" rx="13" fill="#9A86B8"/>
+      <rect x="0" y="32" width="278" height="14" fill="#9A86B8"/>
+      <text x="139" y="30" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF" letter-spacing="1">WITHOUT PROOF</text>
+
+      <!-- objection list -->
+      <text x="22" y="72" font-size="11" font-weight="800" fill="#9A86B8" letter-spacing=".5">OBJECTIONS RAISED:</text>
+      <rect x="16" y="82" width="248" height="30" rx="7" fill="#FFFFFF" stroke="#DCCEEA" stroke-width="1.5"/>
+      <text x="28" y="101" font-size="11" font-weight="700" fill="#473A63">&#10007; &ldquo;That seems expensive...&rdquo;</text>
+      <rect x="16" y="118" width="248" height="30" rx="7" fill="#FFFFFF" stroke="#DCCEEA" stroke-width="1.5"/>
+      <text x="28" y="137" font-size="11" font-weight="700" fill="#473A63">&#10007; &ldquo;Can you guarantee results?&rdquo;</text>
+      <rect x="16" y="154" width="248" height="30" rx="7" fill="#FFFFFF" stroke="#DCCEEA" stroke-width="1.5"/>
+      <text x="28" y="173" font-size="11" font-weight="700" fill="#473A63">&#10007; &ldquo;I need to think about it.&rdquo;</text>
+      <rect x="16" y="190" width="248" height="30" rx="7" fill="#FFFFFF" stroke="#DCCEEA" stroke-width="1.5"/>
+      <text x="28" y="209" font-size="11" font-weight="700" fill="#473A63">&#10007; &ldquo;Do you have any case studies?&rdquo;</text>
+      <rect x="16" y="226" width="248" height="30" rx="7" fill="#FFFFFF" stroke="#DCCEEA" stroke-width="1.5"/>
+      <text x="28" y="245" font-size="11" font-weight="700" fill="#473A63">&#10007; &ldquo;Why should I trust you?&rdquo;</text>
+      <rect x="16" y="262" width="248" height="30" rx="7" fill="#FFFFFF" stroke="#DCCEEA" stroke-width="1.5"/>
+      <text x="28" y="281" font-size="11" font-weight="700" fill="#473A63">&#10007; &ldquo;Let me check with my partner.&rdquo;</text>
+
+      <!-- outcome badge -->
+      <rect x="16" y="308" width="248" height="46" rx="10" fill="#DCCEEA"/>
+      <text x="140" y="328" text-anchor="middle" font-size="12" font-weight="800" fill="#9A86B8">LONG CLOSE · DISCOUNTING</text>
+      <text x="140" y="346" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">price drops to overcome friction</text>
+
+      <!-- WITH PROOF panel -->
+      <rect x="322" y="0" width="278" height="370" rx="13" fill="#EDE7FB" stroke="#C9B8F5" stroke-width="2"/>
+      <rect x="322" y="0" width="278" height="46" rx="13" fill="#7C3AED"/>
+      <rect x="322" y="32" width="278" height="14" fill="#7C3AED"/>
+      <text x="461" y="30" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF" letter-spacing="1">WITH PROOF</text>
+
+      <!-- proof statement -->
+      <rect x="338" y="60" width="248" height="60" rx="9" fill="#FFFFFF" stroke="#C9B8F5" stroke-width="1.5"/>
+      <text x="462" y="84" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1235">&ldquo;Our last 12 clients averaged</text>
+      <text x="462" y="100" text-anchor="middle" font-size="11" font-weight="800" fill="#7C3AED">$47k new revenue in 90 days.&rdquo;</text>
+
+      <!-- one clean objection handled -->
+      <text x="344" y="144" font-size="11" font-weight="800" fill="#7C3AED" letter-spacing=".5">CONVERSATION:</text>
+      <rect x="338" y="154" width="248" height="30" rx="7" fill="#FFFFFF" stroke="#C9B8F5" stroke-width="1.5"/>
+      <text x="350" y="173" font-size="11" font-weight="700" fill="#473A63">&#10003; &ldquo;How does the engagement work?&rdquo;</text>
+      <rect x="338" y="190" width="248" height="30" rx="7" fill="#FFFFFF" stroke="#C9B8F5" stroke-width="1.5"/>
+      <text x="350" y="209" font-size="11" font-weight="700" fill="#473A63">&#10003; &ldquo;When can we start?&rdquo;</text>
+      <rect x="338" y="226" width="248" height="30" rx="7" fill="#FFFFFF" stroke="#C9B8F5" stroke-width="1.5"/>
+      <text x="350" y="245" font-size="11" font-weight="700" fill="#473A63">&#10003; &ldquo;What do you need from me?&rdquo;</text>
+
+      <!-- spacer visual -->
+      <rect x="338" y="270" width="248" height="14" rx="5" fill="#EDE7FB"/>
+
+      <!-- outcome badge -->
+      <rect x="338" y="298" width="248" height="56" rx="10" fill="#7C3AED"/>
+      <text x="462" y="320" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">SHORT CLOSE · FULL PRICE</text>
+      <text x="462" y="338" text-anchor="middle" font-size="11" font-weight="700" fill="#E9DEFB">prospect justifies &ldquo;why not buy&rdquo;</text>
+    </svg>
+    <div class="caption">Proof flips the dynamic. The burden of justification moves from seller to buyer. Price resistance dissolves.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · HOW TO START THE CYCLE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VIRTUOUS CYCLE OF PRICE</span><span>How to Start the Cycle</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">You can&rsquo;t wait for the cycle <span class="em">to start itself.</span></h2>
+
+  <p class="lead">The cycle is self-sustaining once running. The hard part is ignition. Three tactics, executed in order, will fire the engine.</p>
+  <p><span class="b">Step 1:</span> Raise your price 20% on the next three clients. Not later &mdash; next three. Collect their outcomes obsessively. Document everything.</p>
+  <p><span class="b">Step 2:</span> Find one past client with a genuine result &mdash; a real number, a real timeline. Write it into a single-page case study.</p>
+  <p class="small"><span class="b">Step 3:</span> Offer your new, higher price to your warmest lead. They know you, they trust you, and they&rsquo;re least resistant. That&rsquo;s the first proof data point.</p>
+  <p class="small">The cycle starts the moment you commit to Step 1. Not when you &ldquo;feel ready.&rdquo; Not after you build the perfect offer. Now.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <!-- 3-step flow with upward arrow at the end -->
+    <svg viewBox="0 0 560 390" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Vertical flow, top to bottom -->
+
+      <!-- STEP 1 -->
+      <rect x="30" y="20" width="500" height="82" rx="13" fill="#7C3AED"/>
+      <text x="62" y="52" font-size="12" font-weight="800" fill="#E9DEFB" letter-spacing="1.5">STEP 1</text>
+      <text x="62" y="76" font-size="20" font-weight="800" fill="#FFFFFF">Raise price 20% on next 3 clients</text>
+      <text x="430" y="66" font-size="12" font-weight="700" fill="#C9B8F5" text-anchor="middle">collect outcomes</text>
+      <text x="430" y="82" font-size="12" font-weight="700" fill="#C9B8F5" text-anchor="middle">religiously</text>
+
+      <!-- Arrow down -->
+      <line x1="280" y1="102" x2="280" y2="128" stroke="#7C3AED" stroke-width="3"/>
+      <polygon points="272,120 280,132 288,120" fill="#7C3AED"/>
+
+      <!-- STEP 2 -->
+      <rect x="30" y="132" width="500" height="82" rx="13" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="62" y="164" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1.5">STEP 2</text>
+      <text x="62" y="188" font-size="20" font-weight="800" fill="#1C1235">Document 1 real result</text>
+      <text x="60" y="205" font-size="11.5" font-weight="700" fill="#8C7BA8">name · start point · outcome · timeline</text>
+
+      <!-- Arrow down -->
+      <line x1="280" y1="214" x2="280" y2="240" stroke="#7C3AED" stroke-width="3"/>
+      <polygon points="272,232 280,244 288,232" fill="#7C3AED"/>
+
+      <!-- STEP 3 -->
+      <rect x="30" y="244" width="500" height="82" rx="13" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="62" y="276" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1.5">STEP 3</text>
+      <text x="62" y="300" font-size="20" font-weight="800" fill="#1C1235">Pitch warmest lead at new price</text>
+      <text x="60" y="317" font-size="11.5" font-weight="700" fill="#8C7BA8">least resistant · most likely to close · first data point</text>
+
+      <!-- Arrow right + up + RESTART -->
+      <line x1="280" y1="326" x2="280" y2="350" stroke="#7C3AED" stroke-width="3"/>
+      <polygon points="272,342 280,354 288,342" fill="#7C3AED"/>
+
+      <rect x="180" y="354" width="200" height="36" rx="10" fill="#4C1D95"/>
+      <text x="280" y="377" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">&#8593; CYCLE BEGINS</text>
+    </svg>
+    <div class="caption">Three moves. No prerequisites. The cycle starts the moment you act on Step 1 &mdash; not when conditions feel right.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · CLOSE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE VIRTUOUS CYCLE OF PRICE</span><span>The Takeaway</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:26px">Your price is a <span class="em">signal</span> &mdash; not just a number.</h2>
+
+  <p>Every number you attach to your offer communicates something before a word is spoken. A low price signals low stakes, low commitment, and low expectation of results. A premium price signals that the operator believes in the outcome enough to charge for it &mdash; and that the buyer is expected to show up fully.</p>
+  <p class="small">The cycle compounds because every node creates the next. Better buyers produce better results. Better results produce stronger proof. Stronger proof sustains &mdash; and raises &mdash; the price. Discount once out of fear, and you crack the flywheel. Hold the price, and the market funds your ascent.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>Discount to close this one client &mdash; and reset your price floor to the bottom.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>Raise price. Attract clients who close themselves &mdash; and do the work that builds your proof.</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <!-- Staircase: 4 steps, each labeled $, $$, $$$, $$$$ with a figure at the top -->
+  <svg viewBox="0 0 340 300" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+    <!-- Step 1 (bottom) -->
+    <rect x="20" y="220" width="300" height="60" rx="8" fill="#F0EBF6" stroke="#DCCEEA" stroke-width="2"/>
+    <text x="170" y="258" text-anchor="middle" font-size="22" font-weight="800" fill="#9A86B8">$</text>
+    <text x="44" y="258" font-size="10.5" font-weight="700" fill="#8C7BA8">low commitment</text>
+
+    <!-- Step 2 -->
+    <rect x="20" y="155" width="225" height="60" rx="8" fill="#EDE7FB" stroke="#C9B8F5" stroke-width="2"/>
+    <text x="132" y="193" text-anchor="middle" font-size="22" font-weight="800" fill="#7C3AED">$$</text>
+    <text x="44" y="193" font-size="10.5" font-weight="700" fill="#7C3AED">better clients</text>
+
+    <!-- Step 3 -->
+    <rect x="20" y="90" width="150" height="60" rx="8" fill="#7C3AED"/>
+    <text x="95" y="128" text-anchor="middle" font-size="22" font-weight="800" fill="#E9DEFB">$$$</text>
+    <text x="40" y="128" font-size="10.5" font-weight="700" fill="#C9B8F5">results + proof</text>
+
+    <!-- Step 4 (top) -->
+    <rect x="20" y="25" width="76" height="60" rx="8" fill="#4C1D95"/>
+    <text x="58" y="63" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">$$$$</text>
+
+    <!-- Figure at top of staircase -->
+    <!-- Head -->
+    <circle cx="120" cy="18" r="14" fill="#1C1235"/>
+    <!-- Body -->
+    <rect x="110" y="32" width="20" height="26" rx="6" fill="#1C1235"/>
+    <!-- Arms -->
+    <line x1="110" y1="40" x2="96" y2="52" stroke="#1C1235" stroke-width="4" stroke-linecap="round"/>
+    <line x1="130" y1="40" x2="144" y2="52" stroke="#1C1235" stroke-width="4" stroke-linecap="round"/>
+    <!-- Legs -->
+    <line x1="116" y1="58" x2="108" y2="72" stroke="#1C1235" stroke-width="4" stroke-linecap="round"/>
+    <line x1="124" y1="58" x2="132" y2="72" stroke="#1C1235" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Upward arrow to the right of the staircase -->
+    <line x1="310" y1="240" x2="310" y2="34" stroke="#7C3AED" stroke-width="3" stroke-dasharray="6,4"/>
+    <polygon points="302,42 310,26 318,42" fill="#7C3AED"/>
+    <text x="320" y="140" font-size="11" font-weight="800" fill="#7C3AED" transform="rotate(90 320 140)" text-anchor="middle">PRICE COMPOUNDS UP</text>
+  </svg>
+  <div class="caption">Each revolution of the cycle sets a new, higher price floor.</div>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Offers &mdash; the book.</h3>
+    <p>The complete framework for building offers so good people feel stupid saying no &mdash; and pricing them so the market funds your ascent.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Raise the price. Run the cycle. Let the market fund your ascent.</div>
+
+  <div class="stamp">The Virtuous Cycle of Price</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>

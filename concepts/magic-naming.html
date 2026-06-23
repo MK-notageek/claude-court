@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The MAGIC Naming Formula — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFDF7;
+    --panel:#FBF0D6;
+    --ink:#2A1F08;
+    --ink-soft:#4A3A14;
+    --muted:#9A8552;
+    --line:#E8DBB6;
+    --violet:#D98A0B;
+    --violet-deep:#9A5E04;
+    --violet-soft:#F0CE7E;
+    --violet-fill:#FBF0D6;
+    --plum:#B8A47A;
+    --plum-fill:#F5EED8;
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#e6d4a8; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#F6ECD2; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#F5E8C0; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #DDD0B0; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#E8D8A8; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 01 · COVER
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="cover-glyph">★</div>
+  <div class="cover-inner">
+    <div class="spacer"></div>
+    <p class="byline">THE FRAMEWORK <span>· adapted from Alex Hormozi · $100M Offers</span></p>
+    <div class="tick"></div>
+    <p class="kicker">Five letters that turn a plain offer into a category of one</p>
+    <h1 class="title">THE<br>MAGIC<br>NAMING<br>FORMULA</h1>
+    <p class="cover-sub">The difference between "weight loss coaching" and "The 6-Week Lean Protocol for Busy Mothers" is not the offer — it's the <b>name</b>. Here's the five-letter system that makes prospects feel like the offer was built for them.</p>
+    <div class="spacer"></div>
+  </div>
+  <div class="stamp">The MAGIC Naming Formula · $100M Offers</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 02 · WHY NAMES CONVERT (OR KILL)
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="rhead">
+    <span>The MAGIC Naming Formula</span>
+    <span class="v">Why Names Convert — or Kill</span>
+  </div>
+  <div class="rule"></div>
+
+  <div class="spread">
+    <div class="col-text">
+      <p class="kicker">The Name Is the First Filter</p>
+      <h2>Names <span class="em">convert</span> — or they vanish.</h2>
+      <p class="lead">A generic name forces the prospect to project their own meaning onto your offer. They rarely project anything useful.</p>
+      <p>When someone sees "Business Coaching — 3 Months," they think: <span class="b">is this for me?</span> They don't know. So they move on. A precise name does the qualification before a single conversation has happened. The right buyer reads it and leans in. The wrong buyer self-selects out — which is equally valuable.</p>
+      <p class="small">The difference in the diagram is not the offer quality. Same deliverable, same coach, same price. Only the name changed.</p>
+    </div>
+    <div class="col-fig">
+      <!-- Before/After funnel diagram -->
+      <svg viewBox="0 0 520 440" xmlns="http://www.w3.org/2000/svg" font-family="'Futura','Helvetica Neue',Arial,sans-serif">
+        <!-- Left panel: Generic -->
+        <rect x="10" y="0" width="226" height="440" rx="14" fill="#F5EED8" stroke="#E8DBB6" stroke-width="1.5"/>
+        <text x="123" y="28" font-size="10" font-weight="800" letter-spacing="2" fill="#9A8552" text-anchor="middle" text-decoration="none">GENERIC NAME</text>
+        <!-- Offer box -->
+        <rect x="30" y="44" width="186" height="54" rx="8" fill="#FFFDF7" stroke="#DDD0B0" stroke-width="2"/>
+        <text x="123" y="66" font-size="13" font-weight="700" fill="#4A3A14" text-anchor="middle">Business Coaching</text>
+        <text x="123" y="85" font-size="12" fill="#9A8552" text-anchor="middle">— 3 Months —</text>
+
+        <!-- Funnel body -->
+        <polygon points="50,116 196,116 176,188 70,188" fill="#E8DBB6" stroke="#DDD0B0" stroke-width="1"/>
+        <polygon points="70,192 176,192 164,248 82,248" fill="#DDD0B0" stroke="#C8C0A0" stroke-width="1"/>
+        <polygon points="82,252 164,252 156,300 90,300" fill="#C8C0A0" stroke="#B8B090" stroke-width="1"/>
+        <polygon points="90,304 156,304 148,344 98,344" fill="#B8A47A" stroke="#A09070" stroke-width="1"/>
+
+        <text x="123" y="140" font-size="11" font-weight="700" fill="#4A3A14" text-anchor="middle">100 LEADS</text>
+        <text x="123" y="226" font-size="11" fill="#9A8552" text-anchor="middle">Curious</text>
+        <text x="123" y="278" font-size="11" fill="#9A8552" text-anchor="middle">Interested</text>
+
+        <!-- Bottom result -->
+        <rect x="78" y="352" width="90" height="40" rx="8" fill="#B8A47A"/>
+        <text x="123" y="370" font-size="14" font-weight="800" fill="#FFFDF7" text-anchor="middle">2</text>
+        <text x="123" y="385" font-size="10" font-weight="700" fill="#F5EED8" text-anchor="middle">CLOSES</text>
+        <text x="123" y="416" font-size="22" font-weight="800" fill="#B8A47A" text-anchor="middle">2%</text>
+        <text x="123" y="434" font-size="9" fill="#9A8552" text-anchor="middle">conversion</text>
+
+        <!-- Right panel: MAGIC name -->
+        <rect x="284" y="0" width="226" height="440" rx="14" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+        <text x="397" y="28" font-size="10" font-weight="800" letter-spacing="2" fill="#D98A0B" text-anchor="middle">MAGIC NAME</text>
+        <!-- Offer box -->
+        <rect x="300" y="44" width="194" height="68" rx="8" fill="#D98A0B"/>
+        <text x="397" y="66" font-size="11" font-weight="800" fill="#FFFDF7" text-anchor="middle">The 90-Day Revenue</text>
+        <text x="397" y="82" font-size="11" font-weight="800" fill="#FFFDF7" text-anchor="middle">Sprint for E-Com</text>
+        <text x="397" y="98" font-size="11" font-weight="800" fill="#FFFDF7" text-anchor="middle">Founders</text>
+
+        <!-- Funnel body -->
+        <polygon points="320,124 476,124 450,188 346,188" fill="#F0CE7E" stroke="#D98A0B" stroke-width="1"/>
+        <polygon points="346,192 450,192 436,248 360,248" fill="#D98A0B" opacity="0.5" stroke="#D98A0B" stroke-width="1"/>
+        <polygon points="360,252 436,252 424,300 372,300" fill="#D98A0B" opacity="0.7" stroke="#9A5E04" stroke-width="1"/>
+        <polygon points="372,304 424,304 414,344 382,344" fill="#9A5E04" stroke="#7A4E04" stroke-width="1"/>
+
+        <text x="397" y="150" font-size="11" font-weight="700" fill="#2A1F08" text-anchor="middle">100 LEADS</text>
+        <text x="397" y="226" font-size="11" fill="#4A3A14" text-anchor="middle">Qualified</text>
+        <text x="397" y="278" font-size="11" fill="#4A3A14" text-anchor="middle">Engaged</text>
+
+        <!-- Bottom result -->
+        <rect x="358" y="352" width="78" height="40" rx="8" fill="#9A5E04"/>
+        <text x="397" y="370" font-size="14" font-weight="800" fill="#FFFDF7" text-anchor="middle">11</text>
+        <text x="397" y="385" font-size="10" font-weight="700" fill="#F0CE7E" text-anchor="middle">CLOSES</text>
+        <text x="397" y="416" font-size="22" font-weight="800" fill="#D98A0B" text-anchor="middle">11%</text>
+        <text x="397" y="434" font-size="9" fill="#9A8552" text-anchor="middle">conversion</text>
+
+        <!-- VS label -->
+        <circle cx="262" cy="220" r="20" fill="#2A1F08"/>
+        <text x="262" y="226" font-size="11" font-weight="800" fill="#FFFDF7" text-anchor="middle">VS</text>
+      </svg>
+      <p class="caption">Same offer. Same coach. Same price. Only the name changed — conversion jumped 5×.</p>
+    </div>
+  </div>
+
+  <div class="folio">The MAGIC Naming Formula &nbsp;·&nbsp; <b>02</b></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 03 · THE FIVE LETTERS
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="rhead">
+    <span>The MAGIC Naming Formula</span>
+    <span class="v">The Five Letters</span>
+  </div>
+  <div class="rule"></div>
+
+  <div class="spread">
+    <div class="col-text">
+      <p class="kicker">Framework Overview</p>
+      <h2>Five layers. One <span class="em">irresistible</span> name.</h2>
+      <p class="lead">MAGIC is not an acronym you memorize — it's an assembly line for building names that sell themselves.</p>
+      <p>Each letter adds a distinct dimension of clarity to your offer name. Stack all five and you have a name that communicates <span class="b">who it's for, what they get, by when, and how</span> — in a single phrase.</p>
+      <p class="small">You don't need all five in every name. But the more layers you include, the more the name does the selling before you ever speak. Think of it as compressing your entire sales pitch into eight words.</p>
+    </div>
+    <div class="col-fig">
+      <!-- Building blocks stacked diagram -->
+      <svg viewBox="0 0 480 390" xmlns="http://www.w3.org/2000/svg" font-family="'Futura','Helvetica Neue',Arial,sans-serif">
+
+        <!-- C block (bottom, accent-deep) -->
+        <rect x="20" y="316" width="440" height="62" rx="10" fill="#9A5E04"/>
+        <text x="54" y="342" font-size="28" font-weight="800" fill="#FFFDF7">C</text>
+        <text x="80" y="338" font-size="13" font-weight="800" fill="#F0CE7E" letter-spacing="1">CONTAINER</text>
+        <text x="80" y="356" font-size="12" fill="#F5E8C0">What delivery format or product type?</text>
+        <text x="440" y="356" font-size="11" fill="#F0CE7E" text-anchor="end">Protocol · Sprint · Bootcamp</text>
+
+        <!-- I block -->
+        <rect x="20" y="246" width="440" height="62" rx="10" fill="#FFFDF7" stroke="#D98A0B" stroke-width="2.5"/>
+        <text x="54" y="272" font-size="28" font-weight="800" fill="#D98A0B">I</text>
+        <text x="80" y="268" font-size="13" font-weight="800" fill="#2A1F08" letter-spacing="1">INTERVAL</text>
+        <text x="80" y="286" font-size="12" fill="#4A3A14">In what time frame?</text>
+        <text x="440" y="286" font-size="11" fill="#9A8552" text-anchor="end">In 90 days · In 6 weeks</text>
+
+        <!-- G block (accent fill) -->
+        <rect x="20" y="176" width="440" height="62" rx="10" fill="#D98A0B"/>
+        <text x="54" y="202" font-size="28" font-weight="800" fill="#FFFDF7">G</text>
+        <text x="80" y="198" font-size="13" font-weight="800" fill="#FFFDF7" letter-spacing="1">GOAL</text>
+        <text x="80" y="216" font-size="12" fill="#F5E8C0">What specific, measurable outcome?</text>
+        <text x="440" y="216" font-size="11" fill="#F0CE7E" text-anchor="end">Drop 25 lbs · Add $50k ARR</text>
+
+        <!-- A block (outlined) -->
+        <rect x="20" y="106" width="440" height="62" rx="10" fill="#FFFDF7" stroke="#D98A0B" stroke-width="2.5"/>
+        <text x="54" y="132" font-size="28" font-weight="800" fill="#D98A0B">A</text>
+        <text x="80" y="128" font-size="13" font-weight="800" fill="#2A1F08" letter-spacing="1">AVATAR</text>
+        <text x="80" y="146" font-size="12" fill="#4A3A14">Who is it for, exactly?</text>
+        <text x="440" y="146" font-size="11" fill="#9A8552" text-anchor="end">Men over 40 · E-Com Founders</text>
+
+        <!-- M block (accent fill, top) -->
+        <rect x="20" y="36" width="440" height="62" rx="10" fill="#D98A0B"/>
+        <text x="54" y="62" font-size="28" font-weight="800" fill="#FFFDF7">M</text>
+        <text x="80" y="58" font-size="13" font-weight="800" fill="#FFFDF7" letter-spacing="1">MAGNETIC REASON WHY</text>
+        <text x="80" y="76" font-size="12" fill="#F5E8C0">Why now? Why this? What's the hook?</text>
+        <text x="440" y="76" font-size="11" fill="#F0CE7E" text-anchor="end">For the AI era · Post-Covid pivot</text>
+
+        <!-- Arrow showing stacking -->
+        <text x="240" y="22" font-size="10" font-weight="800" fill="#9A8552" text-anchor="middle" letter-spacing="3">STACK FROM TOP TO BOTTOM</text>
+        <line x1="240" y1="26" x2="240" y2="33" stroke="#9A8552" stroke-width="1.5" marker-end="url(#arr)"/>
+        <defs>
+          <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#9A8552"/>
+          </marker>
+        </defs>
+      </svg>
+      <p class="caption">Five layers of specificity — each one narrowing the right buyer in while filtering the wrong buyer out.</p>
+    </div>
+  </div>
+
+  <div class="folio">The MAGIC Naming Formula &nbsp;·&nbsp; <b>03</b></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 04 · M: MAGNETIC REASON WHY
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="rhead">
+    <span>The MAGIC Naming Formula</span>
+    <span class="v">M — Magnetic Reason Why</span>
+  </div>
+  <div class="rule"></div>
+
+  <div class="spread">
+    <div class="col-text">
+      <p class="kicker">M · Magnetic Reason Why</p>
+      <h2>Give urgency a <span class="em">narrative peg.</span></h2>
+      <p class="lead">The reason why answers a silent question the prospect is already asking: "Why would I need this right now?"</p>
+      <p>It doesn't have to be a major world event. It can be a season, a platform shift, a life stage, or a trend. <span class="b">"For the AI era,"</span> "for the post-Covid pivot," "for the iOS14 update" — each one makes the offer feel timed rather than timeless. That urgency is the difference between "I'll look at this later" and "I should look at this now."</p>
+      <p class="small">Importantly, the reason why doesn't need to be unique to you. If the market is living through a shift, name it. You're not inventing the urgency — you're acknowledging it, and offering a solution.</p>
+    </div>
+    <div class="col-fig">
+      <!-- Thermometer / heat comparison -->
+      <svg viewBox="0 0 480 400" xmlns="http://www.w3.org/2000/svg" font-family="'Futura','Helvetica Neue',Arial,sans-serif">
+
+        <!-- Labels -->
+        <text x="130" y="22" font-size="10" font-weight="800" letter-spacing="2" fill="#9A8552" text-anchor="middle">WITHOUT REASON WHY</text>
+        <text x="360" y="22" font-size="10" font-weight="800" letter-spacing="2" fill="#D98A0B" text-anchor="middle">WITH REASON WHY</text>
+
+        <!-- Left offer box -->
+        <rect x="20" y="36" width="220" height="54" rx="8" fill="#F5EED8" stroke="#DDD0B0" stroke-width="2"/>
+        <text x="130" y="57" font-size="13" font-weight="700" fill="#4A3A14" text-anchor="middle">Agency Growth Program</text>
+        <text x="130" y="76" font-size="12" fill="#9A8552" text-anchor="middle">— 90 Days —</text>
+
+        <!-- Right offer box -->
+        <rect x="248" y="36" width="220" height="54" rx="8" fill="#D98A0B"/>
+        <text x="358" y="57" font-size="12" font-weight="800" fill="#FFFDF7" text-anchor="middle">Agency Growth in the</text>
+        <text x="358" y="74" font-size="12" font-weight="800" fill="#FFFDF7" text-anchor="middle">AI Era — 90 Days</text>
+
+        <!-- Divider -->
+        <line x1="240" y1="36" x2="240" y2="400" stroke="#E8DBB6" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+        <!-- Heat bars: urgency thermometer -->
+        <text x="130" y="120" font-size="11" fill="#9A8552" text-anchor="middle" font-weight="700">FELT URGENCY</text>
+        <text x="360" y="120" font-size="11" fill="#D98A0B" text-anchor="middle" font-weight="700">FELT URGENCY</text>
+
+        <!-- Left thermometer (cold) -->
+        <rect x="110" y="136" width="40" height="160" rx="6" fill="#E8DBB6" stroke="#DDD0B0" stroke-width="1.5"/>
+        <rect x="110" y="256" width="40" height="40" rx="4" fill="#B8A47A"/>
+        <!-- Thermometer bulb -->
+        <circle cx="130" cy="308" r="22" fill="#B8A47A" stroke="#DDD0B0" stroke-width="1.5"/>
+        <circle cx="130" cy="308" r="13" fill="#9A8552"/>
+        <!-- Tick marks -->
+        <line x1="150" y1="176" x2="158" y2="176" stroke="#9A8552" stroke-width="1"/>
+        <line x1="150" y1="216" x2="158" y2="216" stroke="#9A8552" stroke-width="1"/>
+        <line x1="150" y1="256" x2="158" y2="256" stroke="#9A8552" stroke-width="1"/>
+        <text x="162" y="180" font-size="9" fill="#9A8552">HIGH</text>
+        <text x="162" y="220" font-size="9" fill="#9A8552">MED</text>
+        <text x="162" y="260" font-size="9" fill="#9A8552">LOW</text>
+        <text x="130" y="354" font-size="10" fill="#9A8552" text-anchor="middle" font-weight="700">COLD</text>
+        <text x="130" y="368" font-size="9" fill="#9A8552" text-anchor="middle">"Maybe someday…"</text>
+
+        <!-- Right thermometer (hot) -->
+        <rect x="342" y="136" width="40" height="160" rx="6" fill="#E8DBB6" stroke="#D98A0B" stroke-width="1.5"/>
+        <rect x="342" y="136" width="40" height="160" rx="6" fill="#F0CE7E" stroke="#D98A0B" stroke-width="1.5"/>
+        <!-- Hot fill -->
+        <rect x="342" y="156" width="40" height="140" rx="0" fill="#D98A0B"/>
+        <rect x="342" y="136" width="40" height="20" rx="6" fill="#D98A0B"/>
+        <!-- Thermometer bulb -->
+        <circle cx="362" cy="308" r="22" fill="#D98A0B" stroke="#9A5E04" stroke-width="1.5"/>
+        <circle cx="362" cy="308" r="13" fill="#9A5E04"/>
+        <!-- Tick marks -->
+        <line x1="382" y1="176" x2="390" y2="176" stroke="#D98A0B" stroke-width="1"/>
+        <line x1="382" y1="216" x2="390" y2="216" stroke="#D98A0B" stroke-width="1"/>
+        <line x1="382" y1="256" x2="390" y2="256" stroke="#D98A0B" stroke-width="1"/>
+        <text x="394" y="180" font-size="9" fill="#D98A0B">HIGH</text>
+        <text x="394" y="220" font-size="9" fill="#D98A0B">MED</text>
+        <text x="394" y="260" font-size="9" fill="#D98A0B">LOW</text>
+        <text x="362" y="354" font-size="10" fill="#D98A0B" text-anchor="middle" font-weight="700">HOT</text>
+        <text x="362" y="368" font-size="9" fill="#9A8552" text-anchor="middle">"I need this now."</text>
+
+        <!-- Arrow between thermometers -->
+        <line x1="185" y1="230" x2="318" y2="230" stroke="#D98A0B" stroke-width="2" marker-end="url(#arrOr)"/>
+        <defs>
+          <marker id="arrOr" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto">
+            <path d="M0,0 L7,3.5 L0,7 Z" fill="#D98A0B"/>
+          </marker>
+        </defs>
+        <rect x="204" y="218" width="52" height="24" rx="5" fill="#FFFDF7"/>
+        <text x="230" y="232" font-size="10" font-weight="800" fill="#D98A0B" text-anchor="middle">+ WHY</text>
+        <text x="230" y="244" font-size="9" fill="#9A8552" text-anchor="middle">NOW</text>
+      </svg>
+      <p class="caption">Adding a timely reason why transforms a passive interest into active, motivated urgency.</p>
+    </div>
+  </div>
+
+  <div class="folio">The MAGIC Naming Formula &nbsp;·&nbsp; <b>04</b></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 05 · A: AVATAR
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="rhead">
+    <span>The MAGIC Naming Formula</span>
+    <span class="v">A — Avatar</span>
+  </div>
+  <div class="rule"></div>
+
+  <div class="spread">
+    <div class="col-text">
+      <p class="kicker">A · Avatar</p>
+      <h2>The name <span class="em">pre-qualifies</span> your leads.</h2>
+      <p class="lead">The more precisely you name the person, the better the leads you attract — and the worse the leads you repel.</p>
+      <p>"Entrepreneurs" is not a target. "First-time SaaS founders between $0 and $30k MRR" is a target. When the right person reads it, they feel <span class="b">seen</span>. When the wrong person reads it, they move on — exactly as intended.</p>
+      <p class="small">Fear of specificity is the most common naming mistake. The instinct is to keep it broad — "coaches, consultants, and course creators" — to cast the widest net. But broad names catch broad results: low conversion, long sales cycles, and buyers who were never right for you. Precision is not exclusion. It's accuracy.</p>
+    </div>
+    <div class="col-fig">
+      <!-- 2x2 quadrant diagram -->
+      <svg viewBox="0 0 480 420" xmlns="http://www.w3.org/2000/svg" font-family="'Futura','Helvetica Neue',Arial,sans-serif">
+
+        <!-- Axis backgrounds -->
+        <!-- Bottom-left quadrant: anyone/nobody -->
+        <rect x="40" y="40" width="192" height="192" rx="0" fill="#F5EED8"/>
+        <!-- Top-left quadrant: lucky but inefficient -->
+        <rect x="40" y="234" width="192" height="152" rx="0" fill="#FBF0D6"/>
+        <!-- Bottom-right quadrant: precise but cold -->
+        <rect x="234" y="40" width="206" height="192" rx="0" fill="#FBF0D6"/>
+        <!-- Top-right quadrant: IDEAL -->
+        <rect x="234" y="234" width="206" height="152" rx="0" fill="#D98A0B" opacity="0.15"/>
+        <rect x="234" y="234" width="206" height="152" rx="0" fill="none" stroke="#D98A0B" stroke-width="2.5"/>
+
+        <!-- Axis lines -->
+        <line x1="40" y1="234" x2="440" y2="234" stroke="#2A1F08" stroke-width="2"/>
+        <line x1="234" y1="40" x2="234" y2="386" stroke="#2A1F08" stroke-width="2"/>
+
+        <!-- Quadrant labels -->
+        <!-- Bottom-left -->
+        <text x="136" y="106" font-size="14" font-weight="800" fill="#B8A47A" text-anchor="middle">"Anyone,</text>
+        <text x="136" y="126" font-size="14" font-weight="800" fill="#B8A47A" text-anchor="middle">Nobody."</text>
+        <text x="136" y="152" font-size="10" fill="#9A8552" text-anchor="middle">Broad avatar,</text>
+        <text x="136" y="166" font-size="10" fill="#9A8552" text-anchor="middle">unqualified leads</text>
+
+        <!-- Top-left -->
+        <text x="136" y="286" font-size="12" font-weight="800" fill="#9A8552" text-anchor="middle">Lucky but</text>
+        <text x="136" y="302" font-size="12" font-weight="800" fill="#9A8552" text-anchor="middle">Inefficient</text>
+        <text x="136" y="324" font-size="9" fill="#9A8552" text-anchor="middle">High quality, low volume</text>
+        <text x="136" y="336" font-size="9" fill="#9A8552" text-anchor="middle">from broad name</text>
+
+        <!-- Bottom-right -->
+        <text x="337" y="106" font-size="12" font-weight="800" fill="#9A8552" text-anchor="middle">Precise but</text>
+        <text x="337" y="122" font-size="12" font-weight="800" fill="#9A8552" text-anchor="middle">Cold</text>
+        <text x="337" y="148" font-size="9" fill="#9A8552" text-anchor="middle">Right person named,</text>
+        <text x="337" y="160" font-size="9" fill="#9A8552" text-anchor="middle">wrong outcome promised</text>
+
+        <!-- Top-right: IDEAL -->
+        <text x="337" y="270" font-size="18" font-weight="800" fill="#D98A0B" text-anchor="middle">IDEAL</text>
+        <text x="337" y="292" font-size="10" fill="#4A3A14" text-anchor="middle">Precise avatar +</text>
+        <text x="337" y="306" font-size="10" fill="#4A3A14" text-anchor="middle">qualified, ready leads</text>
+        <!-- Star marker -->
+        <text x="337" y="338" font-size="24" fill="#D98A0B" text-anchor="middle">★</text>
+
+        <!-- X axis label -->
+        <text x="240" y="408" font-size="11" font-weight="800" fill="#2A1F08" text-anchor="middle" letter-spacing="1">AVATAR SPECIFICITY →</text>
+        <text x="56" y="408" font-size="9" fill="#9A8552">VAGUE</text>
+        <text x="424" y="408" font-size="9" fill="#9A8552" text-anchor="end">PRECISE</text>
+
+        <!-- Y axis label -->
+        <text x="16" y="214" font-size="11" font-weight="800" fill="#2A1F08" text-anchor="middle" transform="rotate(-90,16,214)" letter-spacing="1">LEAD QUALITY →</text>
+        <text x="22" y="378" font-size="9" fill="#9A8552" transform="rotate(-90,22,378)">UNQUALIFIED</text>
+        <text x="22" y="66" font-size="9" fill="#9A8552" transform="rotate(-90,22,66)">QUALIFIED</text>
+
+        <!-- Border around whole chart -->
+        <rect x="40" y="40" width="400" height="346" rx="0" fill="none" stroke="#E8DBB6" stroke-width="1.5"/>
+      </svg>
+      <p class="caption">Specificity is not exclusion. It is accuracy. Precise avatar + precise outcome = your best clients find you.</p>
+    </div>
+  </div>
+
+  <div class="folio">The MAGIC Naming Formula &nbsp;·&nbsp; <b>05</b></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 06 · G + I: GOAL AND INTERVAL
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="rhead">
+    <span>The MAGIC Naming Formula</span>
+    <span class="v">G + I — Goal &amp; Interval</span>
+  </div>
+  <div class="rule"></div>
+
+  <div class="spread">
+    <div class="col-text">
+      <p class="kicker">G · Goal &nbsp;&nbsp; I · Interval</p>
+      <h2>Specific outcomes. <span class="em">Defined windows.</span></h2>
+      <p class="lead">The goal makes the result imaginable. The interval makes it believable. Together they form a promise that feels both real and achievable.</p>
+      <p><span class="b">G — Goal:</span> "Grow your business" is not a goal. "Add $50k in new ARR" is. The more specific the outcome, the more easily the prospect can picture themselves experiencing it. Imagination precedes desire.</p>
+      <p class="small"><span class="b">I — Interval:</span> "In 90 days" is more credible than "fast." A defined time window also implies a system — because random effort doesn't have a timeline. If you can name the window, you're signaling that you've run this process before and know how long it actually takes.</p>
+    </div>
+    <div class="col-fig">
+      <!-- Fraction-style layout with vague vs specific columns -->
+      <svg viewBox="0 0 480 400" xmlns="http://www.w3.org/2000/svg" font-family="'Futura','Helvetica Neue',Arial,sans-serif">
+
+        <!-- Column headers -->
+        <rect x="10" y="10" width="210" height="32" rx="6" fill="#F5EED8" stroke="#DDD0B0" stroke-width="1.5"/>
+        <text x="115" y="31" font-size="11" font-weight="800" fill="#9A8552" text-anchor="middle" letter-spacing="1">VAGUE</text>
+
+        <rect x="260" y="10" width="210" height="32" rx="6" fill="#D98A0B"/>
+        <text x="365" y="31" font-size="11" font-weight="800" fill="#FFFDF7" text-anchor="middle" letter-spacing="1">SPECIFIC</text>
+
+        <!-- G rows -->
+        <text x="240" y="82" font-size="11" font-weight="800" fill="#D98A0B" text-anchor="middle">G</text>
+        <text x="240" y="96" font-size="9" fill="#9A8552" text-anchor="middle">GOAL</text>
+
+        <rect x="10" y="60" width="210" height="56" rx="8" fill="#FFFDF7" stroke="#E8DBB6" stroke-width="1.5"/>
+        <text x="115" y="82" font-size="14" fill="#B8A47A" text-anchor="middle" font-style="italic">"Grow your business"</text>
+        <text x="115" y="102" font-size="11" fill="#9A8552" text-anchor="middle">— vague, not imaginable</text>
+
+        <rect x="260" y="60" width="210" height="56" rx="8" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+        <text x="365" y="82" font-size="14" font-weight="700" fill="#2A1F08" text-anchor="middle">"Add $50k in new ARR"</text>
+        <text x="365" y="102" font-size="11" fill="#D98A0B" text-anchor="middle">— vivid, purchasable image</text>
+
+        <!-- Divider line between G and I -->
+        <line x1="10" y1="130" x2="470" y2="130" stroke="#E8DBB6" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+        <!-- I rows -->
+        <text x="240" y="178" font-size="11" font-weight="800" fill="#D98A0B" text-anchor="middle">I</text>
+        <text x="240" y="192" font-size="9" fill="#9A8552" text-anchor="middle">INTERVAL</text>
+
+        <rect x="10" y="148" width="210" height="56" rx="8" fill="#FFFDF7" stroke="#E8DBB6" stroke-width="1.5"/>
+        <text x="115" y="172" font-size="14" fill="#B8A47A" text-anchor="middle" font-style="italic">"Get results fast"</text>
+        <text x="115" y="192" font-size="11" fill="#9A8552" text-anchor="middle">— vague, unbelievable</text>
+
+        <rect x="260" y="148" width="210" height="56" rx="8" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+        <text x="365" y="172" font-size="14" font-weight="700" fill="#2A1F08" text-anchor="middle">"In 90 days"</text>
+        <text x="365" y="192" font-size="11" fill="#D98A0B" text-anchor="middle">— implying a proven system</text>
+
+        <!-- Equals and result -->
+        <line x1="10" y1="222" x2="470" y2="222" stroke="#2A1F08" stroke-width="2"/>
+        <text x="240" y="248" font-size="20" font-weight="800" fill="#2A1F08" text-anchor="middle">=</text>
+
+        <rect x="10" y="256" width="210" height="62" rx="8" fill="#F5EED8" stroke="#DDD0B0" stroke-width="1.5"/>
+        <text x="115" y="280" font-size="13" font-weight="700" fill="#B8A47A" text-anchor="middle">A vague wish</text>
+        <text x="115" y="300" font-size="11" fill="#9A8552" text-anchor="middle">that nobody buys</text>
+
+        <rect x="260" y="256" width="210" height="62" rx="8" fill="#D98A0B"/>
+        <text x="365" y="278" font-size="13" font-weight="800" fill="#FFFDF7" text-anchor="middle">A believable,</text>
+        <text x="365" y="298" font-size="13" font-weight="800" fill="#FFFDF7" text-anchor="middle">desirable promise</text>
+
+        <!-- Labels at bottom -->
+        <text x="115" y="350" font-size="10" fill="#9A8552" text-anchor="middle">"Grow your business fast"</text>
+        <text x="365" y="350" font-size="10" fill="#D98A0B" text-anchor="middle" font-weight="700">"Add $50k ARR in 90 days"</text>
+
+        <!-- Fraction divider line -->
+        <line x1="10" y1="236" x2="225" y2="236" stroke="#B8A47A" stroke-width="1.5"/>
+        <line x1="260" y1="236" x2="470" y2="236" stroke="#D98A0B" stroke-width="1.5"/>
+      </svg>
+      <p class="caption">Goal + Interval = a promise the brain can picture and the gut can believe. Vagueness kills desire.</p>
+    </div>
+  </div>
+
+  <div class="folio">The MAGIC Naming Formula &nbsp;·&nbsp; <b>06</b></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 07 · C: CONTAINER
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="rhead">
+    <span>The MAGIC Naming Formula</span>
+    <span class="v">C — Container</span>
+  </div>
+  <div class="rule"></div>
+
+  <div class="spread">
+    <div class="col-text">
+      <p class="kicker">C · Container</p>
+      <h2>The vehicle <span class="em">shapes</span> the perception.</h2>
+      <p class="lead">The container word is the product type — and it carries more perception than most founders realize.</p>
+      <p>"Protocol" signals rigor. "Sprint" signals intensity and pace. "Bootcamp" signals transformation through challenge. "Inner Circle" signals exclusivity and peer proximity. The word you choose positions your offer against every other thing in the market, before anyone reads the description.</p>
+      <p class="small">The container also sets expectations for the experience, the peer group, and the level of access. "A course" competes with every $97 Udemy option in the category. "The Intensive" does not. Container choice is a pricing signal as much as a product signal.</p>
+    </div>
+    <div class="col-fig">
+      <!-- Bar chart of container words by perceived value -->
+      <svg viewBox="0 0 480 400" xmlns="http://www.w3.org/2000/svg" font-family="'Futura','Helvetica Neue',Arial,sans-serif">
+
+        <!-- Y axis label -->
+        <text x="14" y="220" font-size="10" font-weight="800" fill="#9A8552" text-anchor="middle" transform="rotate(-90,14,220)" letter-spacing="1">PERCEIVED VALUE / PREMIUM-NESS →</text>
+
+        <!-- Baseline -->
+        <line x1="36" y1="320" x2="470" y2="320" stroke="#2A1F08" stroke-width="2"/>
+
+        <!-- Bars — 6 container words, growing taller -->
+        <!-- Bar widths: 58px, gap 10px, starting x=36 -->
+
+        <!-- 1. Course -->
+        <rect x="36" y="280" width="60" height="40" rx="5" fill="#F5EED8" stroke="#DDD0B0" stroke-width="1.5"/>
+        <text x="66" y="340" font-size="10" font-weight="800" fill="#9A8552" text-anchor="middle">Course</text>
+        <text x="66" y="274" font-size="9" fill="#9A8552" text-anchor="middle">$</text>
+
+        <!-- 2. Program -->
+        <rect x="106" y="244" width="60" height="76" rx="5" fill="#F5EED8" stroke="#DDD0B0" stroke-width="1.5"/>
+        <text x="136" y="340" font-size="10" font-weight="800" fill="#9A8552" text-anchor="middle">Program</text>
+        <text x="136" y="238" font-size="9" fill="#9A8552" text-anchor="middle">$$</text>
+
+        <!-- 3. Academy -->
+        <rect x="176" y="196" width="60" height="124" rx="5" fill="#E8DBB6" stroke="#C8C0A0" stroke-width="1.5"/>
+        <text x="206" y="340" font-size="10" font-weight="800" fill="#4A3A14" text-anchor="middle">Academy</text>
+        <text x="206" y="190" font-size="9" fill="#9A8552" text-anchor="middle">$$$</text>
+
+        <!-- 4. Sprint -->
+        <rect x="246" y="150" width="60" height="170" rx="5" fill="#F0CE7E" stroke="#D98A0B" stroke-width="2"/>
+        <text x="276" y="340" font-size="10" font-weight="800" fill="#2A1F08" text-anchor="middle">Sprint</text>
+        <text x="276" y="144" font-size="9" fill="#D98A0B" text-anchor="middle" font-weight="700">$$$$</text>
+
+        <!-- 5. Intensive -->
+        <rect x="316" y="96" width="60" height="224" rx="5" fill="#D98A0B" opacity="0.8" stroke="#D98A0B" stroke-width="2"/>
+        <text x="346" y="340" font-size="10" font-weight="800" fill="#2A1F08" text-anchor="middle">Intensive</text>
+        <text x="346" y="90" font-size="9" fill="#D98A0B" text-anchor="middle" font-weight="700">$$$$$</text>
+
+        <!-- 6. Inner Circle -->
+        <rect x="386" y="40" width="78" height="280" rx="5" fill="#9A5E04"/>
+        <text x="425" y="340" font-size="10" font-weight="800" fill="#2A1F08" text-anchor="middle">Inner</text>
+        <text x="425" y="355" font-size="10" font-weight="800" fill="#2A1F08" text-anchor="middle">Circle</text>
+        <text x="425" y="34" font-size="9" fill="#9A5E04" text-anchor="middle" font-weight="700">$$$$$$</text>
+        <!-- Star on top bar -->
+        <text x="425" y="80" font-size="22" fill="#F0CE7E" text-anchor="middle">★</text>
+        <text x="425" y="104" font-size="10" fill="#FFFDF7" text-anchor="middle" font-weight="700">Premium</text>
+        <text x="425" y="118" font-size="10" fill="#F0CE7E" text-anchor="middle">positioning</text>
+
+        <!-- Arrow labels -->
+        <text x="36" y="378" font-size="10" fill="#9A8552">← COMMODITY</text>
+        <text x="464" y="378" font-size="10" fill="#D98A0B" text-anchor="end" font-weight="700">PREMIUM →</text>
+
+        <!-- Growth arrow line -->
+        <line x1="36" y1="40" x2="464" y2="40" stroke="#E8DBB6" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="240" y="36" font-size="9" fill="#9A8552" text-anchor="middle" letter-spacing="1">PERCEIVED VALUE CEILING</text>
+      </svg>
+      <p class="caption">Container words are price anchors. The right word instantly repositions your offer out of commodity pricing.</p>
+    </div>
+  </div>
+
+  <div class="folio">The MAGIC Naming Formula &nbsp;·&nbsp; <b>07</b></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 08 · ASSEMBLY: PUTTING IT ALL TOGETHER
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="rhead">
+    <span>The MAGIC Naming Formula</span>
+    <span class="v">Assembly — Putting It All Together</span>
+  </div>
+  <div class="rule"></div>
+
+  <div class="spread">
+    <div class="col-text">
+      <p class="kicker">Assembly</p>
+      <h2>Layer by layer. <span class="em">Letter by letter.</span></h2>
+      <p class="lead">Start with the plain commodity description. Add each MAGIC layer. Watch the name transform into an offer that sells itself.</p>
+      <p>The diagram shows the same fitness offer being built layer by layer. Each addition narrows the audience and sharpens the promise. By the final layer, the name has replaced what would have taken a paragraph to explain.</p>
+      <p class="small">The same logic applies across categories. The e-commerce and recruiting examples below follow identical logic: plain commodity → layered MAGIC name → self-qualifying, premium-positioned offer.</p>
+    </div>
+    <div class="col-fig">
+      <!-- Flow diagram: layering the name -->
+      <svg viewBox="0 0 520 500" xmlns="http://www.w3.org/2000/svg" font-family="'Futura','Helvetica Neue',Arial,sans-serif">
+
+        <!-- Base: plain offer -->
+        <rect x="10" y="0" width="500" height="38" rx="7" fill="#F5EED8" stroke="#DDD0B0" stroke-width="1.5"/>
+        <text x="20" y="14" font-size="9" font-weight="800" fill="#9A8552" letter-spacing="2">START</text>
+        <text x="20" y="30" font-size="14" fill="#4A3A14" font-style="italic">"Fitness coaching"</text>
+
+        <!-- Arrow -->
+        <line x1="260" y1="42" x2="260" y2="56" stroke="#D98A0B" stroke-width="1.5" marker-end="url(#a1)"/>
+        <defs><marker id="a1" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#D98A0B"/></marker></defs>
+
+        <!-- + M -->
+        <rect x="10" y="58" width="500" height="38" rx="7" fill="#FBF0D6" stroke="#D98A0B" stroke-width="1.5"/>
+        <rect x="10" y="58" width="24" height="38" rx="7" fill="#D98A0B"/>
+        <text x="22" y="82" font-size="12" font-weight="800" fill="#FFFDF7" text-anchor="middle">M</text>
+        <text x="44" y="72" font-size="9" fill="#D98A0B" font-weight="700">+ MAGNETIC REASON WHY</text>
+        <text x="44" y="88" font-size="13" fill="#2A1F08">"Fitness coaching <tspan font-weight="800" fill="#D98A0B">for the 2026 health reset</tspan>"</text>
+
+        <line x1="260" y1="100" x2="260" y2="114" stroke="#D98A0B" stroke-width="1.5" marker-end="url(#a2)"/>
+        <defs><marker id="a2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#D98A0B"/></marker></defs>
+
+        <!-- + A -->
+        <rect x="10" y="116" width="500" height="38" rx="7" fill="#FBF0D6" stroke="#D98A0B" stroke-width="1.5"/>
+        <rect x="10" y="116" width="24" height="38" rx="7" fill="#D98A0B"/>
+        <text x="22" y="140" font-size="12" font-weight="800" fill="#FFFDF7" text-anchor="middle">A</text>
+        <text x="44" y="130" font-size="9" fill="#D98A0B" font-weight="700">+ AVATAR</text>
+        <text x="44" y="146" font-size="13" fill="#2A1F08">"… <tspan font-weight="800" fill="#D98A0B">for men over 40</tspan>"</text>
+
+        <line x1="260" y1="158" x2="260" y2="172" stroke="#D98A0B" stroke-width="1.5" marker-end="url(#a3)"/>
+        <defs><marker id="a3" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#D98A0B"/></marker></defs>
+
+        <!-- + G -->
+        <rect x="10" y="174" width="500" height="38" rx="7" fill="#FBF0D6" stroke="#D98A0B" stroke-width="1.5"/>
+        <rect x="10" y="174" width="24" height="38" rx="7" fill="#D98A0B"/>
+        <text x="22" y="198" font-size="12" font-weight="800" fill="#FFFDF7" text-anchor="middle">G</text>
+        <text x="44" y="188" font-size="9" fill="#D98A0B" font-weight="700">+ GOAL</text>
+        <text x="44" y="204" font-size="13" fill="#2A1F08">"… <tspan font-weight="800" fill="#D98A0B">to drop 25 lbs</tspan>"</text>
+
+        <line x1="260" y1="216" x2="260" y2="230" stroke="#D98A0B" stroke-width="1.5" marker-end="url(#a4)"/>
+        <defs><marker id="a4" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#D98A0B"/></marker></defs>
+
+        <!-- + I -->
+        <rect x="10" y="232" width="500" height="38" rx="7" fill="#FBF0D6" stroke="#D98A0B" stroke-width="1.5"/>
+        <rect x="10" y="232" width="24" height="38" rx="7" fill="#D98A0B"/>
+        <text x="22" y="256" font-size="12" font-weight="800" fill="#FFFDF7" text-anchor="middle">I</text>
+        <text x="44" y="246" font-size="9" fill="#D98A0B" font-weight="700">+ INTERVAL</text>
+        <text x="44" y="262" font-size="13" fill="#2A1F08">"… <tspan font-weight="800" fill="#D98A0B">in 90 days</tspan>"</text>
+
+        <line x1="260" y1="274" x2="260" y2="288" stroke="#D98A0B" stroke-width="1.5" marker-end="url(#a5)"/>
+        <defs><marker id="a5" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#D98A0B"/></marker></defs>
+
+        <!-- + C -->
+        <rect x="10" y="290" width="500" height="38" rx="7" fill="#FBF0D6" stroke="#D98A0B" stroke-width="1.5"/>
+        <rect x="10" y="290" width="24" height="38" rx="7" fill="#9A5E04"/>
+        <text x="22" y="314" font-size="12" font-weight="800" fill="#FFFDF7" text-anchor="middle">C</text>
+        <text x="44" y="304" font-size="9" fill="#9A5E04" font-weight="700">+ CONTAINER</text>
+        <text x="44" y="320" font-size="13" fill="#2A1F08">"… <tspan font-weight="800" fill="#9A5E04">Protocol</tspan>"</text>
+
+        <!-- Arrow to result -->
+        <line x1="260" y1="332" x2="260" y2="346" stroke="#9A5E04" stroke-width="2" marker-end="url(#a6)"/>
+        <defs><marker id="a6" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#9A5E04"/></marker></defs>
+
+        <!-- Final result -->
+        <rect x="10" y="348" width="500" height="60" rx="10" fill="#9A5E04"/>
+        <text x="260" y="370" font-size="9" font-weight="800" fill="#F0CE7E" text-anchor="middle" letter-spacing="2">RESULT</text>
+        <text x="260" y="392" font-size="13" font-weight="800" fill="#FFFDF7" text-anchor="middle">"The 2026 Health Reset Protocol: Drop 25 lbs</text>
+        <text x="260" y="406" font-size="13" font-weight="800" fill="#FFFDF7" text-anchor="middle">in 90 Days for Men Over 40"</text>
+
+        <!-- Other examples at bottom -->
+        <text x="10" y="432" font-size="9" fill="#9A8552" font-weight="700" letter-spacing="1">E-COM ›</text>
+        <text x="62" y="432" font-size="11" fill="#4A3A14">"The 30-Day Q4 Revenue Push for Shopify Stores Under $500k"</text>
+        <text x="10" y="452" font-size="9" fill="#9A8552" font-weight="700" letter-spacing="1">RECRUITING ›</text>
+        <text x="82" y="452" font-size="11" fill="#4A3A14">"The 21-Day Offer-in-Hand Sprint for Mid-Market Sales Hires"</text>
+        <line x1="10" y1="420" x2="510" y2="420" stroke="#E8DBB6" stroke-width="1"/>
+      </svg>
+      <p class="caption">Each letter adds a layer of specificity. By the final step, the name is a complete sales argument in one phrase.</p>
+    </div>
+  </div>
+
+  <div class="folio">The MAGIC Naming Formula &nbsp;·&nbsp; <b>08</b></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 09 · CLOSE
+     ═══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="rhead">
+    <span>The MAGIC Naming Formula</span>
+    <span class="v">The Takeaway</span>
+  </div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+    <div class="close-left">
+      <h2>A name is not <span class="em">decoration.</span></h2>
+      <p>The name is the first sales conversation your offer has — without you in the room. When it names the exact person, the exact outcome, and the exact time frame, the right prospect reads it and thinks: "This is for me." The wrong prospect moves on. Both outcomes are wins.</p>
+      <p class="small">You don't need a clever name. You need a precise one. MAGIC gives you the assembly line: a hook to make it timely, a person to make it personal, a goal to make it desired, a window to make it credible, and a container to make it positioned. Run the formula. Name the offer. Then deliver.</p>
+
+      <div class="cmp">
+        <div class="r bad">
+          <span class="mk">✕</span>
+          <span>"Business coaching for growth-minded individuals."</span>
+        </div>
+        <div class="r good">
+          <span class="mk">✓</span>
+          <span>"The 60-Day Cold Outreach Sprint for B2B Founders Under $1M ARR."</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="close-right">
+      <!-- MAGIC acronym stacked vertically -->
+      <svg viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg" font-family="'Futura','Helvetica Neue',Arial,sans-serif">
+
+        <!-- M -->
+        <rect x="0" y="0" width="340" height="58" rx="10" fill="#D98A0B"/>
+        <text x="30" y="42" font-size="40" font-weight="800" fill="#FFFDF7">M</text>
+        <text x="76" y="24" font-size="12" font-weight="800" fill="#F0CE7E" letter-spacing="1">MAGNETIC REASON WHY</text>
+        <text x="76" y="42" font-size="12" fill="#F5E8C0">Why now? What's the hook?</text>
+
+        <!-- A -->
+        <rect x="0" y="64" width="340" height="58" rx="10" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+        <text x="30" y="104" font-size="40" font-weight="800" fill="#D98A0B">A</text>
+        <text x="76" y="86" font-size="12" font-weight="800" fill="#2A1F08" letter-spacing="1">AVATAR</text>
+        <text x="76" y="104" font-size="12" fill="#4A3A14">Who is it for, exactly?</text>
+
+        <!-- G -->
+        <rect x="0" y="128" width="340" height="58" rx="10" fill="#D98A0B"/>
+        <text x="30" y="168" font-size="40" font-weight="800" fill="#FFFDF7">G</text>
+        <text x="76" y="150" font-size="12" font-weight="800" fill="#F0CE7E" letter-spacing="1">GOAL</text>
+        <text x="76" y="168" font-size="12" fill="#F5E8C0">What specific outcome?</text>
+
+        <!-- I -->
+        <rect x="0" y="192" width="340" height="58" rx="10" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+        <text x="30" y="232" font-size="40" font-weight="800" fill="#D98A0B">I</text>
+        <text x="76" y="214" font-size="12" font-weight="800" fill="#2A1F08" letter-spacing="1">INTERVAL</text>
+        <text x="76" y="232" font-size="12" fill="#4A3A14">In what defined time window?</text>
+
+        <!-- C -->
+        <rect x="0" y="256" width="340" height="58" rx="10" fill="#9A5E04"/>
+        <text x="30" y="296" font-size="40" font-weight="800" fill="#FFFDF7">C</text>
+        <text x="76" y="278" font-size="12" font-weight="800" fill="#F0CE7E" letter-spacing="1">CONTAINER</text>
+        <text x="76" y="296" font-size="12" fill="#F5E8C0">What delivery format or product type?</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="cta">
+    <p class="ck">Source · Go Deeper</p>
+    <h3>$100M Offers — the system for naming, pricing, and stacking.</h3>
+    <p>Alex Hormozi's complete framework for building offers so good people feel stupid saying no — including the full MAGIC naming system, value stacking, and guarantee architecture.</p>
+    <a class="link" href="https://acquisition.com">acquisition.com &rarr;</a>
+  </div>
+
+  <p class="closer">Name it precisely. Attract exactly the right buyer. Then deliver.</p>
+
+  <div class="stamp">The MAGIC Naming Formula · $100M Offers</div>
+  <div class="folio">The MAGIC Naming Formula &nbsp;·&nbsp; <b>09</b></div>
+</div>
+
+</body>
+</html>
