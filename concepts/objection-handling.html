@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Four Core Objections — Hormozi</title>
+<style>
+  :root{
+    --paper:#FFFDFD;        /* white page               */
+    --panel:#FBE0E0;        /* light crimson panels     */
+    --ink:#340F12;          /* deep crimson-ink text    */
+    --ink-soft:#5E2328;     /* secondary text           */
+    --muted:#A66A6F;        /* captions, running heads  */
+    --line:#F0D6D8;         /* crimson hairlines        */
+    --violet:#DC2626;       /* the accent (~10%)        */
+    --violet-deep:#991218;  /* strong fills             */
+    --violet-soft:#F0A0A0;  /* glow / light strokes     */
+    --violet-fill:#FBE0E0;  /* faint crimson block fill */
+    --plum:#C08080;         /* destroys / minimize / cut*/
+    --plum-fill:#FBEDED;    /* faint plum block fill    */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#e8c4c4; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#FBEDED; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#F0A0A0; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #F0D6D8; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#E8C4C4; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">?</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Closing</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Every reason a prospect doesn&rsquo;t buy traces to one of four fears</div>
+    <h1 class="title">THE FOUR<br>CORE<br>OBJECTIONS</h1>
+    <p class="cover-sub">There are no new objections. Every stall, every &ldquo;let me think about it,&rdquo; every &ldquo;I can&rsquo;t afford it&rdquo; is one of <b>four fears in disguise.</b> Name the fear, address it directly, and the sale closes itself.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; hear the fear &middot; reframe it &middot; close</span></div>
+  </div>
+  <div class="stamp">The Four Core Objections</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · WHAT OBJECTIONS REALLY ARE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR CORE OBJECTIONS</span><span>The Real Signal</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">An objection is a fear wearing <span class="em">a business suit.</span></h2>
+
+  <p class="lead">Nobody says &ldquo;I&rsquo;m scared this won&rsquo;t work for me.&rdquo; They say &ldquo;it&rsquo;s not the right time&rdquo; instead.</p>
+  <p>The stated objection is almost never the real one. It is the socially acceptable version of a much deeper belief gap. When you argue with the surface objection, you lose. When you address what it represents, you close.</p>
+  <p>There are exactly <span class="b">four fears</span> underneath every objection ever spoken. Learn them and you become unstoppable in a conversation.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- iceberg above water -->
+      <rect x="0" y="0" width="654" height="110" rx="0" fill="#FFFDFD"/>
+      <polygon points="220,108 327,20 434,108" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="327" y="68" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">STATED</text>
+      <text x="327" y="88" text-anchor="middle" font-size="13" font-weight="600" fill="#5E2328">objection</text>
+      <!-- waterline -->
+      <line x1="0" y1="112" x2="654" y2="112" stroke="#F0D6D8" stroke-width="3" stroke-dasharray="10 6"/>
+      <text x="12" y="108" font-size="10" font-weight="800" fill="#A66A6F" letter-spacing="1">SURFACE</text>
+      <!-- below water -->
+      <rect x="0" y="114" width="654" height="176" rx="0" fill="#FBEDED"/>
+      <polygon points="120,290 327,115 534,290" fill="#DC2626" opacity="0.85"/>
+      <text x="327" y="190" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">THE REAL FEAR</text>
+      <text x="327" y="214" text-anchor="middle" font-size="12.5" font-weight="600" fill="#F0A0A0">Money &middot; Time &middot; People &middot; Self</text>
+      <text x="12" y="132" font-size="10" font-weight="800" fill="#A66A6F" letter-spacing="1">BENEATH THE SURFACE</text>
+    </svg>
+    <div class="caption">Argue with the tip and you lose. Address what is below the waterline and the objection dissolves.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · FOUR OBJECTIONS OVERVIEW ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR CORE OBJECTIONS</span><span>The Map</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Every objection is <span class="em">one of four.</span></h2>
+
+  <p>In thirty years of combined sales research, every stall maps to the same four root fears. Master the reframe for each and no conversation can end without a real decision.</p>
+  <p>The goal is not to overwhelm the objection. It is to make staying stuck feel more expensive than moving forward &mdash; because for most prospects, it already is.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0 10px">
+    <svg viewBox="0 0 654 370" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Obj 1: Money -->
+      <rect x="0" y="0" width="314" height="172" rx="13" fill="#DC2626"/>
+      <text x="24" y="34" font-size="11" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">01 &middot; MONEY</text>
+      <text x="24" y="68" font-size="18" font-weight="800" fill="#FFFFFF">&ldquo;I can&rsquo;t afford it&rdquo;</text>
+      <text x="24" y="100" font-size="13" font-weight="600" fill="#FBE0E0">Real fear: value not yet clear</text>
+      <text x="24" y="122" font-size="13" font-weight="600" fill="#FBE0E0">or loss of control over money.</text>
+      <text x="24" y="154" font-size="12" font-style="italic" fill="#F0A0A0">reframe: cost of inaction vs action</text>
+
+      <!-- Obj 2: Time -->
+      <rect x="340" y="0" width="314" height="172" rx="13" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="364" y="34" font-size="11" font-weight="800" fill="#DC2626" letter-spacing="1.5">02 &middot; TIME</text>
+      <text x="364" y="68" font-size="18" font-weight="800" fill="#340F12">&ldquo;Now isn&rsquo;t the right time&rdquo;</text>
+      <text x="364" y="100" font-size="13" font-weight="600" fill="#5E2328">Real fear: this won&rsquo;t work so</text>
+      <text x="364" y="122" font-size="13" font-weight="600" fill="#5E2328">why disrupt life for nothing?</text>
+      <text x="364" y="154" font-size="12" font-style="italic" fill="#A66A6F">reframe: no time = staying stuck</text>
+
+      <!-- Obj 3: People -->
+      <rect x="0" y="198" width="314" height="172" rx="13" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="24" y="232" font-size="11" font-weight="800" fill="#DC2626" letter-spacing="1.5">03 &middot; PEOPLE</text>
+      <text x="24" y="266" font-size="18" font-weight="800" fill="#340F12">&ldquo;I need to ask my partner&rdquo;</text>
+      <text x="24" y="298" font-size="13" font-weight="600" fill="#5E2328">Real fear: making the wrong</text>
+      <text x="24" y="320" font-size="13" font-weight="600" fill="#5E2328">decision &amp; facing the consequences.</text>
+      <text x="24" y="352" font-size="12" font-style="italic" fill="#A66A6F">reframe: invite the partner in now</text>
+
+      <!-- Obj 4: Self -->
+      <rect x="340" y="198" width="314" height="172" rx="13" fill="#991218"/>
+      <text x="364" y="232" font-size="11" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">04 &middot; SELF</text>
+      <text x="364" y="266" font-size="18" font-weight="800" fill="#FFFFFF">&ldquo;I&rsquo;m not sure I can do this&rdquo;</text>
+      <text x="364" y="298" font-size="13" font-weight="600" fill="#FBE0E0">Real fear: past failures mean</text>
+      <text x="364" y="320" font-size="13" font-weight="600" fill="#FBE0E0">this will fail too.</text>
+      <text x="364" y="352" font-size="12" font-style="italic" fill="#F0A0A0">reframe: identify what was missing</text>
+    </svg>
+    <div class="caption">Money, time, people, self &mdash; four fears, infinite variations. Recognise the category and you know the reframe.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · OBJECTION 1: MONEY ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR CORE OBJECTIONS</span><span>01 &middot; Money</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">&ldquo;I can&rsquo;t afford it.&rdquo; <span class="em">Translation: I can&rsquo;t see the value yet.</span></h2>
+
+  <p>Nobody lacks money for things they truly want. They lack money for things they do not sufficiently value. The price objection is almost always a <span class="b">value gap</span>, not a budget gap.</p>
+  <p>Do not discount. Do not apologize. <span class="b">Reframe the cost side of the ledger</span> to include what staying stuck actually costs &mdash; in time, revenue, opportunity, and compounding delay.</p>
+  <p>Then show them you can solve the budget problem itself if the value is clear.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 288" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Left: cost of action -->
+      <rect x="0" y="0" width="296" height="288" rx="13" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="24" y="34" font-size="11" font-weight="800" fill="#DC2626" letter-spacing="1.5">COST OF ACTING</text>
+      <text x="24" y="66" font-size="20" font-weight="800" fill="#340F12">$5,000</text>
+      <text x="24" y="92" font-size="13" font-weight="600" fill="#5E2328">program investment</text>
+      <!-- bar: short -->
+      <rect x="24" y="108" width="130" height="28" rx="6" fill="#DC2626"/>
+      <text x="24" y="160" font-size="12" font-weight="600" fill="#5E2328">one-time, finite, known</text>
+      <text x="24" y="182" font-size="12" font-weight="600" fill="#5E2328">and controllable</text>
+      <text x="24" y="260" font-size="13" font-weight="800" fill="#DC2626">&#10003; clear ROI possible</text>
+
+      <!-- Right: cost of inaction -->
+      <rect x="340" y="0" width="314" height="288" rx="13" fill="#DC2626"/>
+      <text x="364" y="34" font-size="11" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">COST OF NOT ACTING</text>
+      <text x="364" y="66" font-size="20" font-weight="800" fill="#FFFFFF">$5,000 / month</text>
+      <text x="364" y="92" font-size="13" font-weight="600" fill="#FBE0E0">in lost revenue &amp; stalled growth</text>
+      <!-- bar: tall -->
+      <rect x="364" y="108" width="265" height="28" rx="6" fill="#991218"/>
+      <text x="364" y="160" font-size="12" font-weight="600" fill="#FBE0E0">ongoing, compounding, invisible</text>
+      <text x="364" y="182" font-size="12" font-weight="600" fill="#FBE0E0">and feels &ldquo;normal&rdquo;</text>
+      <text x="364" y="260" font-size="13" font-weight="800" fill="#F0A0A0">&#10007; guaranteed ROI of zero</text>
+    </svg>
+    <div class="caption">The question is never &ldquo;Can I afford this?&rdquo; It is &ldquo;Which is more expensive: acting or staying stuck?&rdquo;</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · OBJECTION 2: TIME ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR CORE OBJECTIONS</span><span>02 &middot; Time</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">&ldquo;Now isn&rsquo;t the right time.&rdquo; <span class="em">Translation: I don&rsquo;t believe it will work.</span></h2>
+
+  <p>If someone truly believed they could double their income in 90 days, they would find the time tonight. The time objection is a <span class="b">belief objection wearing a calendar</span>.</p>
+  <p>Do not negotiate the timing. Ask when the right time actually is and what will be different then. The answer almost always reveals that the right time is a fantasy.</p>
+  <p>Then ask: <span class="b">&ldquo;What is the cost of waiting until then?&rdquo;</span> Let the math do the work.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 280" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Timeline of Someday -->
+      <line x1="30" y1="140" x2="620" y2="140" stroke="#340F12" stroke-width="2.5"/>
+      <polygon points="612,135 624,140 612,145" fill="#340F12"/>
+
+      <!-- NOW marker -->
+      <line x1="80" y1="140" x2="80" y2="60" stroke="#DC2626" stroke-width="3"/>
+      <circle cx="80" cy="140" r="10" fill="#DC2626"/>
+      <rect x="28" y="32" width="104" height="46" rx="9" fill="#DC2626"/>
+      <text x="80" y="52" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">NOW</text>
+      <text x="80" y="70" text-anchor="middle" font-size="11" font-weight="600" fill="#FBE0E0">pain is real</text>
+      <text x="80" y="162" text-anchor="middle" font-size="10" font-weight="600" fill="#A66A6F">today</text>
+
+      <!-- Someday markers — increasingly far -->
+      <line x1="230" y1="140" x2="230" y2="82" stroke="#C08080" stroke-width="2" stroke-dasharray="5 4"/>
+      <circle cx="230" cy="140" r="8" fill="#FBEDED" stroke="#C08080" stroke-width="2"/>
+      <rect x="170" y="54" width="120" height="42" rx="8" fill="#FBEDED" stroke="#C08080" stroke-width="2"/>
+      <text x="230" y="73" text-anchor="middle" font-size="12" font-weight="800" fill="#5E2328">&ldquo;Next month&rdquo;</text>
+      <text x="230" y="89" text-anchor="middle" font-size="10" font-weight="600" fill="#A66A6F">still busy</text>
+      <text x="230" y="162" text-anchor="middle" font-size="10" font-weight="600" fill="#A66A6F">+30 days</text>
+
+      <line x1="390" y1="140" x2="390" y2="82" stroke="#C08080" stroke-width="2" stroke-dasharray="5 4"/>
+      <circle cx="390" cy="140" r="8" fill="#FBEDED" stroke="#C08080" stroke-width="2"/>
+      <rect x="330" y="54" width="120" height="42" rx="8" fill="#FBEDED" stroke="#C08080" stroke-width="2"/>
+      <text x="390" y="73" text-anchor="middle" font-size="12" font-weight="800" fill="#5E2328">&ldquo;After Q4&rdquo;</text>
+      <text x="390" y="89" text-anchor="middle" font-size="10" font-weight="600" fill="#A66A6F">still busy</text>
+      <text x="390" y="162" text-anchor="middle" font-size="10" font-weight="600" fill="#A66A6F">+4 months</text>
+
+      <line x1="550" y1="140" x2="550" y2="82" stroke="#C08080" stroke-width="2" stroke-dasharray="5 4"/>
+      <circle cx="550" cy="140" r="8" fill="#FBEDED" stroke="#C08080" stroke-width="2"/>
+      <rect x="486" y="54" width="136" height="42" rx="8" fill="#FBEDED" stroke="#C08080" stroke-width="2"/>
+      <text x="554" y="73" text-anchor="middle" font-size="12" font-weight="800" fill="#5E2328">&ldquo;Someday&rdquo;</text>
+      <text x="554" y="89" text-anchor="middle" font-size="10" font-weight="600" fill="#A66A6F">still stuck</text>
+      <text x="550" y="162" text-anchor="middle" font-size="10" font-weight="600" fill="#A66A6F">never</text>
+
+      <!-- cost accumulator bar below -->
+      <rect x="80" y="180" width="470" height="24" rx="6" fill="#DC2626" opacity="0.15"/>
+      <rect x="80" y="180" width="470" height="24" rx="6" fill="none" stroke="#DC2626" stroke-width="1.5"/>
+      <text x="315" y="197" text-anchor="middle" font-size="12" font-weight="800" fill="#DC2626">$5K &times; 4 months = $20,000 in lost revenue while waiting</text>
+
+      <text x="327" y="248" text-anchor="middle" font-size="12.5" font-style="italic" fill="#A66A6F">&ldquo;When exactly is the right time, and what will be different then?&rdquo;</text>
+    </svg>
+    <div class="caption">The &ldquo;right time&rdquo; never arrives on its own. It is created by choosing to act now.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · OBJECTION 3: PEOPLE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR CORE OBJECTIONS</span><span>03 &middot; People</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">&ldquo;I need to ask my partner.&rdquo; <span class="em">Translation: I am afraid of being wrong alone.</span></h2>
+
+  <p>This objection has two forms. Sometimes the partner is genuinely a financial decision-maker. Sometimes they are a <span class="b">shield</span> &mdash; a way to delay without saying &ldquo;I&rsquo;m scared.&rdquo;</p>
+  <p>For the real case: offer to bring the partner into the call right now. For the shield: acknowledge the fear directly and ask what the partner would actually want for them.</p>
+  <div class="cmp" style="margin-top:18px">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;No problem, send them my info.&rdquo; &mdash; The conversation is now over.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;Is your partner able to join us right now? I want them to have the full picture.&rdquo;</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 280" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Left: the shield pattern -->
+      <rect x="0" y="0" width="296" height="280" rx="13" fill="#FBEDED" stroke="#C08080" stroke-width="2"/>
+      <text x="24" y="34" font-size="11" font-weight="800" fill="#C08080" letter-spacing="1.5">THE SHIELD PATTERN</text>
+      <!-- person icon: prospect -->
+      <circle cx="148" cy="90" r="22" fill="#FFFDFD" stroke="#C08080" stroke-width="2"/>
+      <text x="148" y="96" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">YOU</text>
+      <!-- arrows going back and forth -->
+      <g stroke="#C08080" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="5 4">
+        <line x1="148" y1="114" x2="148" y2="172"/>
+      </g>
+      <!-- person: prospect -->
+      <circle cx="148" cy="190" r="22" fill="#FBEDED" stroke="#C08080" stroke-width="2"/>
+      <text x="148" y="196" text-anchor="middle" font-size="11" font-weight="800" fill="#C08080">PARTNER</text>
+      <text x="148" y="244" text-anchor="middle" font-size="12" font-weight="600" fill="#A66A6F">back-and-forth</text>
+      <text x="148" y="264" text-anchor="middle" font-size="11" font-style="italic" fill="#A66A6F">deal is cooling every hour</text>
+
+      <!-- Right: the fix -->
+      <rect x="340" y="0" width="314" height="280" rx="13" fill="#DC2626"/>
+      <text x="364" y="34" font-size="11" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">THE FIX: INVITE THEM IN</text>
+      <!-- three-way -->
+      <circle cx="497" cy="80" r="22" fill="#FFFDFD"/>
+      <text x="497" y="86" text-anchor="middle" font-size="11" font-weight="800" fill="#340F12">YOU</text>
+      <line x1="475" y1="98" x2="430" y2="136" stroke="#FFFFFF" stroke-width="2.5"/>
+      <line x1="519" y1="98" x2="564" y2="136" stroke="#FFFFFF" stroke-width="2.5"/>
+      <circle cx="414" cy="152" r="22" fill="#991218"/>
+      <text x="414" y="158" text-anchor="middle" font-size="10" font-weight="800" fill="#FFFFFF">PROSPECT</text>
+      <circle cx="580" cy="152" r="22" fill="#991218"/>
+      <text x="580" y="158" text-anchor="middle" font-size="10" font-weight="800" fill="#FFFFFF">PARTNER</text>
+      <text x="497" y="210" text-anchor="middle" font-size="12" font-weight="600" fill="#FBE0E0">all three on the call</text>
+      <text x="497" y="250" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">&#10003; decision gets made</text>
+    </svg>
+    <div class="caption">Agree to &ldquo;call back&rdquo; and the deal vanishes. Get everyone on the call and the deal gets made.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · OBJECTION 4: SELF ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR CORE OBJECTIONS</span><span>04 &middot; Self</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">&ldquo;I&rsquo;m not sure I can do it.&rdquo; <span class="em">Translation: I have failed before and I am afraid to again.</span></h2>
+
+  <p>This is the deepest objection and the most honest one. The prospect is not questioning your program &mdash; they are questioning <span class="b">themselves.</span></p>
+  <p>Do not pump them up with generic motivation. Instead: <span class="b">find out what was missing before</span>. Every failed past attempt had a specific reason. When you identify it and show that your solution closes that exact gap, the fear dissolves.</p>
+  <p>Belief is not created by encouragement. It is created by <span class="b">evidence.</span></p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 282" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Before: belief gap -->
+      <rect x="0" y="0" width="296" height="282" rx="13" fill="#FBEDED" stroke="#C08080" stroke-width="2"/>
+      <text x="24" y="34" font-size="11" font-weight="800" fill="#C08080" letter-spacing="1.5">THE BELIEF GAP</text>
+      <!-- bar chart: past attempts all fall short -->
+      <line x1="30" y1="220" x2="270" y2="220" stroke="#C08080" stroke-width="2"/>
+      <rect x="50"  y="180" width="36" height="40" rx="4" fill="#FBEDED" stroke="#C08080" stroke-width="2"/>
+      <text x="68"  y="250" text-anchor="middle" font-size="9" font-weight="800" fill="#A66A6F">Try 1</text>
+      <rect x="108" y="160" width="36" height="60" rx="4" fill="#FBEDED" stroke="#C08080" stroke-width="2"/>
+      <text x="126" y="250" text-anchor="middle" font-size="9" font-weight="800" fill="#A66A6F">Try 2</text>
+      <rect x="166" y="170" width="36" height="50" rx="4" fill="#FBEDED" stroke="#C08080" stroke-width="2"/>
+      <text x="184" y="250" text-anchor="middle" font-size="9" font-weight="800" fill="#A66A6F">Try 3</text>
+      <!-- goal line -->
+      <line x1="30" y1="100" x2="270" y2="100" stroke="#C08080" stroke-dasharray="6 4" stroke-width="2"/>
+      <text x="274" y="104" font-size="10" font-weight="800" fill="#C08080">GOAL</text>
+      <!-- gap arrows -->
+      <g stroke="#DC2626" stroke-width="2" stroke-dasharray="4 3">
+        <line x1="68" y1="178" x2="68" y2="104"/>
+        <line x1="126" y1="158" x2="126" y2="104"/>
+        <line x1="184" y1="168" x2="184" y2="104"/>
+      </g>
+
+      <!-- Right: evidence bridge -->
+      <rect x="340" y="0" width="314" height="282" rx="13" fill="#DC2626"/>
+      <text x="364" y="34" font-size="11" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">THE EVIDENCE BRIDGE</text>
+      <!-- three steps to belief -->
+      <rect x="364" y="54" width="266" height="44" rx="9" fill="#991218"/>
+      <text x="497" y="72" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">1. What was missing before?</text>
+      <text x="497" y="90" text-anchor="middle" font-size="11" font-weight="600" fill="#F0A0A0">find the exact gap</text>
+      <rect x="364" y="112" width="266" height="44" rx="9" fill="#991218"/>
+      <text x="497" y="130" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">2. How does this close it?</text>
+      <text x="497" y="148" text-anchor="middle" font-size="11" font-weight="600" fill="#F0A0A0">show the specific fix</text>
+      <rect x="364" y="170" width="266" height="44" rx="9" fill="#FFFDFD"/>
+      <text x="497" y="188" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">3. Here&rsquo;s proof it works</text>
+      <text x="497" y="206" text-anchor="middle" font-size="11" font-weight="600" fill="#5E2328">case study like them</text>
+      <text x="364" y="258" font-size="12.5" font-weight="800" fill="#F0A0A0">&#10003; belief = evidence, not pep talks</text>
+    </svg>
+    <div class="caption">Identify what was missing in every past attempt. Then show exactly how this fills that gap.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · THE UNIVERSAL REFRAME ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR CORE OBJECTIONS</span><span>The Universal Formula</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">One formula for <span class="em">all four.</span></h2>
+
+  <p>Regardless of which objection surfaces, the structure of your response is the same every time. Deviation burns trust. Consistency builds it.</p>
+  <p>The formula is: <span class="b">acknowledge &rarr; isolate &rarr; reframe &rarr; close.</span> The words change per objection; the sequence never does.</p>
+  <p>The hardest part is not the reframe. It is the pause after isolating &mdash; sitting in silence long enough for the real fear to surface.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 308" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Step 1: Acknowledge -->
+      <rect x="0" y="0" width="654" height="62" rx="10" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="24" y="24" font-size="11" font-weight="800" fill="#DC2626" letter-spacing="1.5">STEP 1 &mdash; ACKNOWLEDGE</text>
+      <text x="24" y="48" font-size="15" font-weight="800" fill="#340F12">&ldquo;I completely understand &mdash; that&rsquo;s a fair concern.&rdquo;</text>
+      <line x1="327" y1="62" x2="327" y2="74" stroke="#F0D6D8" stroke-width="2"/>
+      <polygon points="321,71 327,78 333,71" fill="#F0D6D8"/>
+      <!-- Step 2: Isolate -->
+      <rect x="0" y="78" width="654" height="62" rx="10" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="24" y="102" font-size="11" font-weight="800" fill="#DC2626" letter-spacing="1.5">STEP 2 &mdash; ISOLATE</text>
+      <text x="24" y="126" font-size="15" font-weight="800" fill="#340F12">&ldquo;Is that the only thing between you and moving forward?&rdquo;</text>
+      <line x1="327" y1="140" x2="327" y2="152" stroke="#F0D6D8" stroke-width="2"/>
+      <polygon points="321,149 327,156 333,149" fill="#F0D6D8"/>
+      <!-- Step 3: Reframe -->
+      <rect x="0" y="156" width="654" height="62" rx="10" fill="#DC2626"/>
+      <text x="24" y="180" font-size="11" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">STEP 3 &mdash; REFRAME</text>
+      <text x="24" y="204" font-size="15" font-weight="800" fill="#FFFFFF">&ldquo;What does staying exactly where you are cost you each month?&rdquo;</text>
+      <line x1="327" y1="218" x2="327" y2="230" stroke="#F0D6D8" stroke-width="2"/>
+      <polygon points="321,227 327,234 333,227" fill="#F0D6D8"/>
+      <!-- Step 4: Close -->
+      <rect x="0" y="234" width="654" height="62" rx="10" fill="#991218"/>
+      <text x="24" y="258" font-size="11" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">STEP 4 &mdash; CLOSE</text>
+      <text x="24" y="282" font-size="15" font-weight="800" fill="#FFFFFF">&ldquo;Given all that, does it make sense to move forward today?&rdquo;</text>
+    </svg>
+    <div class="caption">Acknowledge. Isolate. Reframe. Close. Four words. Every objection, every time.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · BEFORE / AFTER ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR CORE OBJECTIONS</span><span>In Practice</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The same objection. <span class="em">Two outcomes.</span></h2>
+
+  <p class="lead">Prospect: &ldquo;$5,000 is a lot of money right now.&rdquo;</p>
+  <p>How you respond in the next ten seconds determines whether this call closes or collapses. The words do not need to be perfect. The sequence does.</p>
+  <p>The difference between the two responses below is not aggression or manipulation. It is <span class="b">diagnosis versus retreat.</span> One treats the objection as a signal to help. The other treats it as a polite goodbye.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 296" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Bad response -->
+      <rect x="0" y="0" width="654" height="130" rx="13" fill="#FBEDED" stroke="#C08080" stroke-width="2.5"/>
+      <text x="24" y="30" font-size="11" font-weight="800" fill="#C08080" letter-spacing="1.5">&#10007; RETREAT</text>
+      <text x="24" y="58" font-size="14" font-weight="800" fill="#5E2328">&ldquo;No worries, totally get it. Maybe we can look at a payment plan?</text>
+      <text x="24" y="80" font-size="14" font-weight="800" fill="#5E2328">Or reach back out when the timing is better for you!&rdquo;</text>
+      <rect x="24" y="96" width="440" height="24" rx="6" fill="#FBEDED" stroke="#C08080" stroke-width="1.5"/>
+      <text x="244" y="113" text-anchor="middle" font-size="11" font-weight="800" fill="#C08080">outcome: call ends, deal dies, prospect stays stuck</text>
+
+      <!-- Good response -->
+      <rect x="0" y="148" width="654" height="148" rx="13" fill="#DC2626"/>
+      <text x="24" y="178" font-size="11" font-weight="800" fill="#F0A0A0" letter-spacing="1.5">&#10003; DIAGNOSE</text>
+      <text x="24" y="206" font-size="13" font-weight="800" fill="#FFFFFF">&ldquo;Absolutely. Is the budget the only thing holding you back? [pause]</text>
+      <text x="24" y="228" font-size="13" font-weight="800" fill="#FFFFFF">What does staying exactly where you are cost you each month?&rdquo;</text>
+      <text x="24" y="254" font-size="13" font-weight="800" fill="#FFFFFF">[prospect answers] &ldquo;So the question is: which costs more?&rdquo;</text>
+      <rect x="24" y="270" width="430" height="16" rx="5" fill="#991218"/>
+      <text x="239" y="282" text-anchor="middle" font-size="10" font-weight="800" fill="#F0A0A0">outcome: prospect re-evaluates the math and closes</text>
+    </svg>
+    <div class="caption">Retreat and they leave with their problem. Diagnose and they leave with a solution &mdash; and their money spent.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">09</div>
+</section>
+
+<!-- ============================== PAGE 10 · CTA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR CORE OBJECTIONS</span><span>The Takeaway</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">There are no new objections. <span class="em">Only unaddressed fears.</span></h2>
+
+  <p>Money, time, people, self &mdash; once you can hear which fear is speaking, you stop flinching and start diagnosing. The prospect does not need to be talked into anything. They need to be helped past the thing that has always stopped them.</p>
+  <p class="small">That is the highest form of sales: meeting a person where their fear lives, naming it out loud, and showing them a way through. Do it right and they thank you for the close.</p>
+
+  <div class="band" style="margin-top:16px">
+    <div class="t">HEAR THE FEAR. NAME IT. REFRAME IT. CLOSE.</div>
+    <div class="s">four objections &middot; one formula &middot; every conversation</div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:10px 0 6px">
+    <svg viewBox="0 0 654 140" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0"   y="30" width="148" height="80" rx="11" fill="#DC2626"/>
+      <text x="74"  y="66" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">MONEY</text>
+      <text x="74"  y="88" text-anchor="middle" font-size="10" font-weight="700" fill="#F0A0A0">value gap</text>
+
+      <rect x="160" y="30" width="148" height="80" rx="11" fill="#FFFDFD" stroke="#340F12" stroke-width="2"/>
+      <text x="234" y="66" text-anchor="middle" font-size="15" font-weight="800" fill="#340F12">TIME</text>
+      <text x="234" y="88" text-anchor="middle" font-size="10" font-weight="700" fill="#A66A6F">belief gap</text>
+
+      <rect x="320" y="30" width="148" height="80" rx="11" fill="#FFFDFD" stroke="#340F12" stroke-width="2"/>
+      <text x="394" y="66" text-anchor="middle" font-size="15" font-weight="800" fill="#340F12">PEOPLE</text>
+      <text x="394" y="88" text-anchor="middle" font-size="10" font-weight="700" fill="#A66A6F">fear of being wrong</text>
+
+      <rect x="480" y="30" width="174" height="80" rx="11" fill="#991218"/>
+      <text x="567" y="66" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">SELF</text>
+      <text x="567" y="88" text-anchor="middle" font-size="10" font-weight="700" fill="#F0A0A0">identity gap</text>
+    </svg>
+    <div class="caption">Four fears. Acknowledge, isolate, reframe, close &mdash; in that order, every time.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>Alex Hormozi &mdash; $100M Closing.</h3>
+    <p>The full four-objection framework, word tracks for each reframe, and the CLOSER sequence that wraps it all together &mdash; close without pressure or manipulation.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Hear the fear beneath the objection. Name it. Then help them through it.</div>
+
+  <div class="stamp">The Four Core Objections</div>
+  <div class="folio">10</div>
+</section>
+
+</body>
+</html>

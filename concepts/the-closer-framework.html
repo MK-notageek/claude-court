@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The CLOSER Framework — Hormozi</title>
+<style>
+  :root{
+    --paper:#FFFFFF;        /* white page               */
+    --panel:#E6E5FB;        /* light indigo panels      */
+    --ink:#14163A;          /* deep indigo-ink text     */
+    --ink-soft:#2E335E;     /* secondary text           */
+    --muted:#7A7FA6;        /* captions, running heads  */
+    --line:#DADCF2;         /* indigo hairlines         */
+    --violet:#4F46E5;       /* the accent (~10%)        */
+    --violet-deep:#312C9C;  /* strong fills             */
+    --violet-soft:#A9A8F0;  /* glow / light strokes     */
+    --violet-fill:#E6E5FB;  /* faint indigo block fill  */
+    --plum:#8C88C0;         /* destroys / minimize / cut*/
+    --plum-fill:#EEEEFB;    /* faint plum block fill    */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#c3c8ee; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#EEEEFB; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#A9A8F0; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #DADCF2; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#C5C8E8; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">C</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Closing</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Six moves that turn any conversation into a committed client</div>
+    <h1 class="title">THE<br>CLOSER<br>FRAME&shy;WORK</h1>
+    <p class="cover-sub">Most salespeople try to <b>overcome</b> resistance. CLOSER salespeople remove it &mdash; by understanding the problem better than the prospect does. Six letters. One sequence. One close.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; diagnose first &middot; then close</span></div>
+  </div>
+  <div class="stamp">The CLOSER Framework</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · THE MINDSET ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE CLOSER FRAMEWORK</span><span>The Mindset</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Selling is not persuasion. <span class="em">It&rsquo;s diagnosis.</span></h2>
+
+  <p class="lead">The prospect already wants the outcome. They just don&rsquo;t trust that <em>this vehicle</em> gets them there.</p>
+  <p>Scripts and rebuttals treat symptoms. CLOSER treats the source &mdash; the gap between what the buyer wants and what they believe is possible for them, with you, right now.</p>
+  <p>A doctor doesn&rsquo;t sell the patient on surgery. She listens, labels the condition, reviews the history, and explains the path. The patient chooses. That&rsquo;s CLOSER.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 262" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- LEFT: pushy -->
+      <rect x="0" y="0" width="300" height="262" rx="13" fill="#EEEEFB" stroke="#8C88C0" stroke-width="2.5"/>
+      <text x="24" y="34" font-size="12" font-weight="800" fill="#8C88C0" letter-spacing="1.5">&#10007; PUSHY APPROACH</text>
+      <text x="24" y="66" font-size="17" font-weight="800" fill="#14163A">Override resistance.</text>
+      <text x="24" y="90" font-size="17" font-weight="800" fill="#14163A">Close harder.</text>
+      <circle cx="40" cy="126" r="5" fill="#8C88C0"/>
+      <text x="55" y="131" font-size="13" font-weight="600" fill="#2E335E">Scripts for every objection</text>
+      <circle cx="40" cy="156" r="5" fill="#8C88C0"/>
+      <text x="55" y="161" font-size="13" font-weight="600" fill="#2E335E">Pressure tactics &amp; fake urgency</text>
+      <circle cx="40" cy="186" r="5" fill="#8C88C0"/>
+      <text x="55" y="191" font-size="13" font-weight="600" fill="#2E335E">Buyer feels cornered, not helped</text>
+      <text x="24" y="242" font-size="12" font-style="italic" fill="#8C88C0">refunds &middot; resentment &middot; churn</text>
+
+      <!-- VS arrow -->
+      <g stroke="#14163A" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="304" y1="131" x2="332" y2="131"/>
+        <polyline points="322,122 336,131 322,140"/>
+      </g>
+      <text x="318" y="118" text-anchor="middle" font-size="10" font-weight="800" fill="#4F46E5">VS</text>
+
+      <!-- RIGHT: CLOSER -->
+      <rect x="340" y="0" width="314" height="262" rx="13" fill="#4F46E5"/>
+      <text x="364" y="34" font-size="12" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">&#10003; CLOSER APPROACH</text>
+      <text x="364" y="66" font-size="17" font-weight="800" fill="#FFFFFF">Diagnose the gap.</text>
+      <text x="364" y="90" font-size="17" font-weight="800" fill="#FFFFFF">Let them choose.</text>
+      <circle cx="380" cy="126" r="5" fill="#A9A8F0"/>
+      <text x="395" y="131" font-size="13" font-weight="600" fill="#E6E5FB">Questions, not scripts</text>
+      <circle cx="380" cy="156" r="5" fill="#A9A8F0"/>
+      <text x="395" y="161" font-size="13" font-weight="600" fill="#E6E5FB">Understanding, not pressure</text>
+      <circle cx="380" cy="186" r="5" fill="#A9A8F0"/>
+      <text x="395" y="191" font-size="13" font-weight="600" fill="#E6E5FB">Buyer feels heard and clear</text>
+      <text x="364" y="242" font-size="12" font-style="italic" fill="#A9A8F0">retention &middot; referrals &middot; pride</text>
+    </svg>
+    <div class="caption">Override resistance and you get a grudging buyer. Remove it and you get a raving client.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · CLOSER OVERVIEW (HERO) ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE CLOSER FRAMEWORK</span><span>The Six Moves</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Six letters. One <span class="em">sequence.</span></h2>
+
+  <p>Every successful close runs these steps in order. Skip one and the prospect stalls. Rush one and they feel pushed. Work them in sequence and the conversation closes itself.</p>
+  <p>This is not a pitch deck. It is a <span class="b">diagnostic conversation</span> &mdash; you speak less than half the time, and you already know where it is going.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:12px 0 8px">
+    <svg viewBox="0 0 654 388" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- C -->
+      <rect x="0" y="0" width="654" height="56" rx="10" fill="#4F46E5"/>
+      <text x="22" y="23" font-size="11" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">C &mdash; CLARIFY</text>
+      <text x="22" y="44" font-size="15" font-weight="800" fill="#FFFFFF">Why are they here? What changed? Why now?</text>
+      <text x="636" y="36" text-anchor="end" font-size="20" font-weight="800" fill="#A9A8F0">01</text>
+      <line x1="327" y1="56" x2="327" y2="68" stroke="#DADCF2" stroke-width="2"/>
+      <polygon points="321,65 327,72 333,65" fill="#DADCF2"/>
+      <!-- L -->
+      <rect x="0" y="72" width="654" height="56" rx="10" fill="#312C9C"/>
+      <text x="22" y="95" font-size="11" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">L &mdash; LABEL</text>
+      <text x="22" y="116" font-size="15" font-weight="800" fill="#FFFFFF">Name the exact problem. Make them say &ldquo;yes, that&rsquo;s it.&rdquo;</text>
+      <text x="636" y="108" text-anchor="end" font-size="20" font-weight="800" fill="#A9A8F0">02</text>
+      <line x1="327" y1="128" x2="327" y2="140" stroke="#DADCF2" stroke-width="2"/>
+      <polygon points="321,137 327,144 333,137" fill="#DADCF2"/>
+      <!-- O -->
+      <rect x="0" y="144" width="654" height="56" rx="10" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2.5"/>
+      <text x="22" y="167" font-size="11" font-weight="800" fill="#4F46E5" letter-spacing="1.5">O &mdash; OVERVIEW</text>
+      <text x="22" y="188" font-size="15" font-weight="800" fill="#14163A">Walk their history of pain. Give it a timeline and weight.</text>
+      <text x="636" y="179" text-anchor="end" font-size="20" font-weight="800" fill="#4F46E5">03</text>
+      <line x1="327" y1="200" x2="327" y2="212" stroke="#DADCF2" stroke-width="2"/>
+      <polygon points="321,209 327,216 333,209" fill="#DADCF2"/>
+      <!-- S -->
+      <rect x="0" y="216" width="654" height="56" rx="10" fill="#4F46E5"/>
+      <text x="22" y="239" font-size="11" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">S &mdash; SELL THE VACATION</text>
+      <text x="22" y="260" font-size="15" font-weight="800" fill="#FFFFFF">Paint the destination, not the mechanism. Outcome first.</text>
+      <text x="636" y="251" text-anchor="end" font-size="20" font-weight="800" fill="#A9A8F0">04</text>
+      <line x1="327" y1="272" x2="327" y2="284" stroke="#DADCF2" stroke-width="2"/>
+      <polygon points="321,281 327,288 333,281" fill="#DADCF2"/>
+      <!-- E -->
+      <rect x="0" y="288" width="654" height="56" rx="10" fill="#312C9C"/>
+      <text x="22" y="311" font-size="11" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">E &mdash; EXPLAIN AWAY CONCERNS</text>
+      <text x="22" y="332" font-size="15" font-weight="800" fill="#FFFFFF">Address every real objection. Isolate. Validate. Reframe. Move on.</text>
+      <text x="636" y="323" text-anchor="end" font-size="20" font-weight="800" fill="#A9A8F0">05</text>
+      <line x1="327" y1="344" x2="327" y2="356" stroke="#DADCF2" stroke-width="2"/>
+      <polygon points="321,353 327,360 333,353" fill="#DADCF2"/>
+      <!-- R -->
+      <rect x="0" y="360" width="654" height="56" rx="10" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2.5"/>
+      <text x="22" y="383" font-size="11" font-weight="800" fill="#4F46E5" letter-spacing="1.5">R &mdash; REINFORCE THE DECISION</text>
+      <text x="22" y="404" font-size="15" font-weight="800" fill="#14163A">Cement the yes. Prevent buyer&rsquo;s remorse before it starts.</text>
+      <text x="636" y="395" text-anchor="end" font-size="20" font-weight="800" fill="#4F46E5">06</text>
+    </svg>
+    <div class="caption">Six steps, always in this order. The conversation closes itself when you hold the sequence.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · C — CLARIFY ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE CLOSER FRAMEWORK</span><span>C &mdash; Clarify</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px"><span class="em">C</span> &mdash; Clarify why they&rsquo;re here.</h2>
+
+  <p>Before you say a word about your offer, understand why this person booked the call. Not the surface reason &mdash; the <span class="b">real</span> reason. Something changed recently. Find it.</p>
+  <p>Two questions open the diagnostic: <span class="b">What are you trying to accomplish?</span> And: <span class="b">What made you look into this now</span> &mdash; not six months ago, not six months from now?</p>
+  <p>The &ldquo;why now&rdquo; reveals the triggering event. That is when pain became urgent. That event is your lever for the entire conversation.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 258" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Q1 -->
+      <rect x="0" y="0" width="654" height="108" rx="13" fill="#4F46E5"/>
+      <text x="28" y="30" font-size="11" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">QUESTION 1 &mdash; THE GOAL</text>
+      <text x="28" y="62" font-size="20" font-weight="800" fill="#FFFFFF">&ldquo;What are you trying to accomplish</text>
+      <text x="28" y="88" font-size="20" font-weight="800" fill="#FFFFFF">in the next 12 months?&rdquo;</text>
+      <text x="630" y="70" text-anchor="end" font-size="42" font-weight="800" fill="#A9A8F0">?</text>
+      <!-- arrow -->
+      <line x1="327" y1="108" x2="327" y2="128" stroke="#DADCF2" stroke-width="2.5"/>
+      <polygon points="321,124 327,132 333,124" fill="#DADCF2"/>
+      <!-- Q2 -->
+      <rect x="0" y="132" width="654" height="108" rx="13" fill="#312C9C"/>
+      <text x="28" y="162" font-size="11" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">QUESTION 2 &mdash; THE TRIGGER</text>
+      <text x="28" y="194" font-size="20" font-weight="800" fill="#FFFFFF">&ldquo;What made you decide</text>
+      <text x="28" y="220" font-size="20" font-weight="800" fill="#FFFFFF">to look into this now?&rdquo;</text>
+      <text x="630" y="202" text-anchor="end" font-size="42" font-weight="800" fill="#A9A8F0">?</text>
+    </svg>
+    <div class="caption">The trigger is everything. It reveals urgency, pain intensity, and the stakes &mdash; before you say a word about your offer.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · L — LABEL ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE CLOSER FRAMEWORK</span><span>L &mdash; Label</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px"><span class="em">L</span> &mdash; Label the problem they can&rsquo;t name.</h2>
+
+  <p>People feel their pain long before they can articulate it. When you name it exactly, they feel understood immediately. That single moment of recognition is worth more than any pitch.</p>
+  <p>You are not guessing. You are pattern-matching from hundreds of people with the same problem. <span class="b">Say it back to them</span> in cleaner language than they used. Watch them nod.</p>
+  <div class="band" style="margin-top:24px">
+    <div class="t">&ldquo;SO WHAT I&rsquo;M HEARING IS&hellip;&rdquo;</div>
+    <div class="s">the labeling phrase that creates instant trust</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 272" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Before -->
+      <rect x="0" y="0" width="296" height="244" rx="13" fill="#EEEEFB" stroke="#8C88C0" stroke-width="2.5"/>
+      <text x="24" y="34" font-size="12" font-weight="800" fill="#8C88C0" letter-spacing="1.5">BEFORE LABELING</text>
+      <ellipse cx="148" cy="128" rx="96" ry="66" fill="#DADCF2" opacity="0.9"/>
+      <ellipse cx="148" cy="128" rx="58" ry="40" fill="#8C88C0" opacity="0.6"/>
+      <text x="148" y="134" text-anchor="middle" font-size="18" font-weight="800" fill="#EEEEFB">???</text>
+      <text x="148" y="214" text-anchor="middle" font-size="12.5" font-weight="600" fill="#8C88C0">vague feeling</text>
+      <text x="148" y="234" text-anchor="middle" font-size="11" font-style="italic" fill="#8C88C0">&ldquo;I&rsquo;m just&hellip; stuck&rdquo;</text>
+
+      <!-- arrow -->
+      <g stroke="#4F46E5" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="300" y1="122" x2="328" y2="122"/>
+        <polyline points="318,113 332,122 318,131"/>
+      </g>
+      <text x="314" y="109" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4F46E5">LABEL</text>
+
+      <!-- After -->
+      <rect x="340" y="0" width="314" height="244" rx="13" fill="#4F46E5"/>
+      <text x="364" y="34" font-size="12" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">AFTER LABELING</text>
+      <rect x="364" y="58" width="266" height="96" rx="11" fill="#312C9C"/>
+      <text x="497" y="96" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">Lead generation is</text>
+      <text x="497" y="118" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">the bottleneck &mdash;</text>
+      <text x="497" y="140" text-anchor="middle" font-size="14" font-weight="800" fill="#A9A8F0">not your skills.</text>
+      <text x="364" y="186" font-size="12.5" font-weight="600" fill="#E6E5FB">crystal-clear diagnosis</text>
+      <text x="364" y="208" font-size="11.5" font-style="italic" fill="#A9A8F0">&ldquo;That&rsquo;s exactly it. Finally.&rdquo;</text>
+    </svg>
+    <div class="caption">Name what they feel and they trust you more than your solution. The label comes before the pitch.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · O — OVERVIEW ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE CLOSER FRAMEWORK</span><span>O &mdash; Overview</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px"><span class="em">O</span> &mdash; Overview the past pain.</h2>
+
+  <p>Everyone who buys has tried something before. Walk them back through their history. <span class="b">What did they try? Why didn&rsquo;t it work? How long has this been going on?</span></p>
+  <p>This is not nostalgia. It is reactivation. Pain fades when the prospect is not looking at it. The overview puts them back in the moment it hurt &mdash; which is the moment they decided to change.</p>
+  <p>Every failed attempt is proof they are serious. They have paid with time, money, and hope. That makes now different from every time before.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 248" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Timeline axis -->
+      <line x1="40" y1="150" x2="624" y2="150" stroke="#14163A" stroke-width="2.5"/>
+      <polygon points="616,145 628,150 616,155" fill="#14163A"/>
+      <text x="636" y="168" font-size="10" font-weight="800" fill="#7A7FA6">NOW</text>
+      <!-- Attempt 1 -->
+      <line x1="120" y1="150" x2="120" y2="62" stroke="#8C88C0" stroke-width="2" stroke-dasharray="5 4"/>
+      <circle cx="120" cy="150" r="8" fill="#8C88C0"/>
+      <rect x="54" y="24" width="132" height="34" rx="8" fill="#EEEEFB" stroke="#8C88C0" stroke-width="2"/>
+      <text x="120" y="46" text-anchor="middle" font-size="12" font-weight="800" fill="#2E335E">Try A &mdash; no result</text>
+      <text x="120" y="170" text-anchor="middle" font-size="10" font-weight="600" fill="#7A7FA6">18 months ago</text>
+      <!-- Attempt 2 -->
+      <line x1="290" y1="150" x2="290" y2="62" stroke="#8C88C0" stroke-width="2" stroke-dasharray="5 4"/>
+      <circle cx="290" cy="150" r="8" fill="#8C88C0"/>
+      <rect x="224" y="24" width="132" height="34" rx="8" fill="#EEEEFB" stroke="#8C88C0" stroke-width="2"/>
+      <text x="290" y="46" text-anchor="middle" font-size="12" font-weight="800" fill="#2E335E">Try B &mdash; gave up</text>
+      <text x="290" y="170" text-anchor="middle" font-size="10" font-weight="600" fill="#7A7FA6">9 months ago</text>
+      <!-- Attempt 3 -->
+      <line x1="460" y1="150" x2="460" y2="62" stroke="#8C88C0" stroke-width="2" stroke-dasharray="5 4"/>
+      <circle cx="460" cy="150" r="8" fill="#8C88C0"/>
+      <rect x="394" y="24" width="132" height="34" rx="8" fill="#EEEEFB" stroke="#8C88C0" stroke-width="2"/>
+      <text x="460" y="46" text-anchor="middle" font-size="12" font-weight="800" fill="#2E335E">Try C &mdash; lost money</text>
+      <text x="460" y="170" text-anchor="middle" font-size="10" font-weight="600" fill="#7A7FA6">3 months ago</text>
+      <!-- NOW marker -->
+      <line x1="606" y1="150" x2="606" y2="68" stroke="#4F46E5" stroke-width="3"/>
+      <circle cx="606" cy="150" r="10" fill="#4F46E5"/>
+      <rect x="554" y="44" width="96" height="50" rx="10" fill="#4F46E5"/>
+      <text x="602" y="69" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">THIS</text>
+      <text x="602" y="87" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">CALL</text>
+      <!-- bottom quote -->
+      <text x="327" y="222" text-anchor="middle" font-size="12.5" font-style="italic" fill="#7A7FA6">&ldquo;You&rsquo;ve spent 18 months and real money on this. What&rsquo;s different now?&rdquo;</text>
+    </svg>
+    <div class="caption">Their history of attempts is not baggage &mdash; it is proof the pain is real and they are ready to fix it.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · S — SELL THE VACATION ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE CLOSER FRAMEWORK</span><span>S &mdash; Sell the Vacation</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px"><span class="em">S</span> &mdash; Sell the destination, not the plane.</h2>
+
+  <p>Nobody cares how the plane works. They care about standing on the beach. Your mechanism &mdash; the program, the software, the system &mdash; is the plane. The outcome is the beach. <span class="b">Lead with the beach.</span></p>
+  <p>Describe their life after. Specifically. Not &ldquo;more revenue&rdquo; but &ldquo;calling your own hours and never taking a sales call you didn&rsquo;t choose.&rdquo;</p>
+  <p>Emotion approves before logic arrives. Paint the destination first. Prove the route second.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 280" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- LEFT: mechanism — de-emphasized -->
+      <rect x="0" y="20" width="294" height="240" rx="13" fill="#EEEEFB" stroke="#8C88C0" stroke-width="2"/>
+      <text x="24" y="52" font-size="12" font-weight="800" fill="#8C88C0" letter-spacing="1.5">DON&rsquo;T SELL THIS</text>
+      <text x="24" y="82" font-size="17" font-weight="800" fill="#2E335E">The Mechanism</text>
+      <text x="24" y="112" font-size="13" font-weight="600" fill="#8C88C0">12-week program</text>
+      <text x="24" y="134" font-size="13" font-weight="600" fill="#8C88C0">4 modules, 48 lessons</text>
+      <text x="24" y="156" font-size="13" font-weight="600" fill="#8C88C0">weekly group coaching calls</text>
+      <text x="24" y="178" font-size="13" font-weight="600" fill="#8C88C0">private community access</text>
+      <text x="24" y="200" font-size="13" font-weight="600" fill="#8C88C0">workbooks &amp; templates</text>
+      <text x="24" y="242" font-size="11" font-style="italic" fill="#8C88C0">features &ne; desire</text>
+
+      <!-- arrow -->
+      <g stroke="#4F46E5" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="298" y1="140" x2="326" y2="140"/>
+        <polyline points="316,131 330,140 316,149"/>
+      </g>
+      <text x="312" y="127" text-anchor="middle" font-size="9.5" font-weight="800" fill="#4F46E5">SELL</text>
+
+      <!-- RIGHT: destination — accent filled -->
+      <rect x="338" y="0" width="316" height="280" rx="13" fill="#4F46E5"/>
+      <text x="362" y="34" font-size="12" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">SELL THIS</text>
+      <text x="362" y="64" font-size="17" font-weight="800" fill="#FFFFFF">The Destination</text>
+      <text x="362" y="100" font-size="15" font-weight="800" fill="#E6E5FB">&#10003; 30 booked calls a month</text>
+      <text x="362" y="130" font-size="15" font-weight="800" fill="#E6E5FB">&#10003; Calendar you control entirely</text>
+      <text x="362" y="160" font-size="15" font-weight="800" fill="#E6E5FB">&#10003; No cold outreach ever again</text>
+      <text x="362" y="190" font-size="15" font-weight="800" fill="#E6E5FB">&#10003; Business runs without you</text>
+      <text x="362" y="254" font-size="11" font-style="italic" fill="#A9A8F0">the life they&rsquo;re buying, not the product</text>
+    </svg>
+    <div class="caption">Paint the beach vividly. Only mention the plane to prove the beach is actually reachable.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · E — EXPLAIN ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE CLOSER FRAMEWORK</span><span>E &mdash; Explain</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px"><span class="em">E</span> &mdash; Explain away every concern.</h2>
+
+  <p>Objections are not opposition. They are requests for more information. The person who objects is still engaged &mdash; it is the one who says &ldquo;let me think about it&rdquo; who has already left.</p>
+  <p>The method: <span class="b">isolate</span> the real objection (rarely the stated one), <span class="b">validate</span> it as reasonable, then <span class="b">reframe</span> it through the lens of cost of inaction versus cost of action.</p>
+  <p>One concern at a time. Get agreement at each step before moving on.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <svg viewBox="0 0 654 272" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Step 1: Isolate -->
+      <rect x="0" y="0" width="196" height="212" rx="13" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2.5"/>
+      <text x="98" y="34" text-anchor="middle" font-size="11" font-weight="800" fill="#4F46E5" letter-spacing="1.5">STEP 1</text>
+      <text x="98" y="68" text-anchor="middle" font-size="18" font-weight="800" fill="#14163A">ISOLATE</text>
+      <text x="98" y="96" text-anchor="middle" font-size="12" font-weight="600" fill="#2E335E">Is this the only thing</text>
+      <text x="98" y="114" text-anchor="middle" font-size="12" font-weight="600" fill="#2E335E">stopping you?</text>
+      <text x="98" y="155" text-anchor="middle" font-size="11" font-style="italic" fill="#7A7FA6">&ldquo;If price wasn&rsquo;t</text>
+      <text x="98" y="173" text-anchor="middle" font-size="11" font-style="italic" fill="#7A7FA6">the issue, would you</text>
+      <text x="98" y="191" text-anchor="middle" font-size="11" font-style="italic" fill="#7A7FA6">move forward today?&rdquo;</text>
+      <!-- arrow -->
+      <g stroke="#14163A" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="200" y1="106" x2="224" y2="106"/>
+        <polyline points="214,97 228,106 214,115"/>
+      </g>
+      <!-- Step 2: Validate -->
+      <rect x="231" y="0" width="192" height="212" rx="13" fill="#4F46E5"/>
+      <text x="327" y="34" text-anchor="middle" font-size="11" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">STEP 2</text>
+      <text x="327" y="68" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">VALIDATE</text>
+      <text x="327" y="96" text-anchor="middle" font-size="12" font-weight="600" fill="#E6E5FB">That makes sense.</text>
+      <text x="327" y="114" text-anchor="middle" font-size="12" font-weight="600" fill="#E6E5FB">Budget matters.</text>
+      <text x="327" y="155" text-anchor="middle" font-size="11" font-style="italic" fill="#A9A8F0">&ldquo;You&rsquo;re not wrong</text>
+      <text x="327" y="173" text-anchor="middle" font-size="11" font-style="italic" fill="#A9A8F0">to think about cost.</text>
+      <text x="327" y="191" text-anchor="middle" font-size="11" font-style="italic" fill="#A9A8F0">Let&rsquo;s look at both sides.&rdquo;</text>
+      <!-- arrow -->
+      <g stroke="#14163A" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="427" y1="106" x2="451" y2="106"/>
+        <polyline points="441,97 455,106 441,115"/>
+      </g>
+      <!-- Step 3: Reframe -->
+      <rect x="458" y="0" width="196" height="212" rx="13" fill="#312C9C"/>
+      <text x="556" y="34" text-anchor="middle" font-size="11" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">STEP 3</text>
+      <text x="556" y="68" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">REFRAME</text>
+      <text x="556" y="96" text-anchor="middle" font-size="12" font-weight="600" fill="#E6E5FB">Cost of staying stuck</text>
+      <text x="556" y="114" text-anchor="middle" font-size="12" font-weight="600" fill="#E6E5FB">vs. cost of acting.</text>
+      <text x="556" y="155" text-anchor="middle" font-size="11" font-style="italic" fill="#A9A8F0">&ldquo;What does another</text>
+      <text x="556" y="173" text-anchor="middle" font-size="11" font-style="italic" fill="#A9A8F0">year of this cost</text>
+      <text x="556" y="191" text-anchor="middle" font-size="11" font-style="italic" fill="#A9A8F0">in revenue and time?&rdquo;</text>
+      <!-- footer bar -->
+      <rect x="0" y="230" width="654" height="40" rx="10" fill="#E6E5FB"/>
+      <text x="327" y="256" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">One objection at a time. Always get full agreement before moving on.</text>
+    </svg>
+    <div class="caption">Isolate &rarr; validate &rarr; reframe. The three-step loop that dissolves any objection without pressure.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · R — REINFORCE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE CLOSER FRAMEWORK</span><span>R &mdash; Reinforce</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px"><span class="em">R</span> &mdash; Reinforce the decision.</h2>
+
+  <p>The close does not end at &ldquo;yes.&rdquo; Most buyer&rsquo;s remorse happens in the ten minutes after the call ends. Your job is to <span class="b">inoculate against it</span> before they hang up.</p>
+  <p>Restate their own words and reasons back to them. Confirm exactly what happens next &mdash; step, date, time. Give them one small action they can take before tomorrow.</p>
+  <div class="cmp" style="margin-top:18px">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;Great! Check your email for the link.&rdquo; &mdash; leaves them alone with their doubt.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;You said you wanted X. You&rsquo;ve tried Y for 18 months. This is different because of Z. Here is your first step for tonight.&rdquo;</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 268" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="327" y="24" text-anchor="middle" font-size="11" font-weight="800" fill="#7A7FA6" letter-spacing="1.5">REINFORCEMENT LADDER</text>
+      <!-- Step 1 widest -->
+      <rect x="57" y="36" width="540" height="44" rx="9" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2"/>
+      <text x="327" y="64" text-anchor="middle" font-size="14" font-weight="800" fill="#14163A">Restate THEIR own words and reasons back to them</text>
+      <!-- Step 2 -->
+      <rect x="107" y="90" width="440" height="44" rx="9" fill="#A9A8F0"/>
+      <text x="327" y="118" text-anchor="middle" font-size="14" font-weight="800" fill="#14163A">Confirm exact next step &mdash; action, date, and time</text>
+      <!-- Step 3 -->
+      <rect x="157" y="144" width="340" height="44" rx="9" fill="#4F46E5"/>
+      <text x="327" y="172" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">Give them one quick win to do today</text>
+      <!-- Step 4 peak -->
+      <rect x="207" y="198" width="240" height="44" rx="9" fill="#312C9C"/>
+      <text x="327" y="226" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">Identity shift: &ldquo;You&rsquo;re now a client.&rdquo;</text>
+      <!-- baseline labels -->
+      <text x="57" y="260" font-size="10" font-weight="800" fill="#7A7FA6">right after &ldquo;yes&rdquo;</text>
+      <text x="597" y="260" text-anchor="end" font-size="10" font-weight="800" fill="#4F46E5">zero buyer&rsquo;s remorse</text>
+    </svg>
+    <div class="caption">Each layer of the ladder reduces regret. The identity shift at the top makes them proud of the decision.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">09</div>
+</section>
+
+<!-- ============================== PAGE 10 · CTA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE CLOSER FRAMEWORK</span><span>The Takeaway</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">Run it every call. <span class="em">Every one.</span></h2>
+
+  <p>The salesperson who rushes to pitch loses. The one who diagnoses first, paints the destination second, and handles concerns third closes &mdash; and their clients stay and refer.</p>
+  <p class="small">CLOSER is not about talking someone into something they do not want. It is about removing what stands between them and the decision they already want to make. That is not selling. That is service.</p>
+
+  <div class="band" style="margin-top:16px">
+    <div class="t">DIAGNOSE. PAINT. CLOSE. REINFORCE.</div>
+    <div class="s">the full sequence, every single time, without exception</div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:10px 0 6px">
+    <svg viewBox="0 0 654 128" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0"   y="28" width="100" height="70" rx="9" fill="#4F46E5"/>
+      <text x="50"  y="59" text-anchor="middle" font-size="22" font-weight="800" fill="#FFFFFF">C</text>
+      <text x="50"  y="82" text-anchor="middle" font-size="9"  font-weight="700" fill="#A9A8F0">CLARIFY</text>
+      <rect x="108" y="28" width="100" height="70" rx="9" fill="#312C9C"/>
+      <text x="158" y="59" text-anchor="middle" font-size="22" font-weight="800" fill="#FFFFFF">L</text>
+      <text x="158" y="82" text-anchor="middle" font-size="9"  font-weight="700" fill="#A9A8F0">LABEL</text>
+      <rect x="216" y="28" width="100" height="70" rx="9" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2"/>
+      <text x="266" y="59" text-anchor="middle" font-size="22" font-weight="800" fill="#14163A">O</text>
+      <text x="266" y="82" text-anchor="middle" font-size="9"  font-weight="700" fill="#4F46E5">OVERVIEW</text>
+      <rect x="324" y="28" width="100" height="70" rx="9" fill="#4F46E5"/>
+      <text x="374" y="59" text-anchor="middle" font-size="22" font-weight="800" fill="#FFFFFF">S</text>
+      <text x="374" y="82" text-anchor="middle" font-size="9"  font-weight="700" fill="#A9A8F0">SELL</text>
+      <rect x="432" y="28" width="100" height="70" rx="9" fill="#312C9C"/>
+      <text x="482" y="59" text-anchor="middle" font-size="22" font-weight="800" fill="#FFFFFF">E</text>
+      <text x="482" y="82" text-anchor="middle" font-size="9"  font-weight="700" fill="#A9A8F0">EXPLAIN</text>
+      <rect x="540" y="28" width="114" height="70" rx="9" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2"/>
+      <text x="597" y="59" text-anchor="middle" font-size="22" font-weight="800" fill="#14163A">R</text>
+      <text x="597" y="82" text-anchor="middle" font-size="9"  font-weight="700" fill="#4F46E5">REINFORCE</text>
+    </svg>
+    <div class="caption">Clarify &rarr; Label &rarr; Overview &rarr; Sell &rarr; Explain &rarr; Reinforce. In that order, every time.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>Alex Hormozi &mdash; $100M Closing.</h3>
+    <p>The full CLOSER playbook, word tracks for every step, and the four core objection frameworks &mdash; turn diagnostic conversations into committed clients without pressure.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Diagnose first. Paint the destination. Close without pressure.</div>
+
+  <div class="stamp">The CLOSER Framework</div>
+  <div class="folio">10</div>
+</section>
+
+</body>
+</html>
