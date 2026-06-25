@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Upsells, Downsells &amp; Continuity — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;        /* white page               */
+    --panel:#DBF2E4;        /* light emerald panels     */
+    --ink:#0C2A18;          /* deep emerald-ink text    */
+    --ink-soft:#21452F;     /* secondary text           */
+    --muted:#6B9078;        /* captions, running heads  */
+    --line:#D0E9D8;         /* emerald hairlines        */
+    --violet:#059669;       /* the accent (~10%)        */
+    --violet-deep:#045C42;  /* strong fills             */
+    --violet-soft:#88D2A6;  /* glow / light strokes     */
+    --violet-fill:#DBF2E4;  /* faint emerald block fill */
+    --plum:#6B9078;         /* destroys / minimize / cut*/
+    --plum-fill:#E9F6EF;    /* faint plum block fill    */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#b6dcc2; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:74px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#E9F7EE; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#E9DEFB; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #DCCEEA; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#D9CCEF; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 · COVER -->
+<section class="page">
+  <div class="cover-glyph">+</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Money Models</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Turn one sale into five</div>
+    <h1 class="title">UPSELLS,<br>DOWNSELLS<br>&amp; CONTINUITY</h1>
+    <p class="cover-sub">Most revenue is left at checkout. The moment someone says yes is the moment they&rsquo;re most likely to say yes again &mdash; <b>if you ask.</b> Here is the architecture that multiplies what every customer is worth without spending another dollar on acquisition.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; upsell &middot; downsell &middot; continuity &middot; stack</span></div>
+  </div>
+  <div class="stamp">Upsells, Downsells &amp; Continuity &middot; $100M Money Models</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- PAGE 2 · THE OPPORTUNITY -->
+<section class="page">
+  <div class="rhead"><span class="v">UPSELLS, DOWNSELLS &amp; CONTINUITY</span><span>The Opportunity</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The biggest revenue leak is right <span class="em">at the sale.</span></h2>
+
+  <p class="lead">Your customers are in peak buying mode the moment they hand over their card. Most businesses thank them and walk away. That&rsquo;s the mistake.</p>
+
+  <p>A buyer who just purchased is <span class="b">already committed.</span> They&rsquo;ve made the hardest decision &mdash; to trust you with money. The next ask costs zero in ad spend and lands in the highest-intent moment in the entire customer journey.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 290" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Axis -->
+      <line x1="50" y1="20" x2="50" y2="258" stroke="#0C2A18" stroke-width="2.5"/>
+      <line x1="50" y1="258" x2="634" y2="258" stroke="#0C2A18" stroke-width="2.5"/>
+      <text x="16" y="142" font-size="12" font-weight="800" fill="#0C2A18" transform="rotate(-90 16 142)" text-anchor="middle">REVENUE PER CUSTOMER &rarr;</text>
+      <text x="342" y="288" font-size="12" font-weight="800" fill="#0C2A18" text-anchor="middle">FUNNEL CONFIGURATION</text>
+
+      <!-- Bar 1: Core only -->
+      <rect x="70" y="138" width="130" height="120" rx="9" fill="#E9F6EF" stroke="#88D2A6" stroke-width="2"/>
+      <text x="135" y="170" text-anchor="middle" font-size="12" font-weight="800" fill="#6B9078">CORE</text>
+      <text x="135" y="188" text-anchor="middle" font-size="12" font-weight="800" fill="#6B9078">ONLY</text>
+      <text x="135" y="224" text-anchor="middle" font-size="20" font-weight="800" fill="#0C2A18">$97</text>
+      <text x="135" y="278" text-anchor="middle" font-size="11" fill="#6B9078">baseline</text>
+
+      <!-- Bar 2: Core + Upsell -->
+      <rect x="262" y="76" width="130" height="182" rx="9" fill="#88D2A6" stroke="#059669" stroke-width="2"/>
+      <text x="327" y="106" text-anchor="middle" font-size="12" font-weight="800" fill="#0C2A18">CORE +</text>
+      <text x="327" y="124" text-anchor="middle" font-size="12" font-weight="800" fill="#0C2A18">UPSELL</text>
+      <text x="327" y="166" text-anchor="middle" font-size="20" font-weight="800" fill="#0C2A18">$165</text>
+      <text x="327" y="186" text-anchor="middle" font-size="11" fill="#21452F">+70%</text>
+      <text x="327" y="278" text-anchor="middle" font-size="11" fill="#6B9078">20% take rate</text>
+
+      <!-- Bar 3: Full Stack -->
+      <rect x="454" y="26" width="150" height="232" rx="9" fill="#059669"/>
+      <text x="529" y="56" text-anchor="middle" font-size="12" font-weight="800" fill="#DBF2E4">FULL</text>
+      <text x="529" y="74" text-anchor="middle" font-size="12" font-weight="800" fill="#DBF2E4">STACK</text>
+      <text x="529" y="114" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF">$258</text>
+      <text x="529" y="136" text-anchor="middle" font-size="11" fill="#DBF2E4">+166%</text>
+      <text x="529" y="156" text-anchor="middle" font-size="11" fill="#DBF2E4">vs core only</text>
+      <text x="529" y="278" text-anchor="middle" font-size="11" fill="#6B9078">upsell + downsell</text>
+
+      <!-- Zero ad spend note -->
+      <rect x="248" y="30" width="280" height="32" rx="8" fill="#DBF2E4" stroke="#059669" stroke-width="1.5"/>
+      <text x="388" y="51" text-anchor="middle" font-size="12" font-weight="800" fill="#059669">ZERO additional ad spend required</text>
+    </svg>
+    <div class="caption">Same 1,000 buyers. Same ad budget. Two-thirds more revenue &mdash; just by asking at the right moment.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- PAGE 3 · THE UPSELL -->
+<section class="page">
+  <div class="rhead"><span class="v">UPSELLS, DOWNSELLS &amp; CONTINUITY</span><span>The Upsell</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Offer the logical <span class="em">next step up.</span></h2>
+
+  <p>An upsell is an offer made immediately after the purchase decision &mdash; before the buyer has left the buying mindset. It answers one question: <span class="b">what would make this result faster, bigger, or easier?</span></p>
+
+  <p>The classic One-Time Offer (OTO) lives here. Not an artificial countdown timer &mdash; genuinely enhanced terms or additional elements available only right now, at checkout. The buyer is warm. The trust is established. Ask.</p>
+
+  <p class="small">A well-placed upsell converts 20&ndash;30% of buyers. At 2&times; the core price, that&rsquo;s a 40&ndash;60% increase in revenue from the same buyer &mdash; before they even receive delivery.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 280" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Buy decision box -->
+      <rect x="207" y="0" width="240" height="64" rx="12" fill="#059669"/>
+      <text x="327" y="26" text-anchor="middle" font-size="12" font-weight="800" fill="#DBF2E4" letter-spacing="1">PURCHASE CONFIRMED</text>
+      <text x="327" y="50" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">Peak buying mindset</text>
+      <!-- Down arrow -->
+      <g stroke="#059669" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="327" y1="68" x2="327" y2="92"/>
+        <polyline points="317,84 327,96 337,84"/>
+      </g>
+      <!-- Upsell offer -->
+      <rect x="157" y="98" width="340" height="72" rx="12" fill="#FFFFFF" stroke="#0C2A18" stroke-width="2.5"/>
+      <text x="327" y="124" text-anchor="middle" font-size="12" font-weight="800" fill="#059669" letter-spacing="1">UPSELL OFFER</text>
+      <text x="327" y="150" text-anchor="middle" font-size="15" font-weight="800" fill="#0C2A18">&ldquo;Would you like the done-for-you version?&rdquo;</text>
+
+      <!-- Gate diamond -->
+      <polygon points="327,182 367,212 327,242 287,212" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="327" y="209" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">YES?</text>
+      <g stroke="#059669" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="327" y1="174" x2="327" y2="180"/>
+      </g>
+
+      <!-- YES branch right -->
+      <g stroke="#059669" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="367" y1="212" x2="430" y2="212"/>
+        <polyline points="420,202 434,212 420,222"/>
+      </g>
+      <text x="444" y="208" font-size="11" font-weight="800" fill="#059669">YES</text>
+      <rect x="490" y="190" width="120" height="44" rx="9" fill="#059669"/>
+      <text x="550" y="210" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">REVENUE ++</text>
+      <text x="550" y="228" text-anchor="middle" font-size="11" fill="#DBF2E4">20–30% convert</text>
+
+      <!-- NO branch left -->
+      <g stroke="#6B9078" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="287" y1="212" x2="220" y2="212"/>
+        <polyline points="230,202 216,212 230,222"/>
+      </g>
+      <text x="204" y="208" text-anchor="end" font-size="11" font-weight="800" fill="#6B9078">NO</text>
+      <rect x="44" y="190" width="120" height="44" rx="9" fill="#E9F6EF" stroke="#6B9078" stroke-width="2"/>
+      <text x="104" y="210" text-anchor="middle" font-size="12" font-weight="800" fill="#6B9078">DOWNSELL</text>
+      <text x="104" y="228" text-anchor="middle" font-size="11" fill="#6B9078">don&rsquo;t lose them</text>
+    </svg>
+    <div class="caption">The flow is instant: purchase confirmed, offer fires, yes/no gate, then either revenue or a recovery attempt via downsell.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- PAGE 4 · THE DOWNSELL -->
+<section class="page">
+  <div class="rhead"><span class="v">UPSELLS, DOWNSELLS &amp; CONTINUITY</span><span>The Downsell</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">When they decline, go <span class="em">down, not away.</span></h2>
+
+  <p>A downsell is the ask that comes when someone declines your upsell. Instead of ending the conversation, you offer a smaller, simpler, cheaper version of the same transformation &mdash; the thing they already said they wanted.</p>
+
+  <p>If your $297 upsell converts at 20%, a well-built $97 downsell converts another 12&ndash;15% of the decliners. That&rsquo;s money that would have walked out the door. <span class="b">Never let a &ldquo;no&rdquo; be the end.</span> Let it be the redirect.</p>
+
+  <div class="band">
+    <div class="t">SAME DESIRE. LOWER BARRIER.</div>
+    <div class="s">the downsell answers the same want at a smaller commitment</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 278" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- WITHOUT panel -->
+      <text x="0" y="22" font-size="12.5" font-weight="800" fill="#6B9078" letter-spacing="1">WITHOUT A DOWNSELL</text>
+      <rect x="0" y="34" width="294" height="234" rx="12" fill="#E9F6EF" stroke="#88D2A6" stroke-width="2"/>
+      <!-- 100 blocks of buyers, 20 colored -->
+      <text x="147" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="#6B9078">100 BUYERS</text>
+      <!-- upsell accept row -->
+      <text x="20" y="98" font-size="12" fill="#21452F">Accept upsell (20):</text>
+      <g fill="#059669">
+        <rect x="20" y="106" width="12" height="12" rx="2"/>
+        <rect x="36" y="106" width="12" height="12" rx="2"/>
+        <rect x="52" y="106" width="12" height="12" rx="2"/>
+        <rect x="68" y="106" width="12" height="12" rx="2"/>
+        <rect x="84" y="106" width="12" height="12" rx="2"/>
+        <rect x="100" y="106" width="12" height="12" rx="2"/>
+        <rect x="116" y="106" width="12" height="12" rx="2"/>
+        <rect x="132" y="106" width="12" height="12" rx="2"/>
+        <rect x="148" y="106" width="12" height="12" rx="2"/>
+        <rect x="164" y="106" width="12" height="12" rx="2"/>
+        <rect x="180" y="106" width="12" height="12" rx="2"/>
+        <rect x="196" y="106" width="12" height="12" rx="2"/>
+        <rect x="212" y="106" width="12" height="12" rx="2"/>
+        <rect x="228" y="106" width="12" height="12" rx="2"/>
+        <rect x="244" y="106" width="12" height="12" rx="2"/>
+        <rect x="260" y="106" width="12" height="12" rx="2"/>
+      </g>
+      <!-- decline row -->
+      <text x="20" y="146" font-size="12" fill="#21452F">Decline (80) — gone:</text>
+      <g fill="#D0E9D8">
+        <rect x="20" y="154" width="12" height="12" rx="2"/>
+        <rect x="36" y="154" width="12" height="12" rx="2"/>
+        <rect x="52" y="154" width="12" height="12" rx="2"/>
+        <rect x="68" y="154" width="12" height="12" rx="2"/>
+        <rect x="84" y="154" width="12" height="12" rx="2"/>
+        <rect x="100" y="154" width="12" height="12" rx="2"/>
+        <rect x="116" y="154" width="12" height="12" rx="2"/>
+        <rect x="132" y="154" width="12" height="12" rx="2"/>
+        <rect x="148" y="154" width="12" height="12" rx="2"/>
+        <rect x="164" y="154" width="12" height="12" rx="2"/>
+        <rect x="20" y="172" width="12" height="12" rx="2"/>
+        <rect x="36" y="172" width="12" height="12" rx="2"/>
+        <rect x="52" y="172" width="12" height="12" rx="2"/>
+        <rect x="68" y="172" width="12" height="12" rx="2"/>
+        <rect x="84" y="172" width="12" height="12" rx="2"/>
+        <rect x="100" y="172" width="12" height="12" rx="2"/>
+        <rect x="116" y="172" width="12" height="12" rx="2"/>
+        <rect x="132" y="172" width="12" height="12" rx="2"/>
+        <rect x="148" y="172" width="12" height="12" rx="2"/>
+        <rect x="164" y="172" width="12" height="12" rx="2"/>
+        <rect x="180" y="172" width="12" height="12" rx="2"/>
+        <rect x="196" y="172" width="12" height="12" rx="2"/>
+        <rect x="212" y="172" width="12" height="12" rx="2"/>
+        <rect x="228" y="172" width="12" height="12" rx="2"/>
+        <rect x="244" y="172" width="12" height="12" rx="2"/>
+        <rect x="260" y="172" width="12" height="12" rx="2"/>
+      </g>
+      <text x="147" y="230" text-anchor="middle" font-size="13" font-weight="800" fill="#6B9078">$5,940 UPSELL REVENUE</text>
+      <text x="147" y="252" text-anchor="middle" font-size="12" fill="#6B9078">80 people walked away</text>
+
+      <!-- WITH panel -->
+      <text x="360" y="22" font-size="12.5" font-weight="800" fill="#059669" letter-spacing="1">WITH A DOWNSELL</text>
+      <rect x="360" y="34" width="294" height="234" rx="12" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="507" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">SAME 100 BUYERS</text>
+      <text x="507" y="98" font-size="12" fill="#21452F" text-anchor="middle">Accept upsell (20) &rarr; $297 each</text>
+      <text x="507" y="134" font-size="12" fill="#21452F" text-anchor="middle">Decline upsell &rarr; downsell fires</text>
+      <text x="507" y="162" font-size="12" fill="#21452F" text-anchor="middle">Accept downsell (10) &rarr; $97 each</text>
+      <text x="507" y="198" font-size="12" fill="#6B9078" text-anchor="middle">Still decline (70) &rarr; ok, they&rsquo;re done</text>
+      <text x="507" y="230" text-anchor="middle" font-size="13" font-weight="800" fill="#059669">$6,910 TOTAL REVENUE</text>
+      <text x="507" y="252" text-anchor="middle" font-size="12" fill="#045C42">+$970 recovered from declines</text>
+    </svg>
+    <div class="caption">The downsell recovers money from people who already wanted the outcome &mdash; they just said no to the price, not the idea.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- PAGE 5 · CONTINUITY -->
+<section class="page">
+  <div class="rhead"><span class="v">UPSELLS, DOWNSELLS &amp; CONTINUITY</span><span>The Recurring Engine</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">One-time sales fill the tank. <span class="em">Continuity drives the car.</span></h2>
+
+  <p>A continuity program &mdash; membership, subscription, retainer &mdash; is the single highest-leverage element in any business. <span class="b">$97/month across 12 months is $1,164</span> vs. a $197 one-time sale. Most businesses choose the smaller number by accident.</p>
+
+  <p>And continuity compounds. Month 6 revenue includes every customer from months 1&ndash;5 who hasn&rsquo;t cancelled. Your fixed costs are flat. Your margin grows with every cohort you retain.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 290" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Axes -->
+      <line x1="50" y1="20" x2="50" y2="258" stroke="#0C2A18" stroke-width="2.5"/>
+      <line x1="50" y1="258" x2="634" y2="258" stroke="#0C2A18" stroke-width="2.5"/>
+      <text x="16" y="142" font-size="12" font-weight="800" fill="#0C2A18" transform="rotate(-90 16 142)" text-anchor="middle">CUMULATIVE REVENUE &rarr;</text>
+      <text x="342" y="288" font-size="11" font-weight="800" fill="#0C2A18" text-anchor="middle">MONTH →</text>
+
+      <!-- Month markers -->
+      <g font-size="11" fill="#6B9078" text-anchor="middle">
+        <text x="103" y="276">1</text>
+        <text x="156" y="276">2</text>
+        <text x="209" y="276">3</text>
+        <text x="262" y="276">4</text>
+        <text x="315" y="276">5</text>
+        <text x="368" y="276">6</text>
+        <text x="421" y="276">7</text>
+        <text x="474" y="276">8</text>
+        <text x="527" y="276">9</text>
+        <text x="580" y="276">10</text>
+        <text x="633" y="276">11</text>
+      </g>
+
+      <!-- One-time flat line -->
+      <polyline points="50,220 103,220 103,220 634,220" stroke="#88D2A6" stroke-width="3" fill="none" stroke-dasharray="8,4"/>
+      <text x="636" y="224" font-size="11" fill="#6B9078">one-time</text>
+
+      <!-- Continuity compounding curve -->
+      <polyline points="50,240 103,216 156,196 209,180 262,164 315,150 368,136 421,124 474,112 527,100 580,88 633,76"
+        stroke="#059669" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Area fill simulation with polygon -->
+      <polygon points="50,258 103,216 156,196 209,180 262,164 315,150 368,136 421,124 474,112 527,100 580,88 633,76 633,258"
+        fill="#DBF2E4" opacity="0.7"/>
+
+      <!-- Data point circles -->
+      <g fill="#059669">
+        <circle cx="103" cy="216" r="5"/>
+        <circle cx="262" cy="164" r="5"/>
+        <circle cx="368" cy="136" r="5"/>
+        <circle cx="527" cy="100" r="5"/>
+        <circle cx="633" cy="76" r="5"/>
+      </g>
+
+      <!-- Labels -->
+      <text x="636" y="80" font-size="11" fill="#059669" font-weight="800">continuity</text>
+
+      <!-- Highlight gap at month 6 -->
+      <line x1="368" y1="136" x2="368" y2="220" stroke="#045C42" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="374" y="178" font-size="11" font-weight="800" fill="#045C42">gap</text>
+      <text x="374" y="193" font-size="11" font-weight="800" fill="#045C42">grows</text>
+    </svg>
+    <div class="caption">Month 1 looks similar. By month 6 the gap is massive and keeps widening. The cost structure doesn&rsquo;t change &mdash; the margin does.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- PAGE 6 · THE STACK ARCHITECTURE -->
+<section class="page">
+  <div class="rhead"><span class="v">UPSELLS, DOWNSELLS &amp; CONTINUITY</span><span>Stack It</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The four-layer <span class="em">revenue stack.</span></h2>
+
+  <p>Each layer multiplies the value of the customer before they leave. Built in order of commitment &mdash; lowest barrier first, continuity last. Think of it as a staircase: you invite them up one step at a time, never skipping one.</p>
+
+  <p class="small">The order matters. Continuity presented before the upsell feels like a subscription pitch before the result has been proven. Present it last &mdash; after they&rsquo;ve won with your core offer and want to <span class="b">keep winning.</span></p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <svg viewBox="0 0 654 290" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Entry -->
+      <rect x="0" y="20" width="108" height="82" rx="11" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="54" y="47" text-anchor="middle" font-size="10" font-weight="800" fill="#059669" letter-spacing="1">ENTRY</text>
+      <text x="54" y="66" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">ATTRACTION</text>
+      <text x="54" y="82" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">OFFER</text>
+      <text x="54" y="116" text-anchor="middle" font-size="11" fill="#6B9078">$7 – $97</text>
+      <text x="54" y="132" text-anchor="middle" font-size="10.5" fill="#6B9078">breaks even</text>
+      <g stroke="#059669" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="112" y1="61" x2="132" y2="61"/>
+        <polyline points="122,52 136,61 122,70"/>
+      </g>
+
+      <!-- Core -->
+      <rect x="138" y="20" width="108" height="82" rx="11" fill="#FFFFFF" stroke="#0C2A18" stroke-width="2.5"/>
+      <text x="192" y="47" text-anchor="middle" font-size="10" font-weight="800" fill="#059669" letter-spacing="1">CORE</text>
+      <text x="192" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">MAIN</text>
+      <text x="192" y="84" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">OFFER</text>
+      <text x="192" y="116" text-anchor="middle" font-size="11" fill="#6B9078">$200 – $2k</text>
+      <text x="192" y="132" text-anchor="middle" font-size="10.5" fill="#6B9078">primary profit</text>
+      <g stroke="#059669" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="250" y1="61" x2="270" y2="61"/>
+        <polyline points="260,52 274,61 260,70"/>
+      </g>
+
+      <!-- Upsell -->
+      <rect x="276" y="20" width="108" height="82" rx="11" fill="#059669"/>
+      <text x="330" y="47" text-anchor="middle" font-size="10" font-weight="800" fill="#DBF2E4" letter-spacing="1">UP</text>
+      <text x="330" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">UPSELL 1</text>
+      <text x="330" y="84" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">OTO</text>
+      <text x="330" y="116" text-anchor="middle" font-size="11" fill="#6B9078">2× core price</text>
+      <text x="330" y="132" text-anchor="middle" font-size="10.5" fill="#6B9078">20–30% take</text>
+      <!-- Down branch to downsell -->
+      <g stroke="#6B9078" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="5,3">
+        <line x1="330" y1="104" x2="330" y2="155"/>
+        <polyline points="320,147 330,159 340,147"/>
+      </g>
+      <rect x="264" y="162" width="132" height="42" rx="9" fill="#E9F6EF" stroke="#6B9078" stroke-width="2"/>
+      <text x="330" y="180" text-anchor="middle" font-size="11" font-weight="800" fill="#6B9078">DOWNSELL 1</text>
+      <text x="330" y="196" text-anchor="middle" font-size="10.5" fill="#6B9078">~0.5× core · 10% take</text>
+
+      <g stroke="#059669" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="388" y1="61" x2="408" y2="61"/>
+        <polyline points="398,52 412,61 398,70"/>
+      </g>
+
+      <!-- Upsell 2 -->
+      <rect x="414" y="20" width="108" height="82" rx="11" fill="#045C42"/>
+      <text x="468" y="47" text-anchor="middle" font-size="10" font-weight="800" fill="#88D2A6" letter-spacing="1">UP</text>
+      <text x="468" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">UPSELL 2</text>
+      <text x="468" y="84" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">PREMIUM</text>
+      <text x="468" y="116" text-anchor="middle" font-size="11" fill="#6B9078">3–5× core price</text>
+      <text x="468" y="132" text-anchor="middle" font-size="10.5" fill="#6B9078">5–15% take</text>
+      <g stroke="#059669" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="526" y1="61" x2="546" y2="61"/>
+        <polyline points="536,52 550,61 536,70"/>
+      </g>
+
+      <!-- Continuity -->
+      <rect x="552" y="20" width="102" height="82" rx="11" fill="#059669"/>
+      <text x="603" y="47" text-anchor="middle" font-size="10" font-weight="800" fill="#DBF2E4" letter-spacing="1">∞</text>
+      <text x="603" y="66" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">CONTINUITY</text>
+      <text x="603" y="82" text-anchor="middle" font-size="11" fill="#FFFFFF">MEMBERSHIP</text>
+      <text x="603" y="116" text-anchor="middle" font-size="11" fill="#6B9078">$47 – $297/mo</text>
+      <text x="603" y="132" text-anchor="middle" font-size="10.5" fill="#6B9078">25–40% take</text>
+
+      <!-- Revenue bar -->
+      <text x="0" y="230" font-size="11" font-weight="800" fill="#6B9078" letter-spacing="1">EXAMPLE: $97 CORE · 1,000 BUYERS</text>
+      <rect x="0" y="242" width="654" height="18" rx="5" fill="#E9F6EF"/>
+      <rect x="0" y="242" width="108" height="18" rx="5" fill="#88D2A6"/>
+      <text x="0" y="278" font-size="11" fill="#6B9078">Core: $97k</text>
+      <rect x="0" y="242" width="242" height="18" rx="5" fill="none"/>
+      <rect x="108" y="242" width="134" height="18" rx="0" fill="#059669"/>
+      <text x="175" y="278" font-size="11" fill="#6B9078">+ Upsell: $58k</text>
+      <rect x="242" y="242" width="48" height="18" rx="0" fill="#045C42"/>
+      <text x="266" y="278" font-size="11" fill="#6B9078">DS</text>
+      <rect x="290" y="242" width="364" height="18" rx="5" fill="#DBF2E4" stroke="#059669" stroke-width="1.5"/>
+      <text x="472" y="278" font-size="11" fill="#059669">+ Continuity recurring: $29k/mo</text>
+    </svg>
+    <div class="caption">One entry. Multiple opportunities. The customer climbs the staircase at their own pace &mdash; you just keep the next step visible.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- PAGE 7 · THREE RULES OF UPSELLING -->
+<section class="page">
+  <div class="rhead"><span class="v">UPSELLS, DOWNSELLS &amp; CONTINUITY</span><span>The Rules</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Same person. Same moment. <span class="em">Better offer.</span></h2>
+
+  <p>Most upsells fail because they break one of three rules. Stack all three and you get a clean yes without friction, buyer&rsquo;s remorse, or refund requests.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;Also, would you like to buy our unrelated software tool?&rdquo; — not congruent. Breaks the moment.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;Want us to build this for you instead of you doing it yourself?&rdquo; — same topic, higher level.</span></div>
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;This is always available for $297.&rdquo; — no urgency. No reason to decide now.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;Only at checkout — full price is $497, here it&rsquo;s $297.&rdquo; — genuine reason to act now.</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <svg viewBox="0 0 654 290" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Rule 1: CONGRUENT -->
+      <rect x="0" y="20" width="196" height="260" rx="13" fill="#059669"/>
+      <text x="98" y="58" text-anchor="middle" font-size="13" font-weight="800" fill="#88D2A6" letter-spacing="1.5">RULE 01</text>
+      <text x="98" y="92" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF">CONGRUENT</text>
+      <line x1="20" y1="110" x2="176" y2="110" stroke="#88D2A6" stroke-width="1.5"/>
+      <text x="98" y="138" text-anchor="middle" font-size="12.5" fill="#DBF2E4">Same topic as the</text>
+      <text x="98" y="158" text-anchor="middle" font-size="12.5" fill="#DBF2E4">thing they just</text>
+      <text x="98" y="178" text-anchor="middle" font-size="12.5" fill="#DBF2E4">bought. More of it,</text>
+      <text x="98" y="198" text-anchor="middle" font-size="12.5" fill="#DBF2E4">faster, or done</text>
+      <text x="98" y="218" text-anchor="middle" font-size="12.5" fill="#DBF2E4">for them. Never</text>
+      <text x="98" y="238" text-anchor="middle" font-size="12.5" fill="#DBF2E4">a tangent.</text>
+      <text x="98" y="266" text-anchor="middle" font-size="12" font-style="italic" fill="#88D2A6">same desire, higher tier</text>
+
+      <!-- Rule 2: ADDITIVE -->
+      <rect x="229" y="20" width="196" height="260" rx="13" fill="#FFFFFF" stroke="#0C2A18" stroke-width="2.5"/>
+      <text x="327" y="58" text-anchor="middle" font-size="13" font-weight="800" fill="#059669" letter-spacing="1.5">RULE 02</text>
+      <text x="327" y="92" text-anchor="middle" font-size="20" font-weight="800" fill="#0C2A18">ADDITIVE</text>
+      <line x1="249" y1="110" x2="405" y2="110" stroke="#D0E9D8" stroke-width="1.5"/>
+      <text x="327" y="138" text-anchor="middle" font-size="12.5" fill="#21452F">Adds to what they</text>
+      <text x="327" y="158" text-anchor="middle" font-size="12.5" fill="#21452F">already bought.</text>
+      <text x="327" y="178" text-anchor="middle" font-size="12.5" fill="#21452F">Never replaces.</text>
+      <text x="327" y="198" text-anchor="middle" font-size="12.5" fill="#21452F">Never makes them</text>
+      <text x="327" y="218" text-anchor="middle" font-size="12.5" fill="#21452F">regret the first</text>
+      <text x="327" y="238" text-anchor="middle" font-size="12.5" fill="#21452F">decision.</text>
+      <text x="327" y="266" text-anchor="middle" font-size="12" font-style="italic" fill="#6B9078">builds on yes, not beside it</text>
+
+      <!-- Rule 3: URGENT -->
+      <rect x="458" y="20" width="196" height="260" rx="13" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="556" y="58" text-anchor="middle" font-size="13" font-weight="800" fill="#059669" letter-spacing="1.5">RULE 03</text>
+      <text x="556" y="92" text-anchor="middle" font-size="20" font-weight="800" fill="#0C2A18">URGENT</text>
+      <line x1="478" y1="110" x2="634" y2="110" stroke="#88D2A6" stroke-width="1.5"/>
+      <text x="556" y="138" text-anchor="middle" font-size="12.5" fill="#21452F">A genuine reason</text>
+      <text x="556" y="158" text-anchor="middle" font-size="12.5" fill="#21452F">to decide now —</text>
+      <text x="556" y="178" text-anchor="middle" font-size="12.5" fill="#21452F">not a fake timer.</text>
+      <text x="556" y="198" text-anchor="middle" font-size="12.5" fill="#21452F">Checkout-only</text>
+      <text x="556" y="218" text-anchor="middle" font-size="12.5" fill="#21452F">pricing. One-time</text>
+      <text x="556" y="238" text-anchor="middle" font-size="12.5" fill="#21452F">bundle. Real scarcity.</text>
+      <text x="556" y="266" text-anchor="middle" font-size="12" font-style="italic" fill="#045C42">now or never at this price</text>
+    </svg>
+    <div class="caption">Break rule 1 and you confuse them. Break rule 2 and you create regret. Break rule 3 and they say &ldquo;I&rsquo;ll think about it.&rdquo;</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- PAGE 8 · THE NUMBERS -->
+<section class="page">
+  <div class="rhead"><span class="v">UPSELLS, DOWNSELLS &amp; CONTINUITY</span><span>The Math</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Upsells are a <span class="em">math problem.</span></h2>
+
+  <p>Assume 1,000 buyers at $97. Your upsell is $197 and converts at 20% &mdash; that&rsquo;s $39,400 from people you already had. Add a $67 downsell at 10% of declines: +$5,360. Then a $97/month continuity at 30% take rate: <span class="b">$29,100 added to monthly revenue</span> from month one, compounding forward.</p>
+
+  <p class="small">The ad budget didn&rsquo;t change. The audience didn&rsquo;t change. The only change was asking at the right moments, in the right order, with the right framing. This is pure architecture, not sales pressure.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <svg viewBox="0 0 654 300" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Layer 1: Base -->
+      <rect x="0" y="0" width="654" height="54" rx="11" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="20" y="24" font-size="12" font-weight="800" fill="#059669" letter-spacing="1">CORE OFFER</text>
+      <text x="20" y="46" font-size="13" fill="#21452F">1,000 buyers &times; $97</text>
+      <text x="634" y="36" text-anchor="end" font-size="20" font-weight="800" fill="#0C2A18">$97,000</text>
+
+      <!-- Layer 2: Upsell -->
+      <rect x="0" y="68" width="654" height="54" rx="11" fill="#88D2A6" stroke="#059669" stroke-width="2"/>
+      <text x="20" y="92" font-size="12" font-weight="800" fill="#045C42" letter-spacing="1">UPSELL 1</text>
+      <text x="20" y="114" font-size="13" fill="#21452F">200 buyers (20%) &times; $197</text>
+      <text x="634" y="104" text-anchor="end" font-size="20" font-weight="800" fill="#0C2A18">+$39,400</text>
+
+      <!-- Layer 3: Downsell -->
+      <rect x="0" y="136" width="654" height="54" rx="11" fill="#E9F6EF" stroke="#6B9078" stroke-width="2"/>
+      <text x="20" y="160" font-size="12" font-weight="800" fill="#6B9078" letter-spacing="1">DOWNSELL 1</text>
+      <text x="20" y="182" font-size="13" fill="#21452F">80 decliners (10%) &times; $67</text>
+      <text x="634" y="172" text-anchor="end" font-size="20" font-weight="800" fill="#0C2A18">+$5,360</text>
+
+      <!-- Layer 4: Continuity -->
+      <rect x="0" y="204" width="654" height="54" rx="11" fill="#059669"/>
+      <text x="20" y="228" font-size="12" font-weight="800" fill="#DBF2E4" letter-spacing="1">CONTINUITY</text>
+      <text x="20" y="250" font-size="13" fill="#DBF2E4">300 buyers (30%) &times; $97/mo</text>
+      <text x="634" y="240" text-anchor="end" font-size="20" font-weight="800" fill="#FFFFFF">+$29,100/mo</text>
+
+      <!-- Total line -->
+      <line x1="0" y1="268" x2="654" y2="268" stroke="#0C2A18" stroke-width="2.5"/>
+      <text x="0" y="292" font-size="13" font-weight="800" fill="#0C2A18">MONTH 1 TOTAL</text>
+      <text x="634" y="292" text-anchor="end" font-size="22" font-weight="800" fill="#059669">$170,860</text>
+    </svg>
+    <div class="caption">Month 1 revenue is 1.76&times; the baseline. Month 12 the continuity alone matches the original launch revenue &mdash; every single month.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- PAGE 9 · BUILD YOUR CONTINUITY -->
+<section class="page">
+  <div class="rhead"><span class="v">UPSELLS, DOWNSELLS &amp; CONTINUITY</span><span>Design Continuity</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Give them a reason to stay <span class="em">every month.</span></h2>
+
+  <p>The best continuity delivers a specific, recurring win that compounds over time &mdash; a community that grows with them, a library that expands, a coaching structure that builds on itself. <span class="b">The moment you could pause the membership without missing it, that&rsquo;s when customers cancel.</span></p>
+
+  <p class="small">Price at the edge of &ldquo;obvious yes&rdquo; &mdash; where $97/month feels embarrassingly cheap relative to the outcome they&rsquo;re sustaining. The price test: would they cancel if it doubled? If yes, it&rsquo;s priced too high. If they&rsquo;d laugh, it&rsquo;s priced right.</p>
+
+  <div class="pull">Monthly value<br>must exceed<br><span class="em">monthly price.</span></div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <svg viewBox="0 0 654 290" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Top question -->
+      <rect x="157" y="0" width="340" height="52" rx="11" fill="#0C2A18"/>
+      <text x="327" y="22" text-anchor="middle" font-size="12" font-weight="800" fill="#88D2A6" letter-spacing="1">DESIGN YOUR CONTINUITY</text>
+      <text x="327" y="44" text-anchor="middle" font-size="13" fill="#FFFFFF">What changes or grows every month?</text>
+
+      <!-- Arrows down -->
+      <g stroke="#059669" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="200" y1="56" x2="160" y2="90"/>
+        <line x1="327" y1="56" x2="327" y2="90"/>
+        <line x1="454" y1="56" x2="494" y2="90"/>
+      </g>
+
+      <!-- Option 1: Community -->
+      <rect x="0" y="96" width="190" height="80" rx="11" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="95" y="124" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">COMMUNITY</text>
+      <text x="95" y="144" text-anchor="middle" font-size="12" fill="#21452F">Grows with every</text>
+      <text x="95" y="162" text-anchor="middle" font-size="12" fill="#21452F">new member</text>
+
+      <!-- Option 2: Library -->
+      <rect x="232" y="96" width="190" height="80" rx="11" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="327" y="124" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">CONTENT LIBRARY</text>
+      <text x="327" y="144" text-anchor="middle" font-size="12" fill="#21452F">New lessons or</text>
+      <text x="327" y="162" text-anchor="middle" font-size="12" fill="#21452F">assets added monthly</text>
+
+      <!-- Option 3: Coaching -->
+      <rect x="464" y="96" width="190" height="80" rx="11" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="559" y="124" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">LIVE COACHING</text>
+      <text x="559" y="144" text-anchor="middle" font-size="12" fill="#21452F">Monthly calls that</text>
+      <text x="559" y="162" text-anchor="middle" font-size="12" fill="#21452F">build on last month</text>
+
+      <!-- Arrows down -->
+      <g stroke="#059669" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="95" y1="180" x2="210" y2="218"/>
+        <line x1="327" y1="180" x2="327" y2="218"/>
+        <line x1="559" y1="180" x2="444" y2="218"/>
+      </g>
+
+      <!-- Result -->
+      <rect x="100" y="224" width="454" height="64" rx="11" fill="#059669"/>
+      <text x="327" y="250" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">PRICE: EDGE OF &ldquo;OBVIOUS YES&rdquo;</text>
+      <text x="327" y="276" text-anchor="middle" font-size="13" fill="#DBF2E4">Where $97/month feels cheap vs. the outcome they keep</text>
+    </svg>
+    <div class="caption">Pick the delivery model that compounds without exploding your costs. Community and content libraries scale; coaching requires more of you.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">09</div>
+</section>
+
+<!-- PAGE 10 · CLOSE + CTA -->
+<section class="page">
+  <div class="rhead"><span class="v">UPSELLS, DOWNSELLS &amp; CONTINUITY</span><span>Stack the Asks</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:24px">Stack the asks. <span class="em">Capture the momentum.</span></h2>
+
+  <p>The buying decision is already made. Every ask after the first one rides on that wave of commitment. You&rsquo;re not selling them again &mdash; you&rsquo;re inviting them deeper into a system they already said yes to.</p>
+
+  <p class="small">Start with one: bolt a single upsell onto your checkout this week. Run 500 buyers through it. If 100+ take it, add the downsell next. Then continuity. <span class="b">Build the stack one layer at a time.</span> Each layer funds the next.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>No upsell. 1,000 buyers. $97,000. Repeat next month from scratch.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>Full stack. Same buyers. $170k month one, $29k+ added every subsequent month from continuity.</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:16px 0">
+    <svg viewBox="0 0 654 148" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0" y="20" width="128" height="64" rx="11" fill="#FFFFFF" stroke="#0C2A18" stroke-width="2.5"/>
+      <text x="64" y="46" text-anchor="middle" font-size="12" font-weight="800" fill="#0C2A18">CORE OFFER</text>
+      <text x="64" y="64" text-anchor="middle" font-size="12" font-weight="800" fill="#0C2A18">CHECKOUT</text>
+      <g stroke="#059669" stroke-width="3" fill="none" stroke-linecap="round"><line x1="130" y1="52" x2="152" y2="52"/><polyline points="142,42 156,52 142,62"/></g>
+      <rect x="158" y="20" width="120" height="64" rx="11" fill="#059669"/>
+      <text x="218" y="46" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">UPSELL</text>
+      <text x="218" y="64" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">FIRES</text>
+      <g stroke="#059669" stroke-width="3" fill="none" stroke-linecap="round"><line x1="280" y1="52" x2="302" y2="52"/><polyline points="292,42 306,52 292,62"/></g>
+      <rect x="308" y="20" width="128" height="64" rx="11" fill="#E9F6EF" stroke="#6B9078" stroke-width="2"/>
+      <text x="372" y="46" text-anchor="middle" font-size="12" font-weight="800" fill="#6B9078">DOWNSELL</text>
+      <text x="372" y="64" text-anchor="middle" font-size="12" font-weight="800" fill="#6B9078">IF NO</text>
+      <g stroke="#059669" stroke-width="3" fill="none" stroke-linecap="round"><line x1="438" y1="52" x2="460" y2="52"/><polyline points="450,42 464,52 450,62"/></g>
+      <rect x="466" y="20" width="188" height="64" rx="11" fill="#045C42"/>
+      <text x="560" y="46" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">CONTINUITY</text>
+      <text x="560" y="64" text-anchor="middle" font-size="12" font-weight="800" fill="#88D2A6">LAST</text>
+    </svg>
+    <div class="caption">Same customer, four opportunities. The order is fixed: capture immediate value, then secure recurring revenue.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Money Models &mdash; Alex Hormozi.</h3>
+    <p>The full upsell, downsell, and continuity playbook &mdash; including how to design each layer, price continuity, and architect the complete revenue stack from first purchase to 12-month LTV.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Never let a buyer leave without being asked twice.</div>
+
+  <div class="stamp">Upsells, Downsells &amp; Continuity &middot; $100M Money Models</div>
+  <div class="folio">10</div>
+</section>
+
+</body>
+</html>
