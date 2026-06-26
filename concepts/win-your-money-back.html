@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Win-Your-Money-Back — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFDFD;        /* crisp near-white         */
+    --panel:#FBE0E0;        /* light crimson panels     */
+    --ink:#340F12;          /* deep crimson-ink text    */
+    --ink-soft:#5E2328;     /* secondary text           */
+    --muted:#A66A6F;        /* captions, running heads  */
+    --line:#F0D6D8;         /* crimson hairlines        */
+    --violet:#DC2626;       /* the accent (~10%)        */
+    --violet-deep:#991218;  /* strong fills             */
+    --violet-soft:#F0A0A0;  /* glow / light strokes     */
+    --violet-fill:#FBE0E0;  /* faint crimson block fill */
+    --plum:#C07070;         /* destroys / minimize / cut*/
+    --plum-fill:#F6E2E4;    /* faint plum block fill    */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#e8c4c4; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page: full-width CTA, upper content in a bounded landscape row */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  /* cover */
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#FBEDED; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#E9DEFB; }
+
+  /* compare rows */
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #DCCEEA; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  /* CTA */
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#D9CCEF; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">W</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Money Models</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">The guarantee that makes clients work harder</div>
+    <h1 class="title">WIN<br>YOUR<br>MONEY<br>BACK</h1>
+    <p class="cover-sub">The standard refund is passive. This is different. Your client pays to play &mdash; and <b>earns their investment back</b> by completing the work. Accountability meets business model.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; reduce risk &middot; drive results &middot; create proof</span></div>
+  </div>
+  <div class="stamp">Win-Your-Money-Back</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · THE PASSIVE GUARANTEE PROBLEM ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WIN-YOUR-MONEY-BACK</span><span>The Problem</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The standard refund attracts <span class="em">the wrong behavior.</span></h2>
+
+  <p class="lead">&ldquo;Satisfaction guaranteed&rdquo; converts skeptics but it also invites people who consume passively and exit whenever the going gets uncomfortable.</p>
+  <p>Worse: the passive guarantee does nothing for motivation. The buyer paid, received access, and can quit at any time with no consequence. It serves the sale but <span class="b">poisons the outcome.</span></p>
+  <p>The client who does not complete the work does not get the result. And then they ask for the refund. You lose the money and the testimonial.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D1 · Standard vs WYMB behavior -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- LEFT: Standard refund -->
+      <text x="150" y="20" text-anchor="middle" font-size="12" font-weight="800" fill="#C07070" letter-spacing="1.2">STANDARD REFUND</text>
+      <!-- steps down the left -->
+      <rect x="0" y="30" width="300" height="40" rx="9" fill="#F6E2E4" stroke="#C07070" stroke-width="2"/>
+      <text x="150" y="55" text-anchor="middle" font-size="14" font-weight="800" fill="#5E2328">BUYER PAYS</text>
+      <g stroke="#C07070" stroke-width="2" stroke-linecap="round"><line x1="150" y1="71" x2="150" y2="90"/></g>
+
+      <rect x="0" y="90" width="300" height="40" rx="9" fill="#F6E2E4" stroke="#C07070" stroke-width="2"/>
+      <text x="150" y="115" text-anchor="middle" font-size="14" font-weight="800" fill="#5E2328">RECEIVES ACCESS</text>
+      <g stroke="#C07070" stroke-width="2" stroke-linecap="round"><line x1="150" y1="131" x2="150" y2="150"/></g>
+
+      <rect x="0" y="150" width="300" height="40" rx="9" fill="#F6E2E4" stroke="#C07070" stroke-width="2"/>
+      <text x="150" y="175" text-anchor="middle" font-size="13" font-weight="800" fill="#5E2328">OPTIONAL EFFORT (?)</text>
+      <g stroke="#C07070" stroke-width="2" stroke-linecap="round"><line x1="150" y1="191" x2="150" y2="210"/></g>
+
+      <rect x="0" y="210" width="300" height="40" rx="9" fill="#C07070"/>
+      <text x="150" y="235" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFDFD">&#10007; UNHAPPY &rarr; REFUND</text>
+
+      <!-- RIGHT: WYMB -->
+      <text x="504" y="20" text-anchor="middle" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.2">WIN-YOUR-MONEY-BACK</text>
+      <rect x="354" y="30" width="300" height="40" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="504" y="55" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">BUYER PAYS</text>
+      <g stroke="#DC2626" stroke-width="2" stroke-linecap="round"><line x1="504" y1="71" x2="504" y2="90"/></g>
+
+      <rect x="354" y="90" width="300" height="40" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="504" y="115" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">COMMITS TO MILESTONES</text>
+      <g stroke="#DC2626" stroke-width="2" stroke-linecap="round"><line x1="504" y1="131" x2="504" y2="150"/></g>
+
+      <rect x="354" y="150" width="300" height="40" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="504" y="175" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">REQUIRED EFFORT &#10003;</text>
+      <g stroke="#DC2626" stroke-width="2" stroke-linecap="round"><line x1="504" y1="191" x2="504" y2="210"/></g>
+
+      <rect x="354" y="210" width="300" height="40" rx="9" fill="#DC2626"/>
+      <text x="504" y="235" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFDFD">&#10003; RESULT (+ earns refund)</text>
+
+      <!-- middle VS -->
+      <text x="327" y="160" text-anchor="middle" font-size="24" font-weight="800" fill="#340F12">VS</text>
+    </svg>
+    <div class="caption">Same promise. Two mechanisms. Only one produces accountability &mdash; and testimonials.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · WYMB DEFINED ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WIN-YOUR-MONEY-BACK</span><span>Defined</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Pay to play. <span class="em">Earn to keep.</span></h2>
+
+  <p>Win-Your-Money-Back is a conditional refund mechanism attached to <em>completion</em>, not satisfaction. The client pays full price. If they complete the defined steps &mdash; attendance, assignments, milestone gates &mdash; they get their money back.</p>
+
+  <p>The refund is not the outcome. The result is. The refund is <span class="b">proof that the client did the work.</span> And if they did the work, they almost certainly got the result &mdash; and they usually choose to keep the program rather than claim the cash.</p>
+
+  <p class="small">WYMB is not a liability. It is a commitment device. The program designer sets the milestones; the client activates them by paying. Both parties now want the same thing.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <!-- D2 · WYMB mechanism flow -->
+    <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Top: Payment -->
+      <rect x="227" y="0" width="200" height="54" rx="11" fill="#DC2626"/>
+      <text x="327" y="24" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFDFD">FULL PAYMENT</text>
+      <text x="327" y="44" text-anchor="middle" font-size="12" font-weight="700" fill="#F0A0A0">Day 0 — before access</text>
+      <g stroke="#340F12" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="327" y1="55" x2="327" y2="74"/><polyline points="318,65 327,75 336,65"/></g>
+
+      <!-- Middle: Three milestone gates -->
+      <text x="327" y="94" text-anchor="middle" font-size="11" font-weight="800" fill="#A66A6F" letter-spacing="1.2">MILESTONE GATES</text>
+      <g>
+        <rect x="30" y="104" width="172" height="50" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+        <text x="116" y="126" text-anchor="middle" font-size="12" font-weight="800" fill="#340F12">GATE 1</text>
+        <text x="116" y="144" text-anchor="middle" font-size="11" font-weight="600" fill="#5E2328">Attend &bull; Complete</text>
+        <rect x="241" y="104" width="172" height="50" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+        <text x="327" y="126" text-anchor="middle" font-size="12" font-weight="800" fill="#340F12">GATE 2</text>
+        <text x="327" y="144" text-anchor="middle" font-size="11" font-weight="600" fill="#5E2328">Submit &bull; Execute</text>
+        <rect x="452" y="104" width="172" height="50" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+        <text x="538" y="126" text-anchor="middle" font-size="12" font-weight="800" fill="#340F12">GATE 3</text>
+        <text x="538" y="144" text-anchor="middle" font-size="11" font-weight="600" fill="#5E2328">Final project</text>
+      </g>
+      <g stroke="#340F12" stroke-width="2" stroke-linecap="round">
+        <line x1="203" y1="129" x2="239" y2="129"/>
+        <line x1="414" y1="129" x2="450" y2="129"/>
+      </g>
+      <g stroke="#340F12" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="327" y1="155" x2="327" y2="178"/><polyline points="318,168 327,180 336,168"/></g>
+
+      <!-- Central insight -->
+      <rect x="100" y="180" width="454" height="44" rx="11" fill="#340F12"/>
+      <text x="327" y="199" text-anchor="middle" font-size="13" font-weight="800" fill="#F0A0A0" letter-spacing="1">COMPLETION = RESULT</text>
+      <text x="327" y="216" text-anchor="middle" font-size="12" font-weight="700" fill="#A66A6F">The conditions are calibrated so that doing them produces the outcome.</text>
+      <g stroke="#340F12" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="234" y1="225" x2="180" y2="252"/><line x1="420" y1="225" x2="474" y2="252"/></g>
+
+      <!-- Two outcomes -->
+      <rect x="30" y="258" width="268" height="52" rx="10" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="164" y="280" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">COMPLETED &rarr; REFUND ELIGIBLE</text>
+      <text x="164" y="300" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">Most choose to keep the result</text>
+
+      <rect x="356" y="258" width="268" height="52" rx="10" fill="#F6E2E4" stroke="#C07070" stroke-width="2"/>
+      <text x="490" y="280" text-anchor="middle" font-size="13" font-weight="800" fill="#5E2328">DID NOT COMPLETE &rarr; NO REFUND</text>
+      <text x="490" y="300" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">Accountability removes the freeloaders</text>
+    </svg>
+    <div class="caption">The refund eligibility is the lever. Completion is the product. Results are the point.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · THREE STRUCTURES ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WIN-YOUR-MONEY-BACK</span><span>The Three Types</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Three ways to <span class="em">structure it.</span></h2>
+
+  <p>Not every business suits the same model. The right structure depends on whether your outcome is binary or gradual, and how measurable your milestones are.</p>
+
+  <p>All three share a core rule: <span class="b">the conditions you set must be the same conditions your best clients already meet.</span> Engineer for success, not for edge-case refund exclusion.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0">
+    <!-- D3 · Three WYMB structures -->
+    <svg viewBox="0 0 654 340" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Structure 1: Milestone-based -->
+      <rect x="0" y="0" width="200" height="320" rx="13" fill="#DC2626"/>
+      <text x="100" y="36" text-anchor="middle" font-size="12" font-weight="800" fill="#F0A0A0" letter-spacing="1.2">01 &middot; MILESTONE-BASED</text>
+      <text x="100" y="64" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFDFD">Complete the</text>
+      <text x="100" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFDFD">steps. Get paid</text>
+      <text x="100" y="112" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFDFD">back.</text>
+      <line x1="20" y1="128" x2="180" y2="128" stroke="#F0A0A0" stroke-width="1.5"/>
+      <text x="20" y="152" font-size="12" font-weight="700" fill="#FFFDFD">&#9654; All sessions attended</text>
+      <text x="20" y="172" font-size="12" font-weight="700" fill="#FFFDFD">&#9654; All exercises submitted</text>
+      <text x="20" y="192" font-size="12" font-weight="700" fill="#FFFDFD">&#9654; Final project complete</text>
+      <line x1="20" y1="210" x2="180" y2="210" stroke="#F0A0A0" stroke-width="1.5"/>
+      <text x="100" y="234" text-anchor="middle" font-size="11.5" font-weight="700" fill="#F0A0A0">BEST FOR</text>
+      <text x="100" y="256" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFDFD">Courses, coaching,</text>
+      <text x="100" y="274" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFDFD">programs, bootcamps</text>
+      <rect x="30" y="290" width="140" height="22" rx="8" fill="#991218"/>
+      <text x="100" y="306" text-anchor="middle" font-size="11" font-weight="800" fill="#FFFDFD">MOST COMMON</text>
+
+      <!-- Structure 2: Result-based -->
+      <rect x="218" y="0" width="200" height="320" rx="13" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="318" y="36" text-anchor="middle" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.2">02 &middot; RESULT-BASED</text>
+      <text x="318" y="64" text-anchor="middle" font-size="18" font-weight="800" fill="#340F12">Hit the</text>
+      <text x="318" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#340F12">promised</text>
+      <text x="318" y="112" text-anchor="middle" font-size="18" font-weight="800" fill="#340F12">outcome.</text>
+      <line x1="238" y1="128" x2="398" y2="128" stroke="#F0D6D8" stroke-width="1.5"/>
+      <text x="238" y="152" font-size="12" font-weight="700" fill="#5E2328">&#9654; Revenue target met</text>
+      <text x="238" y="172" font-size="12" font-weight="700" fill="#5E2328">&#9654; Weight / metric hit</text>
+      <text x="238" y="192" font-size="12" font-weight="700" fill="#5E2328">&#9654; Leads generated</text>
+      <line x1="238" y1="210" x2="398" y2="210" stroke="#F0D6D8" stroke-width="1.5"/>
+      <text x="318" y="234" text-anchor="middle" font-size="11.5" font-weight="700" fill="#A66A6F">BEST FOR</text>
+      <text x="318" y="256" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">Clear-metric outcomes</text>
+      <text x="318" y="274" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">B2B, fitness, finance</text>
+      <rect x="248" y="290" width="140" height="22" rx="8" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="318" y="306" text-anchor="middle" font-size="11" font-weight="800" fill="#DC2626">POWERFUL PROOF</text>
+
+      <!-- Structure 3: Contest-based -->
+      <rect x="436" y="0" width="218" height="320" rx="13" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="545" y="36" text-anchor="middle" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.2">03 &middot; CONTEST-BASED</text>
+      <text x="545" y="64" text-anchor="middle" font-size="18" font-weight="800" fill="#340F12">Top performers</text>
+      <text x="545" y="88" text-anchor="middle" font-size="18" font-weight="800" fill="#340F12">win their cash</text>
+      <text x="545" y="112" text-anchor="middle" font-size="18" font-weight="800" fill="#340F12">back.</text>
+      <line x1="456" y1="128" x2="634" y2="128" stroke="#F0D6D8" stroke-width="1.5"/>
+      <text x="456" y="152" font-size="12" font-weight="700" fill="#5E2328">&#9654; Top 20% refunded</text>
+      <text x="456" y="172" font-size="12" font-weight="700" fill="#5E2328">&#9654; Public leaderboard</text>
+      <text x="456" y="192" font-size="12" font-weight="700" fill="#5E2328">&#9654; Creates competition</text>
+      <line x1="456" y1="210" x2="634" y2="210" stroke="#F0D6D8" stroke-width="1.5"/>
+      <text x="545" y="234" text-anchor="middle" font-size="11.5" font-weight="700" fill="#A66A6F">BEST FOR</text>
+      <text x="545" y="256" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">Groups, communities,</text>
+      <text x="545" y="274" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">cohorts, challenges</text>
+      <rect x="476" y="290" width="138" height="22" rx="8" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="545" y="306" text-anchor="middle" font-size="11" font-weight="800" fill="#DC2626">DRIVES ENGAGEMENT</text>
+    </svg>
+    <div class="caption">Pick the structure that matches how measurable your deliverable is. Milestone-based is the safest start.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · SKIN IN THE GAME ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WIN-YOUR-MONEY-BACK</span><span>Both Sides</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">When both parties have skin in the game, <span class="em">everyone works harder.</span></h2>
+
+  <p>The classic risk-shift says: &ldquo;I believe in this enough to refund you.&rdquo; WYMB goes further: <em>we both have something to lose, so let&rsquo;s both make sure you win.</em></p>
+
+  <p>Clients who invest more tend to commit more. The upfront payment is an activation energy — once paid, the tendency to follow through rises sharply. <span class="b">WYMB keeps it high all the way to the end.</span></p>
+
+  <div class="pull">Their investment drives their follow-through. Your guarantee drives <span class="em">your</span> delivery.</div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D4 · Skin in the game balance diagram -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Result at top -->
+      <rect x="227" y="0" width="200" height="52" rx="11" fill="#DC2626"/>
+      <text x="327" y="22" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFDFD">THE RESULT</text>
+      <text x="327" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#F0A0A0">Both parties are aiming here</text>
+
+      <!-- Pivot / fulcrum -->
+      <line x1="327" y1="53" x2="327" y2="120" stroke="#340F12" stroke-width="3"/>
+      <polygon points="327,120 310,150 344,150" fill="#340F12"/>
+      <rect x="120" y="150" width="414" height="8" rx="4" fill="#340F12"/>
+
+      <!-- Left side: Client -->
+      <rect x="30" y="170" width="210" height="100" rx="12" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="135" y="200" text-anchor="middle" font-size="16" font-weight="800" fill="#340F12">CLIENT</text>
+      <text x="135" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">Pays upfront &bull; Commits</text>
+      <text x="135" y="240" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">Completes milestones</text>
+      <text x="135" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">Earns refund eligibility</text>
+
+      <!-- Right side: Provider -->
+      <rect x="414" y="170" width="210" height="100" rx="12" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="519" y="200" text-anchor="middle" font-size="16" font-weight="800" fill="#340F12">PROVIDER</text>
+      <text x="519" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">Guarantees the outcome</text>
+      <text x="519" y="240" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">Delivers fully</text>
+      <text x="519" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">Succeeds when client does</text>
+
+      <!-- Center balance label -->
+      <text x="327" y="298" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">SHARED INCENTIVE &mdash; ALIGNED OUTCOME</text>
+    </svg>
+    <div class="caption">Standard guarantees are one-sided. WYMB creates a balanced bet &mdash; and both parties want the same thing.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · THE ACCOUNTABILITY ENGINE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WIN-YOUR-MONEY-BACK</span><span>The Accountability Engine</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Build accountability <span class="em">into the structure.</span></h2>
+
+  <p>The milestone conditions are not barriers &mdash; they are accountability mechanisms. Each gate forces the client to do what works. Doing what works produces results.</p>
+
+  <p>Design your milestones by studying your best clients: what did they all do in week 1? Week 2? Those actions are your conditions. <span class="b">Copy what works; make it compulsory.</span></p>
+
+  <p class="small">Make the milestones achievable by anyone willing to show up. If a motivated client cannot hit the conditions, your conditions are wrong &mdash; not your clients.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D5 · Accountability flow -->
+    <svg viewBox="0 0 654 280" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Step 1 -->
+      <rect x="0" y="20" width="150" height="80" rx="11" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="75" y="52" text-anchor="middle" font-size="11.5" font-weight="800" fill="#340F12">STUDY YOUR</text>
+      <text x="75" y="70" text-anchor="middle" font-size="11.5" font-weight="800" fill="#340F12">BEST CLIENTS</text>
+      <text x="75" y="86" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">What did they all do?</text>
+      <text x="75" y="8" text-anchor="middle" font-size="10" font-weight="800" fill="#A66A6F" letter-spacing="1">STEP 1</text>
+
+      <g stroke="#DC2626" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="152" y1="60" x2="172" y2="60"/><polyline points="163,51 176,60 163,69"/></g>
+
+      <!-- Step 2 -->
+      <rect x="176" y="20" width="150" height="80" rx="11" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="251" y="52" text-anchor="middle" font-size="11.5" font-weight="800" fill="#340F12">EXTRACT THEIR</text>
+      <text x="251" y="70" text-anchor="middle" font-size="11.5" font-weight="800" fill="#340F12">KEY ACTIONS</text>
+      <text x="251" y="86" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">Week 1, 2, 3 patterns</text>
+      <text x="251" y="8" text-anchor="middle" font-size="10" font-weight="800" fill="#A66A6F" letter-spacing="1">STEP 2</text>
+
+      <g stroke="#DC2626" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="328" y1="60" x2="348" y2="60"/><polyline points="339,51 352,60 339,69"/></g>
+
+      <!-- Step 3 -->
+      <rect x="352" y="20" width="150" height="80" rx="11" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="427" y="52" text-anchor="middle" font-size="11.5" font-weight="800" fill="#340F12">SET AS WYMB</text>
+      <text x="427" y="70" text-anchor="middle" font-size="11.5" font-weight="800" fill="#340F12">CONDITIONS</text>
+      <text x="427" y="86" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">Achievable by any committed buyer</text>
+      <text x="427" y="8" text-anchor="middle" font-size="10" font-weight="800" fill="#A66A6F" letter-spacing="1">STEP 3</text>
+
+      <g stroke="#DC2626" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="504" y1="60" x2="524" y2="60"/><polyline points="515,51 528,60 515,69"/></g>
+
+      <!-- Step 4 -->
+      <rect x="528" y="20" width="126" height="80" rx="11" fill="#DC2626"/>
+      <text x="591" y="52" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFDFD">CLIENTS</text>
+      <text x="591" y="70" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFDFD">COMPLETE</text>
+      <text x="591" y="86" text-anchor="middle" font-size="11" font-weight="600" fill="#F0A0A0">&amp; get results</text>
+      <text x="591" y="8" text-anchor="middle" font-size="10" font-weight="800" fill="#A66A6F" letter-spacing="1">STEP 4</text>
+
+      <!-- Arrow down to result -->
+      <g stroke="#340F12" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="591" y1="101" x2="591" y2="128"/><polyline points="582,118 591,130 600,118"/></g>
+
+      <!-- Result row -->
+      <rect x="30" y="135" width="570" height="56" rx="11" fill="#340F12"/>
+      <text x="315" y="159" text-anchor="middle" font-size="14" font-weight="800" fill="#F0A0A0">RESULT ACHIEVED &rarr; REFUND OFFERED &rarr; MOST DECLINE</text>
+      <text x="315" y="179" text-anchor="middle" font-size="13" font-weight="700" fill="#A66A6F">They got what they came for. The refund is a footnote.</text>
+
+      <!-- Arrow to testimonial -->
+      <g stroke="#DC2626" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="315" y1="192" x2="315" y2="215"/><polyline points="306,205 315,218 324,205"/></g>
+
+      <rect x="177" y="220" width="276" height="48" rx="11" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="315" y="242" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">TESTIMONIAL &rarr; MORE SALES</text>
+      <text x="315" y="260" text-anchor="middle" font-size="12" font-weight="600" fill="#A66A6F">Success becomes your best advertisement</text>
+    </svg>
+    <div class="caption">Design for completion, not for refunds. The refund condition that nobody claims is the best kind.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · THE MARKETING FLYWHEEL ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WIN-YOUR-MONEY-BACK</span><span>The Flywheel</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Winners become <span class="em">your best ads.</span></h2>
+
+  <p>When a client earns refund eligibility, they have done something remarkable: they completed a hard thing and got a real result. That story is a better ad than any testimonial you could ever write yourself.</p>
+
+  <p>Most clients at completion <span class="b">do not want the refund.</span> They&rsquo;d rather keep the result. But the fact that they could have claimed it &mdash; and chose not to &mdash; is the most powerful social proof you own.</p>
+
+  <p class="small">Every cohort that runs through WYMB produces a new tier of proof: completion rates, refund waiver rates, and documented outcomes that your next cohort can read before buying.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D6 · Flywheel -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Circular flywheel: 6 stages around a circle -->
+      <!-- Center -->
+      <circle cx="327" cy="148" r="56" fill="#DC2626"/>
+      <text x="327" y="142" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFDFD">WYMB</text>
+      <text x="327" y="160" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFDFD">FLYWHEEL</text>
+
+      <!-- Stage 1: Enroll (top) -->
+      <rect x="260" y="0" width="134" height="42" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="327" y="18" text-anchor="middle" font-size="12" font-weight="800" fill="#340F12">1. ENROLL</text>
+      <text x="327" y="34" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">Client pays upfront</text>
+      <!-- Arrow top to right -->
+      <path d="M420,54 C460,54 480,90 480,100" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round" marker-end="url(#arr)"/>
+
+      <!-- Stage 2: Commit (top-right) -->
+      <rect x="480" y="60" width="164" height="42" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="562" y="78" text-anchor="middle" font-size="12" font-weight="800" fill="#340F12">2. COMMIT</text>
+      <text x="562" y="94" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">Milestones activated</text>
+      <!-- Arrow right to bottom-right -->
+      <path d="M594,104 C614,130 600,180 560,200" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"/>
+
+      <!-- Stage 3: Achieve (bottom-right) -->
+      <rect x="456" y="208" width="170" height="42" rx="9" fill="#DC2626"/>
+      <text x="541" y="226" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFDFD">3. ACHIEVE RESULT</text>
+      <text x="541" y="242" text-anchor="middle" font-size="11" font-weight="600" fill="#F0A0A0">Goal hit by completion</text>
+      <!-- Arrow bottom-right to bottom-left -->
+      <path d="M454,226 C410,240 360,256 310,248" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"/>
+
+      <!-- Stage 4: Refund offered (bottom) -->
+      <rect x="168" y="256" width="180" height="42" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="258" y="274" text-anchor="middle" font-size="12" font-weight="800" fill="#340F12">4. REFUND OFFERED</text>
+      <text x="258" y="290" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">Most decline it</text>
+      <!-- Arrow bottom to bottom-left -->
+      <path d="M168,268 C130,252 100,210 100,180" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"/>
+
+      <!-- Stage 5: Success story (left) -->
+      <rect x="10" y="148" width="170" height="42" rx="9" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="95" y="166" text-anchor="middle" font-size="12" font-weight="800" fill="#340F12">5. SUCCESS STORY</text>
+      <text x="95" y="182" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">Testimonial + proof</text>
+      <!-- Arrow left back to top -->
+      <path d="M100,146 C96,100 180,50 258,42" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    <div class="caption">Each cohort generates proof for the next. The flywheel spins faster the more cycles you run.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · SETTING CONDITIONS RIGHT ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WIN-YOUR-MONEY-BACK</span><span>Design It</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">If your conditions are right, <span class="em">refunds are rare.</span></h2>
+
+  <p>Over-engineer the conditions and clients feel trapped. Under-engineer them and everyone claims the refund regardless. The sweet spot: conditions a motivated client can complete, which also track to your actual deliverable.</p>
+
+  <p class="small">Look at your refund claims. Are they from clients who completed? Rarely &mdash; because completion produces results, and results end the complaint. If refunds spike, audit the milestones first, not the clients.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;Attend one call and request a refund any time within 30 days.&rdquo; &mdash; Too easy; every undecided buyer claims it.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;Complete all 6 weekly exercises and the final audit &mdash; we return your full investment.&rdquo; &mdash; Achievable, accountable, rare to claim.</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0">
+    <!-- D7 · Refund rate vs condition difficulty -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- axes -->
+      <line x1="60" y1="20" x2="60" y2="260" stroke="#340F12" stroke-width="2.5"/>
+      <line x1="60" y1="260" x2="614" y2="260" stroke="#340F12" stroke-width="2.5"/>
+
+      <!-- axis labels -->
+      <text x="20" y="140" font-size="11" font-weight="800" fill="#340F12" transform="rotate(-90 20 140)" text-anchor="middle">REFUND RATE &rarr;</text>
+      <text x="337" y="280" text-anchor="middle" font-size="11" font-weight="800" fill="#340F12">CONDITION DIFFICULTY &rarr;</text>
+
+      <!-- Y labels -->
+      <g font-size="10" font-weight="700" fill="#A66A6F" text-anchor="end">
+        <text x="54" y="260">LOW</text>
+        <text x="54" y="145">MID</text>
+        <text x="54" y="30">HIGH</text>
+      </g>
+
+      <!-- X labels -->
+      <g font-size="10" font-weight="700" fill="#A66A6F" text-anchor="middle">
+        <text x="130" y="276">TOO EASY</text>
+        <text x="337" y="276">OPTIMAL</text>
+        <text x="544" y="276">TOO HARD</text>
+      </g>
+
+      <!-- U-shaped curve: starts high (easy conditions, many refunds), dips in middle, rises again (impossible) -->
+      <polyline points="60,40 130,90 210,180 337,220 450,160 544,80 614,30"
+        fill="none" stroke="#C07070" stroke-width="3.5" stroke-dasharray="6,3"/>
+
+      <!-- Optimal zone highlight -->
+      <rect x="270" y="180" width="134" height="80" rx="0" fill="#DC2626" opacity="0.12"/>
+      <rect x="270" y="180" width="2" height="80" fill="#DC2626"/>
+      <rect x="402" y="180" width="2" height="80" fill="#DC2626"/>
+      <text x="337" y="210" text-anchor="middle" font-size="11" font-weight="800" fill="#DC2626">OPTIMAL</text>
+      <text x="337" y="228" text-anchor="middle" font-size="11" font-weight="800" fill="#DC2626">ZONE</text>
+      <text x="337" y="246" text-anchor="middle" font-size="10" font-weight="700" fill="#991218">Low refund rate</text>
+
+      <!-- Low difficulty label -->
+      <rect x="62" y="22" width="160" height="60" rx="8" fill="#F6E2E4" stroke="#C07070" stroke-width="1.5"/>
+      <text x="142" y="48" text-anchor="middle" font-size="11" font-weight="800" fill="#C07070">FREELOADERS</text>
+      <text x="142" y="64" text-anchor="middle" font-size="11" font-weight="600" fill="#5E2328">claim refund without</text>
+      <text x="142" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#5E2328">doing the work</text>
+
+      <!-- High difficulty label -->
+      <rect x="450" y="22" width="160" height="60" rx="8" fill="#F6E2E4" stroke="#C07070" stroke-width="1.5"/>
+      <text x="530" y="48" text-anchor="middle" font-size="11" font-weight="800" fill="#C07070">IMPOSSIBLE</text>
+      <text x="530" y="64" text-anchor="middle" font-size="11" font-weight="600" fill="#5E2328">clients can&rsquo;t complete;</text>
+      <text x="530" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#5E2328">feels like a trap</text>
+    </svg>
+    <div class="caption">Calibrate conditions to your average motivated client &mdash; not the best, not the worst. That&rsquo;s the sweet spot.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · CLOSE + CTA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WIN-YOUR-MONEY-BACK</span><span>The Math</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">The math <span class="em">always works.</span></h2>
+
+  <p class="small">If 20% more people buy because of the guarantee and 5% more claim a refund, the net is +15% revenue. On 100 clients at $2,000: without WYMB = $200K. With WYMB = $240K sales &minus; $10K refunds = $230K net &mdash; plus better results, more testimonials, and higher LTV.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;If you&rsquo;re unsatisfied, just let us know and we&rsquo;ll sort it out.&rdquo; &mdash; Vague. Passive. No skin in the game.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;Complete all six milestones and we return your investment. Most of our graduates choose to keep it.&rdquo;</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:10px 0">
+    <!-- D8 · Math comparison bars -->
+    <svg viewBox="0 0 654 130" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Without WYMB -->
+      <rect x="0" y="10" width="300" height="80" rx="11" fill="#F6E2E4" stroke="#C07070" stroke-width="2"/>
+      <text x="150" y="36" text-anchor="middle" font-size="12" font-weight="800" fill="#C07070">WITHOUT WYMB</text>
+      <text x="150" y="60" text-anchor="middle" font-size="28" font-weight="800" fill="#340F12">$200K</text>
+      <text x="150" y="80" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">100 clients &times; $2,000</text>
+
+      <!-- Arrow -->
+      <g stroke="#DC2626" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="306" y1="50" x2="328" y2="50"/><polyline points="319,41 332,50 319,59"/></g>
+
+      <!-- With WYMB -->
+      <rect x="334" y="10" width="320" height="80" rx="11" fill="#DC2626"/>
+      <text x="494" y="36" text-anchor="middle" font-size="12" font-weight="800" fill="#F0A0A0">WITH WYMB</text>
+      <text x="494" y="60" text-anchor="middle" font-size="28" font-weight="800" fill="#FFFDFD">$230K</text>
+      <text x="494" y="80" text-anchor="middle" font-size="11" font-weight="600" fill="#F0A0A0">120 sales &minus; 5% refunds = net +15%</text>
+
+      <!-- Key note -->
+      <text x="327" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">Plus: better outcomes &bull; more testimonials &bull; higher referral rate</text>
+    </svg>
+    <div class="caption">A guarantee is a math equation, not an emotional one. Run the numbers before deciding it&rsquo;s risky.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Money Models &mdash; the framework.</h3>
+    <p>Pricing structures, risk-reversal mechanics, and the full playbook for turning guarantees into a growth engine rather than a liability.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Make clients earn the refund. Most will earn the result instead.</div>
+
+  <div class="stamp">Win-Your-Money-Back</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>
