@@ -1,7 +1,7 @@
 {
   "_comment": "Claude Court concept bank. The daily routine picks the 2 lowest-priority UNUSED concepts (status != 'done'), generates them, then flips status to 'done' with the date + url. When all are done, reset every status to 'pending' to start a fresh cycle. 'palette' rotates the look so docs don't feel cloned.",
   "version": 1,
-  "last_run": "2026-06-26",
+  "last_run": "2026-06-27",
   "concepts": [
     { "slug": "the-value-equation", "title": "The Value Equation", "source": "$100M Offers", "palette": "violet", "status": "done", "note": "Pre-existing exemplar at repo root the-value-equation.html", "url": "https://mk-notageek.github.io/claude-court/concepts/the-value-equation.html" },
     { "slug": "the-trust-bet", "title": "The Trust Bet", "source": "Hormozi / trust", "palette": "violet", "status": "done", "note": "Pre-existing exemplar", "url": "https://mk-notageek.github.io/claude-court/concepts/the-trust-bet.html" },
@@ -22,8 +22,8 @@
     { "slug": "upsells-downsells", "title": "Upsells, Downsells & Continuity", "source": "$100M Money Models", "palette": "emerald", "status": "done", "date": "2026-06-25", "url": "https://mk-notageek.github.io/claude-court/concepts/upsells-downsells.html" },
     { "slug": "thirty-day-cash", "title": "The 30-Day Cash Model", "source": "$100M Money Models", "palette": "amber", "status": "done", "date": "2026-06-26", "url": "https://mk-notageek.github.io/claude-court/concepts/thirty-day-cash.html" },
     { "slug": "win-your-money-back", "title": "Win-Your-Money-Back", "source": "$100M Money Models", "palette": "crimson", "status": "done", "date": "2026-06-26", "url": "https://mk-notageek.github.io/claude-court/concepts/win-your-money-back.html" },
-    { "slug": "the-hook-types", "title": "The Anatomy of a Hook", "source": "$100M Hooks", "palette": "indigo", "status": "pending" },
-    { "slug": "what-who-when", "title": "What–Who–When", "source": "$100M Leads", "palette": "teal", "status": "pending" },
+    { "slug": "the-hook-types", "title": "The Anatomy of a Hook", "source": "$100M Hooks", "palette": "indigo", "status": "done", "date": "2026-06-27", "url": "https://mk-notageek.github.io/claude-court/concepts/the-hook-types.html" },
+    { "slug": "what-who-when", "title": "What–Who–When", "source": "$100M Leads", "palette": "teal", "status": "done", "date": "2026-06-27", "url": "https://mk-notageek.github.io/claude-court/concepts/what-who-when.html" },
     { "slug": "call-value-cta", "title": "Call-Out · Value · CTA", "source": "$100M Leads", "palette": "violet", "status": "pending" },
     { "slug": "warm-outreach", "title": "Warm Outreach & the ACA Framework", "source": "$100M Leads", "palette": "amber", "status": "pending" },
     { "slug": "the-four-lead-getters", "title": "The Four Lead Getters", "source": "$100M Leads", "palette": "indigo", "status": "pending" },

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Anatomy of a Hook — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;        /* white page               */
+    --panel:#E6E5FB;        /* light indigo panels      */
+    --ink:#14163A;          /* deep indigo text         */
+    --ink-soft:#2E335E;     /* secondary text           */
+    --muted:#7A7FA6;        /* captions, running heads  */
+    --line:#DADCF2;         /* indigo hairlines         */
+    --violet:#4F46E5;       /* the accent (~10%)        */
+    --violet-deep:#312C9C;  /* strong fills             */
+    --violet-soft:#A9A8F0;  /* glow / light strokes     */
+    --violet-fill:#E6E5FB;  /* faint indigo block fill  */
+    --plum:#8C8FB8;         /* destroys / minimize / cut*/
+    --plum-fill:#EEEEFB;    /* faint plum block fill    */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#c3c8ee; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page: full-width CTA, upper content in a bounded landscape row */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  /* cover */
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#EEEEFB; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#C9C8F9; }
+
+  /* compare rows */
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #D4D2EC; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  /* CTA */
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#C4C5E8; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">&#8594;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Hooks</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">The first 3 seconds decide everything</div>
+    <h1 class="title">THE<br>ANATOMY<br>OF A HOOK</h1>
+    <p class="cover-sub">Most creators spend 80% of their effort writing content and 20% writing the hook. The <b>math is backwards.</b> A weak hook makes even brilliant content invisible. Here are the four parts that stop the scroll every time.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; stop the scroll &middot; earn the click</span></div>
+  </div>
+  <div class="stamp">The Anatomy of a Hook</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · WHY HOOKS ARE 80% ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE ANATOMY OF A HOOK</span><span>Why It Matters</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The hook isn&rsquo;t the start &mdash; <span class="em">it&rsquo;s 80%.</span></h2>
+
+  <p class="lead">100 people scroll past your content. If 70 keep scrolling, you&rsquo;ve already lost the game &mdash; before a single word of your argument is read.</p>
+
+  <p>The funnel is a cliff. The hook controls <span class="b">whether anyone falls off the top</span> or keeps reading. Improve the hook and everything downstream improves with it.</p>
+
+  <p>Great content with a weak hook = a full restaurant no one walks into. Great hook with decent content = sold out every night.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D1 · funnel waterfall -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Stage labels -->
+      <text x="0" y="22" font-size="12.5" font-weight="800" fill="#7A7FA6" letter-spacing="1">STAGE</text>
+      <text x="160" y="22" font-size="12.5" font-weight="800" fill="#7A7FA6" letter-spacing="1">OF 100 WHO SEE IT</text>
+      <text x="530" y="22" font-size="12.5" font-weight="800" fill="#7A7FA6" letter-spacing="1">SURVIVE</text>
+
+      <!-- Row 1: Scroll past -->
+      <rect x="0" y="36" width="140" height="46" rx="10" fill="#E6E5FB" stroke="#DADCF2" stroke-width="2"/>
+      <text x="14" y="57" font-size="13" font-weight="800" fill="#2E335E">SEE THE HOOK</text>
+      <text x="14" y="74" font-size="11" font-weight="600" fill="#7A7FA6">impression &rarr; pause decision</text>
+      <rect x="160" y="46" width="340" height="26" rx="6" fill="#4F46E5"/>
+      <text x="508" y="64" font-size="15" font-weight="800" fill="#14163A">100</text>
+
+      <!-- Row 2 -->
+      <rect x="0" y="102" width="140" height="46" rx="10" fill="#E6E5FB" stroke="#DADCF2" stroke-width="2"/>
+      <text x="14" y="123" font-size="13" font-weight="800" fill="#2E335E">STOP &amp; READ</text>
+      <text x="14" y="140" font-size="11" font-weight="600" fill="#7A7FA6">hook lands &#10003;</text>
+      <rect x="160" y="112" width="122" height="26" rx="6" fill="#4F46E5"/>
+      <rect x="282" y="112" width="218" height="26" rx="6" fill="#EEEEFB" stroke="#DADCF2" stroke-width="2"/>
+      <text x="508" y="130" font-size="15" font-weight="800" fill="#14163A">36</text>
+
+      <!-- Row 3 -->
+      <rect x="0" y="168" width="140" height="46" rx="10" fill="#E6E5FB" stroke="#DADCF2" stroke-width="2"/>
+      <text x="14" y="189" font-size="13" font-weight="800" fill="#2E335E">CONSUME ALL</text>
+      <text x="14" y="206" font-size="11" font-weight="600" fill="#7A7FA6">content earns it</text>
+      <rect x="160" y="178" width="44" height="26" rx="6" fill="#312C9C"/>
+      <rect x="204" y="178" width="296" height="26" rx="6" fill="#EEEEFB" stroke="#DADCF2" stroke-width="2"/>
+      <text x="508" y="196" font-size="15" font-weight="800" fill="#14163A">13</text>
+
+      <!-- Row 4 -->
+      <rect x="0" y="234" width="140" height="46" rx="10" fill="#4F46E5"/>
+      <text x="14" y="255" font-size="13" font-weight="800" fill="#E6E5FB">ACT ON CTA</text>
+      <text x="14" y="272" font-size="11" font-weight="600" fill="#A9A8F0">click &middot; reply &middot; buy</text>
+      <rect x="160" y="244" width="14" height="26" rx="4" fill="#312C9C"/>
+      <rect x="174" y="244" width="326" height="26" rx="6" fill="#EEEEFB" stroke="#DADCF2" stroke-width="2"/>
+      <text x="508" y="262" font-size="15" font-weight="800" fill="#14163A">4</text>
+
+      <!-- drop label -->
+      <text x="372" y="295" text-anchor="middle" font-size="11.5" font-weight="800" fill="#8C8FB8" letter-spacing=".5">64 LOST AT THE HOOK ALONE &mdash; fix that first</text>
+    </svg>
+    <div class="caption">The funnel collapses at the hook. Fix it once and everything else compounds.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · THE FOUR PARTS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE ANATOMY OF A HOOK</span><span>The Four Parts</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Four jobs. <span class="em">Three seconds.</span></h2>
+
+  <p>Every hook that consistently works does four things in sequence. Skip any one and the chain breaks.</p>
+
+  <p><span class="b">Pattern Interrupt:</span> snaps them out of the trance. <span class="b">Promise:</span> answers &ldquo;what&rsquo;s in it for me?&rdquo; <span class="b">Proof Indicator:</span> answers &ldquo;why should I believe you?&rdquo; <span class="b">Curiosity Gap:</span> makes them <em>need</em> to know what&rsquo;s next.</p>
+
+  <p>Not every hook makes all four explicit. But the best ones hit all four implicitly &mdash; often in a single sentence.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:24px 0">
+    <!-- D2 · four-part flow -->
+    <svg viewBox="0 0 654 260" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Node 1: Pattern Interrupt -->
+      <rect x="0" y="50" width="142" height="96" rx="13" fill="#4F46E5"/>
+      <text x="71" y="88" text-anchor="middle" font-size="13" font-weight="800" fill="#E6E5FB">01</text>
+      <text x="71" y="108" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">PATTERN</text>
+      <text x="71" y="128" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">INTERRUPT</text>
+
+      <!-- Arrow -->
+      <g stroke="#14163A" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="144" y1="98" x2="162" y2="98"/><polyline points="153,89 165,98 153,107"/>
+      </g>
+
+      <!-- Node 2: Promise -->
+      <rect x="166" y="50" width="142" height="96" rx="13" fill="#FFFFFF" stroke="#4F46E5" stroke-width="2.5"/>
+      <text x="237" y="88" text-anchor="middle" font-size="13" font-weight="800" fill="#4F46E5">02</text>
+      <text x="237" y="108" text-anchor="middle" font-size="14" font-weight="800" fill="#14163A">THE</text>
+      <text x="237" y="128" text-anchor="middle" font-size="14" font-weight="800" fill="#14163A">PROMISE</text>
+
+      <!-- Arrow -->
+      <g stroke="#14163A" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="310" y1="98" x2="328" y2="98"/><polyline points="319,89 331,98 319,107"/>
+      </g>
+
+      <!-- Node 3: Proof Indicator -->
+      <rect x="332" y="50" width="142" height="96" rx="13" fill="#FFFFFF" stroke="#4F46E5" stroke-width="2.5"/>
+      <text x="403" y="88" text-anchor="middle" font-size="13" font-weight="800" fill="#4F46E5">03</text>
+      <text x="403" y="108" text-anchor="middle" font-size="14" font-weight="800" fill="#14163A">PROOF</text>
+      <text x="403" y="128" text-anchor="middle" font-size="14" font-weight="800" fill="#14163A">INDICATOR</text>
+
+      <!-- Arrow -->
+      <g stroke="#14163A" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="476" y1="98" x2="494" y2="98"/><polyline points="485,89 497,98 485,107"/>
+      </g>
+
+      <!-- Node 4: Curiosity Gap -->
+      <rect x="500" y="50" width="154" height="96" rx="13" fill="#312C9C"/>
+      <text x="577" y="88" text-anchor="middle" font-size="13" font-weight="800" fill="#A9A8F0">04</text>
+      <text x="577" y="108" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">CURIOSITY</text>
+      <text x="577" y="128" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">GAP</text>
+
+      <!-- sub-labels -->
+      <text x="71"  y="168" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7A7FA6">breaks the trance</text>
+      <text x="237" y="168" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7A7FA6">answers &ldquo;so what?&rdquo;</text>
+      <text x="403" y="168" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7A7FA6">answers &ldquo;why you?&rdquo;</text>
+      <text x="577" y="168" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7A7FA6">opens a loop</text>
+
+      <!-- result bar -->
+      <rect x="0" y="200" width="654" height="46" rx="12" fill="#E6E5FB" stroke="#DADCF2" stroke-width="2"/>
+      <text x="327" y="221" text-anchor="middle" font-size="13" font-weight="800" fill="#4F46E5" letter-spacing="1">RESULT</text>
+      <text x="327" y="238" text-anchor="middle" font-size="12" font-weight="700" fill="#2E335E">They stop. They read. They click. Every time.</text>
+    </svg>
+    <div class="caption">Four jobs, often compressed into one sentence. All four must fire.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · PATTERN INTERRUPT ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE ANATOMY OF A HOOK</span><span>Part 1 — Pattern Interrupt</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The scroll is a <span class="em">trance.</span> Break it.</h2>
+
+  <p>Every platform trains users to consume automatically, without thinking. Your first job is to introduce a speed bump &mdash; something unexpected, emotionally charged, or visually jarring enough to trigger a conscious pause.</p>
+
+  <p><span class="b">Three ways to interrupt the pattern:</span> unexpected contrast (say the opposite of what they expect), high-specificity numbers (&ldquo;$14,397&rdquo; not &ldquo;a lot&rdquo;), or naked vulnerability (&ldquo;I was broke at 32.&rdquo;).</p>
+
+  <p>Predictable = invisible. Unexpected = a pause. A pause is all you need.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <!-- D3 · before/after scroll interrupt -->
+    <svg viewBox="0 0 654 264" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- LEFT: boring scroll -->
+      <text x="0" y="22" font-size="12" font-weight="800" fill="#8C8FB8" letter-spacing="1">&#10007; WEAK HOOK — INVISIBLE</text>
+      <rect x="0" y="36" width="300" height="218" rx="13" fill="#EEEEFB" stroke="#D4D2EC" stroke-width="2"/>
+      <!-- stacked gray content cards -->
+      <rect x="18" y="54" width="264" height="36" rx="8" fill="#D4D2EC"/>
+      <text x="150" y="77" text-anchor="middle" font-size="12.5" font-weight="700" fill="#8C8FB8">How to grow your business</text>
+      <rect x="18" y="100" width="264" height="36" rx="8" fill="#D4D2EC"/>
+      <text x="150" y="123" text-anchor="middle" font-size="12.5" font-weight="700" fill="#8C8FB8">5 tips to be more productive</text>
+      <rect x="18" y="146" width="264" height="36" rx="8" fill="#D4D2EC"/>
+      <text x="150" y="169" text-anchor="middle" font-size="12.5" font-weight="700" fill="#8C8FB8">Why mindset matters</text>
+      <!-- scroll arrow -->
+      <g stroke="#8C8FB8" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="150" y1="200" x2="150" y2="238"/><polyline points="140,226 150,240 160,226"/>
+      </g>
+      <text x="150" y="258" text-anchor="middle" font-size="11" font-weight="800" fill="#8C8FB8">KEEPS SCROLLING</text>
+
+      <!-- RIGHT: strong interrupt -->
+      <text x="340" y="22" font-size="12" font-weight="800" fill="#4F46E5" letter-spacing="1">&#10003; STRONG HOOK — STOPS</text>
+      <rect x="340" y="36" width="314" height="218" rx="13" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2.5"/>
+      <!-- highlight card -->
+      <rect x="358" y="54" width="278" height="62" rx="10" fill="#4F46E5"/>
+      <text x="497" y="80" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">I hired 11 people in 90 days</text>
+      <text x="497" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#A9A8F0">— and fired 9 of them. Here&rsquo;s</text>
+      <!-- dim below -->
+      <rect x="358" y="128" width="278" height="36" rx="8" fill="#C5C4F2" opacity=".5"/>
+      <rect x="358" y="174" width="278" height="36" rx="8" fill="#C5C4F2" opacity=".3"/>
+      <!-- stop symbol -->
+      <circle cx="497" cy="230" r="14" fill="#4F46E5"/>
+      <text x="497" y="236" text-anchor="middle" font-size="17" font-weight="800" fill="#FFFFFF">&#9646;&#9646;</text>
+      <text x="497" y="258" text-anchor="middle" font-size="11" font-weight="800" fill="#4F46E5">STOPS. READS.</text>
+    </svg>
+    <div class="caption">Specific, unexpected, emotionally charged &mdash; any one of these breaks the trance.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · THE PROMISE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE ANATOMY OF A HOOK</span><span>Part 2 — The Promise</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Specificity <span class="em">converts.</span> Vagueness repels.</h2>
+
+  <p>Once you&rsquo;ve stopped them, you have one second to answer: <em>what&rsquo;s in it for me?</em> Generic answers lose them again instantly. Specific numbers and named outcomes hold them.</p>
+
+  <p><span class="b">The formula:</span> concrete result + specific timeframe + zero-cost element. &ldquo;I added $23K per month in 6 weeks without running a single ad.&rdquo; Every word does work.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;How to make more money in your business.&rdquo;</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;How I added $23,400/mo in 6 weeks — without paid ads.&rdquo;</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D4 · specificity bar chart -->
+    <svg viewBox="0 0 654 270" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="22" font-size="12" font-weight="800" fill="#7A7FA6" letter-spacing="1">SPECIFICITY vs CLICK-THROUGH RATE</text>
+
+      <!-- Bar: vague -->
+      <text x="0" y="66" font-size="12.5" font-weight="800" fill="#8C8FB8">VAGUE: &ldquo;Make more money online&rdquo;</text>
+      <rect x="0" y="76" width="78" height="30" rx="7" fill="#EEEEFB" stroke="#D4D2EC" stroke-width="2"/>
+      <text x="88" y="96" font-size="14" font-weight="800" fill="#8C8FB8">0.8%</text>
+
+      <!-- Bar: semi-specific -->
+      <text x="0" y="138" font-size="12.5" font-weight="800" fill="#2E335E">BETTER: &ldquo;How I doubled my revenue in 3 months&rdquo;</text>
+      <rect x="0" y="148" width="192" height="30" rx="7" fill="#A9A8F0"/>
+      <text x="202" y="168" font-size="14" font-weight="800" fill="#2E335E">2.2%</text>
+
+      <!-- Bar: hyper-specific -->
+      <text x="0" y="210" font-size="12.5" font-weight="800" fill="#14163A">BEST: &ldquo;$23,400/mo added in 6 weeks — without paid ads&rdquo;</text>
+      <rect x="0" y="220" width="480" height="30" rx="7" fill="#4F46E5"/>
+      <text x="490" y="240" font-size="14" font-weight="800" fill="#14163A">5.5%</text>
+
+      <!-- X label -->
+      <text x="240" y="270" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7A7FA6">click-through rate &rarr; (same audience, same platform)</text>
+    </svg>
+    <div class="caption">Specificity signals credibility. Credibility earns the click.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · SIX HOOK ARCHETYPES ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE ANATOMY OF A HOOK</span><span>The Six Archetypes</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Six structures that <span class="em">always</span> work.</h2>
+
+  <p>Not every hook type works for every audience or platform. But these six show up consistently in top-performing content across channels &mdash; master all six and rotate based on what the market responds to.</p>
+
+  <p><span class="b">Rotate the archetype; keep the specificity.</span> A Curiosity Gap hook that&rsquo;s vague still dies. Specificity is the override that makes any archetype convert.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0 12px">
+    <!-- D5 · 2x3 archetype grid -->
+    <svg viewBox="0 0 654 340" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Row 1 -->
+      <!-- 01 Bold Claim -->
+      <rect x="0" y="0" width="202" height="152" rx="13" fill="#4F46E5"/>
+      <text x="20" y="32" font-size="11.5" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">01 &middot; BOLD CLAIM</text>
+      <text x="20" y="62" font-size="16" font-weight="800" fill="#FFFFFF">Make a statement</text>
+      <text x="20" y="82" font-size="16" font-weight="800" fill="#FFFFFF">so specific it</text>
+      <text x="20" y="102" font-size="16" font-weight="800" fill="#FFFFFF">can&rsquo;t be ignored.</text>
+      <text x="20" y="134" font-size="11.5" font-style="italic" fill="#C5C4F2">&ldquo;I 10x&rsquo;d revenue in 4 months.&rdquo;</text>
+
+      <!-- 02 Curiosity Gap -->
+      <rect x="226" y="0" width="202" height="152" rx="13" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="246" y="32" font-size="11.5" font-weight="800" fill="#4F46E5" letter-spacing="1.5">02 &middot; CURIOSITY GAP</text>
+      <text x="246" y="62" font-size="16" font-weight="800" fill="#14163A">Open a loop you</text>
+      <text x="246" y="82" font-size="16" font-weight="800" fill="#14163A">can&rsquo;t close here.</text>
+      <text x="246" y="102" font-size="16" font-weight="800" fill="#14163A">Make them click.</text>
+      <text x="246" y="134" font-size="11.5" font-style="italic" fill="#7A7FA6">&ldquo;The one thing 97% get wrong...&rdquo;</text>
+
+      <!-- 03 Contrarian -->
+      <rect x="452" y="0" width="202" height="152" rx="13" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="472" y="32" font-size="11.5" font-weight="800" fill="#4F46E5" letter-spacing="1.5">03 &middot; CONTRARIAN</text>
+      <text x="472" y="62" font-size="16" font-weight="800" fill="#14163A">Say the opposite</text>
+      <text x="472" y="82" font-size="16" font-weight="800" fill="#14163A">of conventional</text>
+      <text x="472" y="102" font-size="16" font-weight="800" fill="#14163A">wisdom.</text>
+      <text x="472" y="134" font-size="11.5" font-style="italic" fill="#7A7FA6">&ldquo;Funnels are killing your biz.&rdquo;</text>
+
+      <!-- Row 2 -->
+      <!-- 04 Relatable -->
+      <rect x="0" y="176" width="202" height="152" rx="13" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="20" y="208" font-size="11.5" font-weight="800" fill="#4F46E5" letter-spacing="1.5">04 &middot; RELATABLE</text>
+      <text x="20" y="238" font-size="16" font-weight="800" fill="#14163A">Name the exact</text>
+      <text x="20" y="258" font-size="16" font-weight="800" fill="#14163A">pain they live</text>
+      <text x="20" y="278" font-size="16" font-weight="800" fill="#14163A">every day.</text>
+      <text x="20" y="310" font-size="11.5" font-style="italic" fill="#7A7FA6">&ldquo;If you charge &lt;$5K, read this.&rdquo;</text>
+
+      <!-- 05 Fear / Risk -->
+      <rect x="226" y="176" width="202" height="152" rx="13" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="246" y="208" font-size="11.5" font-weight="800" fill="#4F46E5" letter-spacing="1.5">05 &middot; FEAR / RISK</text>
+      <text x="246" y="238" font-size="16" font-weight="800" fill="#14163A">Spotlight a</text>
+      <text x="246" y="258" font-size="16" font-weight="800" fill="#14163A">danger they</text>
+      <text x="246" y="278" font-size="16" font-weight="800" fill="#14163A">don&rsquo;t see yet.</text>
+      <text x="246" y="310" font-size="11.5" font-style="italic" fill="#7A7FA6">&ldquo;You&rsquo;re leaking $4K/mo here.&rdquo;</text>
+
+      <!-- 06 How-To -->
+      <rect x="452" y="176" width="202" height="152" rx="13" fill="#312C9C"/>
+      <text x="472" y="208" font-size="11.5" font-weight="800" fill="#A9A8F0" letter-spacing="1.5">06 &middot; HOW-TO</text>
+      <text x="472" y="238" font-size="16" font-weight="800" fill="#FFFFFF">Promise a result</text>
+      <text x="472" y="258" font-size="16" font-weight="800" fill="#FFFFFF">with a method</text>
+      <text x="472" y="278" font-size="16" font-weight="800" fill="#FFFFFF">attached.</text>
+      <text x="472" y="310" font-size="11.5" font-style="italic" fill="#C5C4F2">&ldquo;How I close 80% without decks.&rdquo;</text>
+    </svg>
+    <div class="caption">Six archetypes &mdash; rotate them. Specificity makes each one land.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · CURIOSITY GAP ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE ANATOMY OF A HOOK</span><span>Part 4 — The Curiosity Gap</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Open the loop. <span class="em">Never close it.</span></h2>
+
+  <p>The mind hates open loops. It&rsquo;s wired to resolve tension. A hook that reveals <em>just enough</em> to create a gap between what they know and what they need to know becomes irresistible.</p>
+
+  <p><span class="b">The gap formula:</span> tell them what exists, not what it is. &ldquo;The one thing 97% of founders get wrong about hiring&rdquo; &mdash; the gap is the thing. Don&rsquo;t fill it.</p>
+
+  <div class="band">
+    <div class="t">TEASE THE GAP. THE CONTENT FILLS IT.</div>
+    <div class="s">opening the loop is the hook's only job — never answer in the hook</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <!-- D6 · curiosity gap visualization -->
+    <svg viewBox="0 0 654 250" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- What they know -->
+      <rect x="0" y="30" width="210" height="160" rx="13" fill="#E6E5FB" stroke="#DADCF2" stroke-width="2"/>
+      <text x="105" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="#7A7FA6" letter-spacing="1">WHAT THEY KNOW</text>
+      <text x="105" y="106" text-anchor="middle" font-size="28" font-weight="800" fill="#4F46E5">?</text>
+      <text x="105" y="150" text-anchor="middle" font-size="12" font-weight="700" fill="#8C8FB8">&ldquo;hiring is hard&rdquo;</text>
+      <text x="105" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#8C8FB8">&ldquo;not sure what I&rsquo;m</text>
+      <text x="105" y="186" text-anchor="middle" font-size="12" font-weight="700" fill="#8C8FB8">doing wrong&rdquo;</text>
+
+      <!-- Gap -->
+      <rect x="224" y="80" width="206" height="60" rx="10" fill="#14163A"/>
+      <text x="327" y="108" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">THE GAP</text>
+      <text x="327" y="128" text-anchor="middle" font-size="11.5" font-weight="700" fill="#A9A8F0">irresistible tension</text>
+      <!-- gap arrows -->
+      <g stroke="#A9A8F0" stroke-width="2" fill="none" stroke-dasharray="5,4">
+        <line x1="212" y1="110" x2="224" y2="110"/>
+        <line x1="430" y1="110" x2="444" y2="110"/>
+      </g>
+      <!-- hook text below gap -->
+      <text x="327" y="168" text-anchor="middle" font-size="11" font-weight="800" fill="#4F46E5">&ldquo;The ONE hiring mistake</text>
+      <text x="327" y="184" text-anchor="middle" font-size="11" font-weight="800" fill="#4F46E5">97% of founders make&rdquo;</text>
+
+      <!-- What they need to know -->
+      <rect x="444" y="30" width="210" height="160" rx="13" fill="#4F46E5"/>
+      <text x="549" y="68" text-anchor="middle" font-size="13" font-weight="800" fill="#E6E5FB" letter-spacing="1">WHAT THEY NEED</text>
+      <text x="549" y="106" text-anchor="middle" font-size="28" font-weight="800" fill="#FFFFFF">&#10003;</text>
+      <text x="549" y="146" text-anchor="middle" font-size="12" font-weight="700" fill="#A9A8F0">the specific answer</text>
+      <text x="549" y="164" text-anchor="middle" font-size="12" font-weight="700" fill="#A9A8F0">lives in the content</text>
+      <text x="549" y="182" text-anchor="middle" font-size="12.5" font-weight="800" fill="#FFFFFF">&#8594; they click to get it</text>
+
+      <!-- label -->
+      <text x="327" y="240" text-anchor="middle" font-size="11.5" font-weight="800" fill="#7A7FA6">gap = the hook. answer = the content. never swap them.</text>
+    </svg>
+    <div class="caption">The gap creates the pull. The content resolves it. Keep them separate.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · THE WHO — SPECIFICITY ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE ANATOMY OF A HOOK</span><span>The WHO — Specificity as a Magnet</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Naming the &ldquo;for who&rdquo; <span class="em">narrows in.</span></h2>
+
+  <p>This seems backwards: the tighter you define your audience, the more people feel spoken to. &ldquo;For everyone&rdquo; resonates with no one. &ldquo;For agency owners stuck between $10K&ndash;$50K/mo&rdquo; makes the right person stop dead.</p>
+
+  <p>The exclusion is the attraction. People who don&rsquo;t fit the description still read it out of curiosity. People who <em>do</em> fit feel like you read their mind.</p>
+
+  <p class="small"><span class="b">Specificity signals expertise.</span> You can only write that precisely about someone if you&rsquo;ve worked with dozens of them.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D7 · wide net vs narrow spear -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Left: wide net -->
+      <text x="0" y="22" font-size="12.5" font-weight="800" fill="#8C8FB8" letter-spacing="1">WIDE NET — LOW CONVERSION</text>
+      <rect x="0" y="36" width="296" height="200" rx="13" fill="#EEEEFB" stroke="#D4D2EC" stroke-width="2"/>
+      <!-- scatter dots (gray, many) -->
+      <g fill="#D4D2EC">
+        <circle cx="50" cy="80" r="8"/><circle cx="110" cy="65" r="8"/><circle cx="170" cy="90" r="8"/>
+        <circle cx="240" cy="72" r="8"/><circle cx="80" cy="130" r="8"/><circle cx="140" cy="115" r="8"/>
+        <circle cx="200" cy="140" r="8"/><circle cx="260" cy="120" r="8"/><circle cx="60" cy="185" r="8"/>
+        <circle cx="130" cy="175" r="8"/><circle cx="220" cy="188" r="8"/>
+      </g>
+      <!-- 1 captured -->
+      <circle cx="178" cy="140" r="10" fill="#4F46E5"/>
+      <text x="148" y="230" font-size="12" font-weight="800" fill="#8C8FB8">11 shown &middot; 1 click (9%)</text>
+
+      <!-- Right: narrow spear -->
+      <text x="340" y="22" font-size="12.5" font-weight="800" fill="#4F46E5" letter-spacing="1">NARROW SPEAR — HIGH CONVERSION</text>
+      <rect x="340" y="36" width="314" height="200" rx="13" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2.5"/>
+      <!-- few dots, most captured -->
+      <g fill="#4F46E5">
+        <circle cx="400" cy="110" r="10"/><circle cx="460" cy="88" r="10"/>
+        <circle cx="520" cy="126" r="10"/><circle cx="590" cy="100" r="10"/>
+        <circle cx="430" cy="162" r="10"/><circle cx="574" cy="158" r="10"/>
+      </g>
+      <!-- 1 not matching (gray) -->
+      <circle cx="498" cy="188" r="8" fill="#D4D2EC"/>
+      <text x="497" y="232" text-anchor="middle" font-size="12" font-weight="800" fill="#4F46E5">7 shown &middot; 6 click (86%)</text>
+
+      <!-- label -->
+      <text x="327" y="280" text-anchor="middle" font-size="12" font-weight="800" fill="#7A7FA6">specificity filters in the right people — and excludes the rest</text>
+    </svg>
+    <div class="caption">A narrow hook to the right avatar beats a broad hook to everyone.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · CLOSE + CTA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE ANATOMY OF A HOOK</span><span>The 100 Hooks Practice</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">Write <span class="em">100 hooks.</span> Test 3. Scale 1.</h2>
+
+  <p>One hook idea isn&rsquo;t a strategy. The only way to find what works is volume. Write 100 variations on your concept, then run the top 10 by your best customer or a sharp colleague. Post the top 3. Scale the one that wins.</p>
+
+  <p class="small" style="margin-bottom:8px">Hormozi&rsquo;s rule: <span class="b">spend as much time on the hook as the content itself.</span> If the content took two hours, the hook deserves two hours.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>Write content. Pick the first hook that comes to mind. Post.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>List 100 hook variations. Filter to 3. Post. Track. Double down on the winner.</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:16px 0">
+    <!-- D8 · 100 hooks flow -->
+    <svg viewBox="0 0 654 130" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0" y="30" width="144" height="64" rx="11" fill="#E6E5FB" stroke="#14163A" stroke-width="2.5"/>
+      <text x="72" y="58" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">WRITE</text>
+      <text x="72" y="78" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">100 HOOKS</text>
+      <g stroke="#4F46E5" stroke-width="3" fill="none" stroke-linecap="round"><line x1="146" y1="62" x2="170" y2="62"/><polyline points="161,53 174,62 161,71"/></g>
+
+      <rect x="176" y="30" width="144" height="64" rx="11" fill="#E6E5FB" stroke="#14163A" stroke-width="2.5"/>
+      <text x="248" y="58" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">FILTER</text>
+      <text x="248" y="78" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">TO TOP 3</text>
+      <g stroke="#4F46E5" stroke-width="3" fill="none" stroke-linecap="round"><line x1="322" y1="62" x2="346" y2="62"/><polyline points="337,53 350,62 337,71"/></g>
+
+      <rect x="352" y="30" width="144" height="64" rx="11" fill="#E6E5FB" stroke="#14163A" stroke-width="2.5"/>
+      <text x="424" y="58" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">POST</text>
+      <text x="424" y="78" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">&amp; TRACK</text>
+      <g stroke="#4F46E5" stroke-width="3" fill="none" stroke-linecap="round"><line x1="498" y1="62" x2="522" y2="62"/><polyline points="513,53 526,62 513,71"/></g>
+
+      <rect x="528" y="30" width="126" height="64" rx="11" fill="#4F46E5"/>
+      <text x="591" y="58" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">SCALE</text>
+      <text x="591" y="78" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">THE WINNER</text>
+    </svg>
+    <div class="caption">Volume + tracking beats gut feel every time.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Hooks &mdash; and the content machine behind it.</h3>
+    <p>The complete hook-writing playbook, the four-part anatomy in depth, all six archetypes with worked examples &mdash; and the entire content engine that turns one idea into a hundred hooks automatically.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Stop the scroll. Earn the click. Win the sale.</div>
+
+  <div class="stamp">The Anatomy of a Hook</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>

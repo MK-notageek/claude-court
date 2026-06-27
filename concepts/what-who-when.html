@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What–Who–When — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;        /* white page               */
+    --panel:#DCF2EF;        /* light teal panels        */
+    --ink:#0E2A2A;          /* deep teal text           */
+    --ink-soft:#234746;     /* secondary text           */
+    --muted:#6E908E;        /* captions, running heads  */
+    --line:#D2E6E3;         /* teal hairlines           */
+    --violet:#0E9488;       /* the accent (~10%)        */
+    --violet-deep:#075E55;  /* strong fills             */
+    --violet-soft:#8FD4CC;  /* glow / light strokes     */
+    --violet-fill:#DCF2EF;  /* faint teal block fill    */
+    --plum:#6E908E;         /* secondary / negative     */
+    --plum-fill:#E9F6F4;    /* faint plum block fill    */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#b9d6d2; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page: full-width CTA, upper content in a bounded landscape row */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  /* cover */
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#EAF6F4; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#A8DED8; }
+
+  /* compare rows */
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #C0D8D4; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  /* CTA */
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#A8C8C6; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">3</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Leads</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Three variables. All three must align.</div>
+    <h1 class="title">WHAT &middot;<br>WHO &middot;<br>WHEN</h1>
+    <p class="cover-sub">Miss any one of these three variables and you get silence. Get all three right and leads arrive before you&rsquo;ve finished writing your offer. <b>Targeting is the offer.</b></p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; right offer &middot; right person &middot; right moment</span></div>
+  </div>
+  <div class="stamp">What &middot; Who &middot; When</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · THE THREE VARIABLES ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WHAT &middot; WHO &middot; WHEN</span><span>The Three Variables</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Three levers. Only the <span class="em">intersection</span> converts.</h2>
+
+  <p class="lead">Most businesses get WHAT right &mdash; they build a solid offer. They miss WHO and WHEN entirely. The offer lands in silence because it&rsquo;s aimed at the wrong person at the wrong moment.</p>
+
+  <p>Think of it as a three-way Venn diagram. A great offer (WHAT) + a precise avatar (WHO) + perfect timing (WHEN) = sales that feel effortless. Pull any one variable out of alignment and conversion collapses.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D1 · Three-circle Venn -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- WHAT circle -->
+      <circle cx="280" cy="130" r="130" fill="#0E9488" fill-opacity="0.14" stroke="#0E9488" stroke-width="2.5"/>
+      <!-- WHO circle -->
+      <circle cx="400" cy="130" r="130" fill="#075E55" fill-opacity="0.10" stroke="#075E55" stroke-width="2.5"/>
+      <!-- WHEN circle -->
+      <circle cx="340" cy="240" r="130" fill="#8FD4CC" fill-opacity="0.18" stroke="#8FD4CC" stroke-width="2.5"/>
+
+      <!-- labels -->
+      <text x="196" y="96" text-anchor="middle" font-size="18" font-weight="800" fill="#0E9488">WHAT</text>
+      <text x="196" y="116" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6E908E">the right offer</text>
+      <text x="484" y="96" text-anchor="middle" font-size="18" font-weight="800" fill="#075E55">WHO</text>
+      <text x="484" y="116" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6E908E">the right person</text>
+      <text x="340" y="282" text-anchor="middle" font-size="18" font-weight="800" fill="#6E908E">WHEN</text>
+      <text x="340" y="299" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6E908E">the right moment</text>
+
+      <!-- center intersection label -->
+      <rect x="290" y="148" width="100" height="38" rx="9" fill="#0E9488"/>
+      <text x="340" y="166" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFFFF">SALES FEEL</text>
+      <text x="340" y="181" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFFFF">LIKE SERVICE</text>
+    </svg>
+    <div class="caption">Three circles, one centre. Only the intersection produces effortless conversions.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · WHAT: OFFER–AWARENESS MATCH ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WHAT &middot; WHO &middot; WHEN</span><span>WHAT — Match Offer to Awareness</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The right offer depends on <span class="em">where they are.</span></h2>
+
+  <p>A cold prospect who doesn&rsquo;t know they have a problem can&rsquo;t buy a high-ticket solution. They need a different entry point &mdash; something that first names the problem, then introduces the solution.</p>
+
+  <p><span class="b">Awareness drives offer type.</span> A hot prospect who&rsquo;s already shopping needs proof and comparison. A cold prospect needs to first feel the pain.</p>
+
+  <p>The mistake is running your best high-ticket offer to an unaware audience. Not because they wouldn&rsquo;t want it &mdash; they don&rsquo;t know they need it yet.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D2 · awareness ladder with offer types -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Rows: 5 awareness stages -->
+      <rect x="0" y="0" width="654" height="50" rx="11" fill="#0E9488"/>
+      <text x="20" y="22" font-size="12" font-weight="800" fill="#FFFFFF" letter-spacing="1">MOST AWARE &uarr;</text>
+      <text x="20" y="40" font-size="14" font-weight="800" fill="#FFFFFF">&ldquo;Just show me the price and terms.&rdquo;</text>
+      <text x="540" y="34" font-size="12" font-weight="700" fill="#A8DED8">Offer: Direct CTA</text>
+
+      <rect x="0" y="62" width="654" height="50" rx="11" fill="#DCF2EF" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="20" y="84" font-size="12" font-weight="800" fill="#0E9488" letter-spacing="1">PRODUCT AWARE</text>
+      <text x="20" y="102" font-size="14" font-weight="800" fill="#0E2A2A">&ldquo;I&rsquo;ve heard of you. Is this the right fit?&rdquo;</text>
+      <text x="490" y="96" font-size="12" font-weight="700" fill="#6E908E">Offer: Social proof</text>
+
+      <rect x="0" y="124" width="654" height="50" rx="11" fill="#DCF2EF" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="20" y="146" font-size="12" font-weight="800" fill="#075E55" letter-spacing="1">SOLUTION AWARE</text>
+      <text x="20" y="164" font-size="14" font-weight="800" fill="#0E2A2A">&ldquo;I know something like this exists.&rdquo;</text>
+      <text x="464" y="158" font-size="12" font-weight="700" fill="#6E908E">Offer: Lead magnet</text>
+
+      <rect x="0" y="186" width="654" height="50" rx="11" fill="#DCF2EF" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="20" y="208" font-size="12" font-weight="800" fill="#6E908E" letter-spacing="1">PROBLEM AWARE</text>
+      <text x="20" y="226" font-size="14" font-weight="800" fill="#0E2A2A">&ldquo;I have a problem but don&rsquo;t know the fix.&rdquo;</text>
+      <text x="428" y="220" font-size="12" font-weight="700" fill="#6E908E">Offer: Education</text>
+
+      <rect x="0" y="248" width="654" height="42" rx="11" fill="#E9F6F4" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="20" y="270" font-size="12" font-weight="800" fill="#6E908E" letter-spacing="1">UNAWARE &darr;</text>
+      <text x="20" y="285" font-size="12.5" font-weight="700" fill="#6E908E">&ldquo;Everything is fine.&rdquo;  ·  Start by naming the pain.</text>
+    </svg>
+    <div class="caption">Match the offer to the rung. Skipping rungs wastes budget and burns trust.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · WHO: THE AVATAR ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WHAT &middot; WHO &middot; WHEN</span><span>WHO — The Avatar in Detail</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">&ldquo;Business owners&rdquo; <span class="em">is not an avatar.</span></h2>
+
+  <p>The tighter your definition of WHO, the less work your copy has to do. A precise avatar means the person reads your message and thinks: <em>&ldquo;This is about me.&rdquo;</em> That feeling is priceless.</p>
+
+  <p><span class="b">Five dimensions to lock in:</span> industry/niche, revenue range, team size, specific problem they have <em>right now</em>, and what they&rsquo;ve already tried that hasn&rsquo;t worked.</p>
+
+  <p>You can only write that specifically if you&rsquo;ve worked with dozens of them. If you haven&rsquo;t, go serve ten people and come back with data.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D3 · vague vs precise avatar -->
+    <svg viewBox="0 0 654 296" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Left: vague -->
+      <text x="0" y="22" font-size="12.5" font-weight="800" fill="#6E908E" letter-spacing="1">&#10007; VAGUE — LOW CONVERSION</text>
+      <rect x="0" y="36" width="296" height="242" rx="13" fill="#E9F6F4" stroke="#C0D8D4" stroke-width="2"/>
+      <text x="20" y="66" font-size="14" font-weight="800" fill="#0E2A2A">AVATAR:</text>
+      <text x="20" y="86" font-size="14" font-weight="800" fill="#6E908E">&ldquo;Business owners&rdquo;</text>
+      <line x1="20" y1="102" x2="276" y2="102" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="20" y="128" font-size="12" font-weight="700" fill="#6E908E">Industry: any</text>
+      <text x="20" y="152" font-size="12" font-weight="700" fill="#6E908E">Revenue: any</text>
+      <text x="20" y="176" font-size="12" font-weight="700" fill="#6E908E">Problem: unclear</text>
+      <text x="20" y="200" font-size="12" font-weight="700" fill="#6E908E">What they tried: unknown</text>
+      <rect x="20" y="220" width="256" height="40" rx="8" fill="#C0D8D4"/>
+      <text x="148" y="244" text-anchor="middle" font-size="13" font-weight="800" fill="#6E908E">Conversion: ~0.4%</text>
+
+      <!-- Right: precise -->
+      <text x="340" y="22" font-size="12.5" font-weight="800" fill="#0E9488" letter-spacing="1">&#10003; PRECISE — HIGH CONVERSION</text>
+      <rect x="340" y="36" width="314" height="242" rx="13" fill="#DCF2EF" stroke="#0E9488" stroke-width="2.5"/>
+      <text x="360" y="66" font-size="14" font-weight="800" fill="#0E2A2A">AVATAR:</text>
+      <text x="360" y="86" font-size="13.5" font-weight="800" fill="#0E9488">&ldquo;Gym owners with 200+ members&rdquo;</text>
+      <line x1="360" y1="102" x2="634" y2="102" stroke="#8FD4CC" stroke-width="2"/>
+      <text x="360" y="128" font-size="12" font-weight="700" fill="#234746">Industry: fitness / gym</text>
+      <text x="360" y="152" font-size="12" font-weight="700" fill="#234746">Revenue: $15K–$50K/mo</text>
+      <text x="360" y="176" font-size="12" font-weight="700" fill="#234746">Problem: can&rsquo;t add PT revenue</text>
+      <text x="360" y="200" font-size="12" font-weight="700" fill="#234746">Tried: hired staff, didn&rsquo;t stick</text>
+      <rect x="360" y="220" width="274" height="40" rx="8" fill="#0E9488"/>
+      <text x="497" y="244" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">Conversion: ~4.8%</text>
+    </svg>
+    <div class="caption">The specificity gap is a 12x difference in conversion. Name them exactly.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · WHEN: THE PROBLEM TIMELINE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WHAT &middot; WHO &middot; WHEN</span><span>WHEN — The Problem Timeline</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Timing the offer to <span class="em">acute pain.</span></h2>
+
+  <p>The same person with the same problem at different points on their journey is a completely different buyer. Catch them at the wrong moment and even a perfect offer gets a polite &ldquo;maybe later.&rdquo;</p>
+
+  <p><span class="b">The sweet spot is acute pain.</span> They&rsquo;ve recognised the problem, tried something, and failed. The cost of inaction is now higher than the cost of action. That&rsquo;s when your offer has the lowest resistance.</p>
+
+  <p>Find these people by looking for recent failures &mdash; job postings that went quiet, software that got cancelled, courses that got abandoned.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D4 · problem timeline -->
+    <svg viewBox="0 0 654 220" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Timeline base -->
+      <line x1="30" y1="120" x2="624" y2="120" stroke="#0E2A2A" stroke-width="2.5"/>
+
+      <!-- Stage 1: Unaware -->
+      <circle cx="60" cy="120" r="14" fill="#DCF2EF" stroke="#6E908E" stroke-width="2.5"/>
+      <text x="60" y="100" text-anchor="middle" font-size="11.5" font-weight="800" fill="#6E908E">1</text>
+      <text x="60" y="150" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6E908E">UNAWARE</text>
+      <text x="60" y="166" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6E908E">&ldquo;All good.&rdquo;</text>
+
+      <!-- Stage 2: Problem forming -->
+      <circle cx="180" cy="120" r="14" fill="#DCF2EF" stroke="#6E908E" stroke-width="2.5"/>
+      <text x="180" y="150" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6E908E">FORMING</text>
+      <text x="180" y="166" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6E908E">&ldquo;Something&rsquo;s off.&rdquo;</text>
+
+      <!-- Stage 3: Active -->
+      <circle cx="310" cy="120" r="14" fill="#8FD4CC" stroke="#0E9488" stroke-width="2.5"/>
+      <text x="310" y="150" text-anchor="middle" font-size="11.5" font-weight="700" fill="#234746">ACTIVE</text>
+      <text x="310" y="166" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6E908E">&ldquo;I need to fix this.&rdquo;</text>
+
+      <!-- Stage 4: ACUTE — SWEET SPOT -->
+      <circle cx="460" cy="120" r="20" fill="#0E9488"/>
+      <text x="460" y="126" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">&#9733;</text>
+      <text x="460" y="88" text-anchor="middle" font-size="12" font-weight="800" fill="#0E9488" letter-spacing="1">SWEET SPOT</text>
+      <text x="460" y="102" text-anchor="middle" font-size="12" font-weight="800" fill="#0E9488">&#9660;</text>
+      <text x="460" y="156" text-anchor="middle" font-size="11.5" font-weight="800" fill="#0E2A2A">ACUTE</text>
+      <text x="460" y="172" text-anchor="middle" font-size="10.5" font-weight="700" fill="#234746">&ldquo;I tried &amp; failed. Fix it.&rdquo;</text>
+
+      <!-- Stage 5: Resigned -->
+      <circle cx="594" cy="120" r="14" fill="#E9F6F4" stroke="#6E908E" stroke-width="2.5"/>
+      <text x="594" y="150" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6E908E">RESIGNED</text>
+      <text x="594" y="166" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6E908E">&ldquo;Nothing works.&rdquo;</text>
+
+      <!-- Resistance curve label -->
+      <text x="327" y="210" text-anchor="middle" font-size="11.5" font-weight="800" fill="#7A8888">resistance to buying decreases as pain acutes — then rises again at resignation</text>
+    </svg>
+    <div class="caption">Catch them at acute pain. The problem is real, the urgency is high, the wallet is open.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · THE AWARENESS STAGES IN PRACTICE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WHAT &middot; WHO &middot; WHEN</span><span>Awareness in Practice</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Different stages need <span class="em">different language.</span></h2>
+
+  <p>The words that convert a &ldquo;Most Aware&rdquo; buyer will confuse an &ldquo;Unaware&rdquo; prospect. The language has to meet them where they are. Use their words, not yours.</p>
+
+  <p><span class="b">The diagnostic signal:</span> if people are asking &ldquo;what is this?&rdquo; &mdash; you&rsquo;re talking to people who aren&rsquo;t ready. If people are asking &ldquo;how soon can we start?&rdquo; &mdash; you&rsquo;ve matched the stage.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <!-- D5 · awareness stages with messaging -->
+    <svg viewBox="0 0 654 310" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Stage bars with messaging -->
+      <!-- Most Aware -->
+      <rect x="0" y="0" width="24" height="52" rx="5" fill="#0E9488"/>
+      <rect x="36" y="0" width="618" height="52" rx="9" fill="#DCF2EF" stroke="#8FD4CC" stroke-width="2"/>
+      <text x="56" y="21" font-size="12" font-weight="800" fill="#0E9488" letter-spacing="1">MOST AWARE</text>
+      <text x="56" y="40" font-size="13" font-weight="700" fill="#0E2A2A">&ldquo;Here&rsquo;s what&rsquo;s included. Price. Payment options. Start date.&rdquo;</text>
+
+      <!-- Product Aware -->
+      <rect x="0" y="64" width="24" height="52" rx="5" fill="#075E55"/>
+      <rect x="36" y="64" width="618" height="52" rx="9" fill="#DCF2EF" stroke="#8FD4CC" stroke-width="2"/>
+      <text x="56" y="85" font-size="12" font-weight="800" fill="#075E55" letter-spacing="1">PRODUCT AWARE</text>
+      <text x="56" y="104" font-size="13" font-weight="700" fill="#0E2A2A">&ldquo;Here&rsquo;s what makes us different from what you&rsquo;ve already seen.&rdquo;</text>
+
+      <!-- Solution Aware -->
+      <rect x="0" y="128" width="24" height="52" rx="5" fill="#0E9488" opacity=".6"/>
+      <rect x="36" y="128" width="618" height="52" rx="9" fill="#E9F6F4" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="56" y="149" font-size="12" font-weight="800" fill="#6E908E" letter-spacing="1">SOLUTION AWARE</text>
+      <text x="56" y="168" font-size="13" font-weight="700" fill="#234746">&ldquo;Here&rsquo;s how people like you solved this exact problem.&rdquo;</text>
+
+      <!-- Problem Aware -->
+      <rect x="0" y="192" width="24" height="52" rx="5" fill="#8FD4CC"/>
+      <rect x="36" y="192" width="618" height="52" rx="9" fill="#E9F6F4" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="56" y="213" font-size="12" font-weight="800" fill="#6E908E" letter-spacing="1">PROBLEM AWARE</text>
+      <text x="56" y="232" font-size="13" font-weight="700" fill="#234746">&ldquo;This problem costs you more than you think. Here&rsquo;s the math.&rdquo;</text>
+
+      <!-- Unaware -->
+      <rect x="0" y="256" width="24" height="52" rx="5" fill="#D2E6E3"/>
+      <rect x="36" y="256" width="618" height="52" rx="9" fill="#E9F6F4" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="56" y="277" font-size="12" font-weight="800" fill="#6E908E" letter-spacing="1">UNAWARE</text>
+      <text x="56" y="296" font-size="13" font-weight="700" fill="#6E908E">&ldquo;Most people don&rsquo;t realise this is happening to them. Is it?&rdquo;</text>
+    </svg>
+    <div class="caption">The message must match the rung. Run the wrong message and silence is the answer.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · THE STARVING CROWD ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WHAT &middot; WHO &middot; WHEN</span><span>The Starving Crowd</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">A starving crowd beats <span class="em">a brilliant offer.</span></h2>
+
+  <p>If you were opening a hot dog cart and could pick either the best hot dogs in the world or the best location in the world &mdash; pick the location every time. The starving crowd always wins.</p>
+
+  <p><span class="b">Find people already buying.</span> They&rsquo;ve already decided to solve the problem. The only question left is which vendor. Now your offer is a comparison, not a conversion &mdash; and that&rsquo;s a much easier sale.</p>
+
+  <div class="band">
+    <div class="t">FIND THE STARVING CROWD. THEN BUILD THE OFFER.</div>
+    <div class="s">most founders do it backwards — offer first, audience second</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D6 · starving crowd vs cold market bars -->
+    <svg viewBox="0 0 654 250" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="22" font-size="12" font-weight="800" fill="#7A8888" letter-spacing="1">EFFORT TO CLOSE &times; AUDIENCE TYPE</text>
+
+      <!-- Bar: cold, uninterested -->
+      <text x="0" y="64" font-size="13" font-weight="800" fill="#6E908E">COLD + UNINTERESTED (they might need this one day)</text>
+      <rect x="0" y="74" width="560" height="30" rx="7" fill="#E9F6F4" stroke="#C0D8D4" stroke-width="2"/>
+      <text x="570" y="95" font-size="14" font-weight="800" fill="#6E908E">HIGH</text>
+
+      <!-- Bar: warm, aware -->
+      <text x="0" y="138" font-size="13" font-weight="800" fill="#234746">WARM + AWARE (they know they have the problem)</text>
+      <rect x="0" y="148" width="320" height="30" rx="7" fill="#8FD4CC"/>
+      <text x="330" y="169" font-size="14" font-weight="800" fill="#234746">MED</text>
+
+      <!-- Bar: starving crowd -->
+      <text x="0" y="212" font-size="13" font-weight="800" fill="#0E2A2A">STARVING CROWD (already buying from someone)</text>
+      <rect x="0" y="222" width="100" height="30" rx="7" fill="#0E9488"/>
+      <text x="110" y="243" font-size="14" font-weight="800" fill="#0E2A2A">LOW</text>
+
+      <!-- annotation -->
+      <text x="328" y="250" text-anchor="middle" font-size="11.5" font-weight="800" fill="#6E908E">&larr; effort to close &mdash; less is more</text>
+    </svg>
+    <div class="caption">The same offer to a starving crowd closes in minutes. To a cold crowd it takes months.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · COMBINING ALL THREE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WHAT &middot; WHO &middot; WHEN</span><span>All Three in Alignment</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">When all three align, <span class="em">selling feels like serving.</span></h2>
+
+  <p>Right offer to the wrong person at the wrong time = silence. Right person, wrong time = &ldquo;call me in six months.&rdquo; Right person, right time, wrong offer = &ldquo;interesting, but not for me.&rdquo;</p>
+
+  <p>All three together: the prospect feels like you read their mind. They say &ldquo;how did you know I needed this?&rdquo; That&rsquo;s not magic &mdash; it&rsquo;s targeting.</p>
+
+  <p class="small"><span class="b">The audit question:</span> write down your current WHAT, WHO, and WHEN. If any is vague, your conversion is leaking from that variable.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D7 · alignment comparison -->
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Misaligned example -->
+      <text x="0" y="22" font-size="12.5" font-weight="800" fill="#6E908E" letter-spacing="1">&#10007; MISALIGNED</text>
+      <rect x="0" y="36" width="296" height="230" rx="13" fill="#E9F6F4" stroke="#C0D8D4" stroke-width="2"/>
+      <rect x="18" y="56" width="258" height="46" rx="9" fill="#D2E6E3"/>
+      <text x="147" y="77" text-anchor="middle" font-size="12.5" font-weight="800" fill="#6E908E">WHAT: High-ticket coaching</text>
+      <text x="147" y="93" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6E908E">(strong offer)</text>
+      <rect x="18" y="112" width="258" height="46" rx="9" fill="#D2E6E3"/>
+      <text x="147" y="133" text-anchor="middle" font-size="12.5" font-weight="800" fill="#6E908E">WHO: &ldquo;Entrepreneurs&rdquo;</text>
+      <text x="147" y="149" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6E908E">(too broad)</text>
+      <rect x="18" y="168" width="258" height="46" rx="9" fill="#D2E6E3"/>
+      <text x="147" y="189" text-anchor="middle" font-size="12.5" font-weight="800" fill="#6E908E">WHEN: Cold outreach list</text>
+      <text x="147" y="205" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6E908E">(problem-unaware)</text>
+      <rect x="18" y="224" width="258" height="28" rx="7" fill="#C0D8D4"/>
+      <text x="147" y="243" text-anchor="middle" font-size="13" font-weight="800" fill="#6E908E">Result: 0.1% response rate</text>
+
+      <!-- Aligned example -->
+      <text x="340" y="22" font-size="12.5" font-weight="800" fill="#0E9488" letter-spacing="1">&#10003; ALIGNED</text>
+      <rect x="340" y="36" width="314" height="230" rx="13" fill="#DCF2EF" stroke="#0E9488" stroke-width="2.5"/>
+      <rect x="358" y="56" width="278" height="46" rx="9" fill="#0E9488"/>
+      <text x="497" y="77" text-anchor="middle" font-size="12.5" font-weight="800" fill="#FFFFFF">WHAT: $5K PT revenue sprint</text>
+      <text x="497" y="93" text-anchor="middle" font-size="11.5" font-weight="700" fill="#DCF2EF">(matched to avatar)</text>
+      <rect x="358" y="112" width="278" height="46" rx="9" fill="#075E55"/>
+      <text x="497" y="133" text-anchor="middle" font-size="12.5" font-weight="800" fill="#FFFFFF">WHO: Gym owners, 200+ members</text>
+      <text x="497" y="149" text-anchor="middle" font-size="11.5" font-weight="700" fill="#8FD4CC">(hyper-specific)</text>
+      <rect x="358" y="168" width="278" height="46" rx="9" fill="#075E55"/>
+      <text x="497" y="189" text-anchor="middle" font-size="12.5" font-weight="800" fill="#FFFFFF">WHEN: Just cancelled PT software</text>
+      <text x="497" y="205" text-anchor="middle" font-size="11.5" font-weight="700" fill="#8FD4CC">(acute pain signal)</text>
+      <rect x="358" y="224" width="278" height="28" rx="7" fill="#0E9488"/>
+      <text x="497" y="243" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">Result: 18% response rate</text>
+    </svg>
+    <div class="caption">Same type of offer, 180x difference in response. The only variable is alignment.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · CLOSE + CTA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WHAT &middot; WHO &middot; WHEN</span><span>The Targeting Audit</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">Run the <span class="em">three-variable audit.</span></h2>
+
+  <p>Every campaign that falls flat has a misaligned variable. The fix isn&rsquo;t more volume &mdash; it&rsquo;s diagnosis. Write down your current WHAT, WHO, and WHEN and ask one question for each.</p>
+
+  <p class="small" style="margin-bottom:8px">WHAT: Would someone at this exact awareness level recognise this offer as being for them? WHO: Could you walk into a room and point at the person? WHEN: Are they in pain <em>right now</em>?</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>Run more ads to a vague audience hoping for better numbers.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>Nail the WHO first. Then the WHEN. The WHAT almost writes itself.</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:16px 0">
+    <!-- D8 · three-variable audit flow -->
+    <svg viewBox="0 0 654 148" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- WHAT box -->
+      <rect x="0" y="20" width="190" height="108" rx="12" fill="#DCF2EF" stroke="#0E9488" stroke-width="2.5"/>
+      <text x="95" y="52" text-anchor="middle" font-size="16" font-weight="800" fill="#0E9488">WHAT</text>
+      <text x="95" y="74" text-anchor="middle" font-size="11.5" font-weight="700" fill="#234746">Right offer for</text>
+      <text x="95" y="90" text-anchor="middle" font-size="11.5" font-weight="700" fill="#234746">their awareness</text>
+      <text x="95" y="106" text-anchor="middle" font-size="11.5" font-weight="700" fill="#234746">level?</text>
+      <g stroke="#0E9488" stroke-width="3" fill="none" stroke-linecap="round"><line x1="192" y1="74" x2="216" y2="74"/><polyline points="207,65 220,74 207,83"/></g>
+
+      <!-- WHO box -->
+      <rect x="222" y="20" width="190" height="108" rx="12" fill="#DCF2EF" stroke="#075E55" stroke-width="2.5"/>
+      <text x="317" y="52" text-anchor="middle" font-size="16" font-weight="800" fill="#075E55">WHO</text>
+      <text x="317" y="74" text-anchor="middle" font-size="11.5" font-weight="700" fill="#234746">Can you name</text>
+      <text x="317" y="90" text-anchor="middle" font-size="11.5" font-weight="700" fill="#234746">and point at</text>
+      <text x="317" y="106" text-anchor="middle" font-size="11.5" font-weight="700" fill="#234746">the person?</text>
+      <g stroke="#0E9488" stroke-width="3" fill="none" stroke-linecap="round"><line x1="414" y1="74" x2="438" y2="74"/><polyline points="429,65 442,74 429,83"/></g>
+
+      <!-- WHEN box -->
+      <rect x="444" y="20" width="190" height="108" rx="12" fill="#DCF2EF" stroke="#8FD4CC" stroke-width="2.5"/>
+      <text x="539" y="52" text-anchor="middle" font-size="16" font-weight="800" fill="#0E9488">WHEN</text>
+      <text x="539" y="74" text-anchor="middle" font-size="11.5" font-weight="700" fill="#234746">Are they in</text>
+      <text x="539" y="90" text-anchor="middle" font-size="11.5" font-weight="700" fill="#234746">acute pain</text>
+      <text x="539" y="106" text-anchor="middle" font-size="11.5" font-weight="700" fill="#234746">right now?</text>
+    </svg>
+    <div class="caption">Answer all three honestly. Wherever you hesitate, that&rsquo;s your leak.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Leads &mdash; the full targeting playbook.</h3>
+    <p>The complete framework: avatar definition, awareness mapping, finding your starving crowd, and the outreach sequences that convert at 10x industry average.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Right offer. Right person. Right moment. That&rsquo;s the whole game.</div>
+
+  <div class="stamp">What &middot; Who &middot; When</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>
