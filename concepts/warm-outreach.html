@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Warm Outreach &amp; the ACA Framework — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFDF7;        /* warm white page          */
+    --panel:#F8F0DC;        /* light amber panels       */
+    --ink:#2A1F08;          /* deep amber-ink text      */
+    --ink-soft:#4A3A14;     /* secondary text           */
+    --muted:#9A8552;        /* captions, running heads  */
+    --line:#E8DBB6;         /* amber hairlines          */
+    --violet:#D98A0B;       /* the accent (~10%)        */
+    --violet-deep:#9A5E04;  /* strong fills             */
+    --violet-soft:#F0CE7E;  /* glow / light strokes     */
+    --violet-fill:#FBF0D6;  /* faint amber block fill   */
+    --plum:#B8A87A;         /* destroys / minimize / cut*/
+    --plum-fill:#F5EFDB;    /* faint plum block fill    */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#e6d4a8; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  /* cover */
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#F6ECD2; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#F0CE7E; }
+
+  /* compare rows */
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #DDD0A6; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  /* CTA */
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#D9C99E; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">W</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Leads</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Zero ad spend. Highest conversion rate.</div>
+    <h1 class="title">WARM<br>OUTREACH<br>&amp; ACA</h1>
+    <p class="cover-sub">The people who already know you are the fastest leads you will ever get. The three-step ACA framework &mdash; <b>Acknowledge, Compliment, Ask</b> &mdash; turns a dormant contact list into a booked calendar.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; the zero-spend lead engine</span></div>
+  </div>
+  <div class="stamp">Warm Outreach &middot; ACA Framework</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · WARM VS COLD ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WARM OUTREACH &amp; ACA</span><span>Warm vs Cold</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Cold traffic rents attention. <span class="em">Warm traffic owns it.</span></h2>
+
+  <p class="lead">Cold outreach is expensive, slow, and adversarial. You&rsquo;re buying time from strangers who didn&rsquo;t ask to hear from you.</p>
+  <p>Warm outreach starts with a head start &mdash; they already know your name, your face, or your work. The trust floor is higher. The conversion rate is higher. The cost is zero.</p>
+  <p><span class="b">Most people skip warm because it feels uncomfortable.</span> That discomfort is the entire moat.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 280" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Cold panel -->
+      <rect x="0" y="0" width="302" height="270" rx="13" fill="#F5EFDB" stroke="#B8A87A" stroke-width="2"/>
+      <text x="24" y="36" font-size="12" font-weight="800" fill="#B8A87A" letter-spacing="2">COLD OUTREACH</text>
+      <text x="24" y="72" font-size="16" font-weight="800" fill="#4A3A14">Cost</text>
+      <rect x="24" y="80" width="240" height="20" rx="5" fill="#B8A87A"/>
+      <text x="271" y="95" font-size="11" font-weight="700" fill="#B8A87A">$$$</text>
+      <text x="24" y="132" font-size="16" font-weight="800" fill="#4A3A14">Conversion rate</text>
+      <rect x="24" y="140" width="58" height="20" rx="5" fill="#F5EFDB" stroke="#B8A87A" stroke-width="2"/>
+      <text x="90" y="155" font-size="11" font-weight="700" fill="#B8A87A">1–3%</text>
+      <text x="24" y="192" font-size="16" font-weight="800" fill="#4A3A14">Relationship start</text>
+      <rect x="24" y="200" width="26" height="20" rx="5" fill="#F5EFDB" stroke="#B8A87A" stroke-width="2"/>
+      <text x="58" y="215" font-size="11" font-weight="700" fill="#B8A87A">Zero trust</text>
+      <text x="24" y="254" font-size="12" font-weight="700" fill="#B8A87A">&#10007; Renting attention from strangers</text>
+      <!-- Warm panel -->
+      <rect x="352" y="0" width="302" height="270" rx="13" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2.5"/>
+      <text x="376" y="36" font-size="12" font-weight="800" fill="#D98A0B" letter-spacing="2">WARM OUTREACH</text>
+      <text x="376" y="72" font-size="16" font-weight="800" fill="#2A1F08">Cost</text>
+      <rect x="376" y="80" width="12" height="20" rx="5" fill="#D98A0B"/>
+      <text x="396" y="95" font-size="11" font-weight="700" fill="#D98A0B">$0</text>
+      <text x="376" y="132" font-size="16" font-weight="800" fill="#2A1F08">Conversion rate</text>
+      <rect x="376" y="140" width="200" height="20" rx="5" fill="#D98A0B"/>
+      <text x="584" y="155" font-size="11" font-weight="800" fill="#9A5E04">20–40%</text>
+      <text x="376" y="192" font-size="16" font-weight="800" fill="#2A1F08">Relationship start</text>
+      <rect x="376" y="200" width="180" height="20" rx="5" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+      <text x="563" y="215" font-size="11" font-weight="700" fill="#D98A0B">Pre-built trust</text>
+      <text x="376" y="254" font-size="12" font-weight="700" fill="#D98A0B">&#10003; Leveraging trust you already earned</text>
+    </svg>
+    <div class="caption">Same effort, ten times the conversion rate &mdash; because half the work is already done.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · YOUR WARM LIST ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WARM OUTREACH &amp; ACA</span><span>The Warm List</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Your list is bigger than <span class="em">you think.</span></h2>
+
+  <p>Most people imagine their warm audience is five friends. It isn&rsquo;t. Anyone who knows your name &mdash; school, work, church, social media, clients past and present &mdash; is warm. Start counting.</p>
+
+  <p><span class="b">Hormozi&rsquo;s exercise:</span> open your contacts. Write down every name. For most people that&rsquo;s 200 to 500 people. Each one already trusts you more than a cold stranger ever will. <span class="b">That list is a business.</span></p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 296" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- spectrum bar -->
+      <defs>
+        <linearGradient id="warmGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#F5EFDB;stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#D98A0B;stop-opacity:1"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="120" width="654" height="36" rx="18" fill="url(#warmGrad)"/>
+      <text x="0" y="112" font-size="11" font-weight="800" fill="#B8A87A" letter-spacing="1">COLDEST</text>
+      <text x="654" y="112" text-anchor="end" font-size="11" font-weight="800" fill="#9A5E04" letter-spacing="1">WARMEST</text>
+
+      <!-- markers below bar -->
+      <line x1="48" y1="158" x2="48" y2="176" stroke="#B8A87A" stroke-width="1.5"/>
+      <text x="48" y="192" text-anchor="middle" font-size="11" font-weight="700" fill="#B8A87A">Acquaintances</text>
+      <text x="48" y="208" text-anchor="middle" font-size="10" font-weight="600" fill="#B8A87A">met once</text>
+
+      <line x1="196" y1="158" x2="196" y2="176" stroke="#9A8552" stroke-width="1.5"/>
+      <text x="196" y="192" text-anchor="middle" font-size="11" font-weight="700" fill="#9A8552">Former colleagues</text>
+      <text x="196" y="208" text-anchor="middle" font-size="10" font-weight="600" fill="#9A8552">worked together</text>
+
+      <line x1="360" y1="158" x2="360" y2="176" stroke="#9A5E04" stroke-width="1.5"/>
+      <text x="360" y="192" text-anchor="middle" font-size="11" font-weight="700" fill="#9A5E04">Old classmates</text>
+      <text x="360" y="208" text-anchor="middle" font-size="10" font-weight="600" fill="#9A5E04">shared history</text>
+
+      <line x1="524" y1="158" x2="524" y2="176" stroke="#D98A0B" stroke-width="1.5"/>
+      <text x="524" y="192" text-anchor="middle" font-size="11" font-weight="700" fill="#D98A0B">Past clients</text>
+      <text x="524" y="208" text-anchor="middle" font-size="10" font-weight="600" fill="#D98A0B">already bought from you</text>
+
+      <!-- top categories -->
+      <rect x="0" y="0" width="130" height="100" rx="11" fill="#F5EFDB" stroke="#B8A87A" stroke-width="2"/>
+      <text x="65" y="30" text-anchor="middle" font-size="12" font-weight="800" fill="#B8A87A">Social media</text>
+      <text x="65" y="52" text-anchor="middle" font-size="11" font-weight="600" fill="#9A8552">followers &amp;</text>
+      <text x="65" y="70" text-anchor="middle" font-size="11" font-weight="600" fill="#9A8552">connections</text>
+
+      <rect x="176" y="0" width="130" height="100" rx="11" fill="#FBF0D6" stroke="#9A8552" stroke-width="2"/>
+      <text x="241" y="30" text-anchor="middle" font-size="12" font-weight="800" fill="#9A8552">Community</text>
+      <text x="241" y="52" text-anchor="middle" font-size="11" font-weight="600" fill="#9A8552">church, gym,</text>
+      <text x="241" y="70" text-anchor="middle" font-size="11" font-weight="600" fill="#9A8552">clubs, classes</text>
+
+      <rect x="354" y="0" width="130" height="100" rx="11" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+      <text x="419" y="30" text-anchor="middle" font-size="12" font-weight="800" fill="#9A5E04">Phone contacts</text>
+      <text x="419" y="52" text-anchor="middle" font-size="11" font-weight="600" fill="#9A8552">everyone in</text>
+      <text x="419" y="70" text-anchor="middle" font-size="11" font-weight="600" fill="#9A8552">your device</text>
+
+      <rect x="524" y="0" width="130" height="100" rx="11" fill="#D98A0B"/>
+      <text x="589" y="30" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">Past buyers</text>
+      <text x="589" y="52" text-anchor="middle" font-size="11" font-weight="700" fill="#F0CE7E">already know,</text>
+      <text x="589" y="70" text-anchor="middle" font-size="11" font-weight="700" fill="#F0CE7E">like, and trust</text>
+
+      <text x="327" y="265" text-anchor="middle" font-size="12" font-weight="800" fill="#2A1F08">Most people have 200–500 warm contacts and never message them.</text>
+    </svg>
+    <div class="caption">Every one of these people already clears the trust bar. Start there.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · ACA OVERVIEW ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WARM OUTREACH &amp; ACA</span><span>The ACA Framework</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Three letters. <span class="em">Every warm message.</span></h2>
+
+  <p class="lead">ACA &mdash; Acknowledge, Compliment, Ask. A structure so simple it takes thirty seconds to write but warm enough to convert at rates cold traffic never will.</p>
+  <p>The framework exists because most people skip the A and C and go straight to the ask. That&rsquo;s why their messages feel salesy. Lead with them, and the ask feels earned.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 280" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- A: Acknowledge -->
+      <rect x="0" y="20" width="654" height="68" rx="13" fill="#D98A0B"/>
+      <text x="30" y="52" font-size="28" font-weight="800" fill="#FFFFFF">A</text>
+      <text x="72" y="44" font-size="16" font-weight="800" fill="#FFFFFF">ACKNOWLEDGE</text>
+      <text x="72" y="68" font-size="13" font-weight="700" fill="#F0CE7E">Notice something specific and real about them right now</text>
+      <!-- arrow -->
+      <g stroke="#2A1F08" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="327" y1="90" x2="327" y2="110"/>
+        <polyline points="318,101 327,114 336,101"/>
+      </g>
+      <!-- C: Compliment -->
+      <rect x="0" y="116" width="654" height="68" rx="13" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+      <text x="30" y="148" font-size="28" font-weight="800" fill="#D98A0B">C</text>
+      <text x="72" y="140" font-size="16" font-weight="800" fill="#2A1F08">COMPLIMENT</text>
+      <text x="72" y="164" font-size="13" font-weight="700" fill="#4A3A14">Give one genuine, specific compliment &mdash; not flattery</text>
+      <!-- arrow -->
+      <g stroke="#2A1F08" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="327" y1="186" x2="327" y2="206"/>
+        <polyline points="318,197 327,210 336,197"/>
+      </g>
+      <!-- A: Ask -->
+      <rect x="0" y="212" width="654" height="68" rx="13" fill="#2A1F08"/>
+      <text x="30" y="244" font-size="28" font-weight="800" fill="#F0CE7E">A</text>
+      <text x="72" y="236" font-size="16" font-weight="800" fill="#FFFFFF">ASK</text>
+      <text x="72" y="260" font-size="13" font-weight="700" fill="#D9C99E">One clear, low-friction request. No pitch, no paragraph.</text>
+    </svg>
+    <div class="caption">Three steps. Never skip the first two. The ask only lands because the first two set it up.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · ACKNOWLEDGE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WARM OUTREACH &amp; ACA</span><span>A — Acknowledge</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Acknowledge: <span class="em">specific</span> beats sincere.</h2>
+
+  <p>Saying &ldquo;I saw your post&rdquo; is nothing. Saying &ldquo;I saw your post about losing your first client and how you rebuilt from it &mdash; that took guts&rdquo; stops them cold. <span class="b">Specificity signals you actually paid attention.</span></p>
+
+  <p>The acknowledge doesn&rsquo;t have to be deep. It just has to be <em>true</em> and <em>particular to this person right now.</em> A recent post, a life event, a win you noticed &mdash; any of these work. Generic doesn&rsquo;t.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- specificity scale -->
+    <svg viewBox="0 0 654 290" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="22" font-size="12" font-weight="800" fill="#2A1F08" letter-spacing="1">SPECIFICITY SCALE &mdash; ACKNOWLEDGE</text>
+      <!-- Level 1 generic -->
+      <rect x="0" y="38" width="654" height="52" rx="11" fill="#F5EFDB" stroke="#B8A87A" stroke-width="2"/>
+      <text x="20" y="60" font-size="12" font-weight="800" fill="#B8A87A" letter-spacing="1">LEVEL 1 &mdash; GENERIC &#10007;</text>
+      <text x="20" y="80" font-size="14.5" font-style="italic" fill="#9A8552">&ldquo;Hey, just thinking of you!&rdquo;</text>
+      <!-- Level 2 vague-ish -->
+      <rect x="0" y="106" width="654" height="52" rx="11" fill="#FBF0D6" stroke="#9A8552" stroke-width="2"/>
+      <text x="20" y="128" font-size="12" font-weight="800" fill="#9A8552" letter-spacing="1">LEVEL 2 &mdash; BETTER</text>
+      <text x="20" y="148" font-size="14.5" font-style="italic" fill="#4A3A14">&ldquo;I saw you&rsquo;ve been busy with the new business.&rdquo;</text>
+      <!-- Level 3 specific -->
+      <rect x="0" y="174" width="654" height="68" rx="11" fill="#D98A0B"/>
+      <text x="20" y="196" font-size="12" font-weight="800" fill="#F0CE7E" letter-spacing="1">LEVEL 3 &mdash; SPECIFIC &#10003;</text>
+      <text x="20" y="220" font-size="14.5" font-style="italic" fill="#FFFFFF">&ldquo;I saw your reel about the client who ghosted you &mdash;</text>
+      <text x="20" y="238" font-size="14.5" font-style="italic" fill="#FFFFFF">the way you handled it publicly was really impressive.&rdquo;</text>
+    </svg>
+    <div class="caption">Generic says you didn&rsquo;t think about them. Specific says you did. Only one starts a conversation.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · COMPLIMENT ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WARM OUTREACH &amp; ACA</span><span>C — Compliment</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Compliment: <span class="em">earn it</span> or skip it.</h2>
+
+  <p>Flattery is noise. It&rsquo;s the stuff everyone says and no one believes. A real compliment names the <em>specific thing</em> they did that was genuinely good &mdash; and explains why.</p>
+
+  <p><span class="b">The test:</span> could you say the exact same compliment to a hundred other people? If yes, rewrite it. A compliment is specific to this person, this moment, this achievement. Anything else inflates the message and deflates the response rate.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 280" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- authenticity filter -->
+      <text x="0" y="22" font-size="12" font-weight="800" fill="#2A1F08" letter-spacing="1">THE AUTHENTICITY FILTER</text>
+      <!-- bad side -->
+      <text x="0" y="52" font-size="11.5" font-weight="800" fill="#B8A87A" letter-spacing="1.5">FLATTERY &mdash; SKIP IT</text>
+      <rect x="0" y="62" width="296" height="54" rx="10" fill="#F5EFDB" stroke="#B8A87A" stroke-width="2"/>
+      <text x="20" y="86" font-size="13.5" font-style="italic" fill="#9A8552">&ldquo;You&rsquo;re amazing and</text>
+      <text x="20" y="106" font-size="13.5" font-style="italic" fill="#9A8552">I love what you do!&rdquo;</text>
+      <rect x="0" y="132" width="296" height="54" rx="10" fill="#F5EFDB" stroke="#B8A87A" stroke-width="2"/>
+      <text x="20" y="156" font-size="13.5" font-style="italic" fill="#9A8552">&ldquo;Your content is</text>
+      <text x="20" y="176" font-size="13.5" font-style="italic" fill="#9A8552">always so good!&rdquo;</text>
+      <!-- Test: could you say it to 100 others? -->
+      <rect x="0" y="200" width="296" height="46" rx="10" fill="#F5EFDB" stroke="#B8A87A" stroke-width="2"/>
+      <text x="20" y="220" font-size="12" font-weight="800" fill="#B8A87A">Could you say this to 100 others?</text>
+      <text x="20" y="238" font-size="12" font-weight="700" fill="#9A8552">&#10007; YES &rarr; rewrite it</text>
+      <!-- divider -->
+      <line x1="316" y1="140" x2="336" y2="140" stroke="#D98A0B" stroke-width="2.5"/>
+      <polyline points="326,131 340,140 326,149" stroke="#D98A0B" stroke-width="2.5" fill="none"/>
+      <!-- good side -->
+      <text x="354" y="52" font-size="11.5" font-weight="800" fill="#D98A0B" letter-spacing="1.5">REAL COMPLIMENT &mdash; KEEP IT</text>
+      <rect x="354" y="62" width="300" height="54" rx="10" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2.5"/>
+      <text x="374" y="83" font-size="13.5" font-style="italic" fill="#2A1F08">&ldquo;The way you broke down</text>
+      <text x="374" y="103" font-size="13.5" font-style="italic" fill="#2A1F08">that pricing objection live was rare.&rdquo;</text>
+      <rect x="354" y="132" width="300" height="54" rx="10" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2.5"/>
+      <text x="374" y="153" font-size="13.5" font-style="italic" fill="#2A1F08">&ldquo;That post you wrote about</text>
+      <text x="374" y="173" font-size="13.5" font-style="italic" fill="#2A1F08">scope creep saved me last week.&rdquo;</text>
+      <rect x="354" y="200" width="300" height="46" rx="10" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+      <text x="374" y="220" font-size="12" font-weight="800" fill="#9A5E04">Could you say this to 100 others?</text>
+      <text x="374" y="238" font-size="12" font-weight="700" fill="#D98A0B">&#10003; NO &rarr; this is the one to send</text>
+    </svg>
+    <div class="caption">If your compliment works for anyone, it works for no one. Make it so specific only one person fits.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · ASK ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WARM OUTREACH &amp; ACA</span><span>A — Ask</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The ask: one variable, <span class="em">low friction.</span></h2>
+
+  <p>After acknowledge and compliment, the ask feels natural &mdash; you&rsquo;ve given before you took. Now the only rule is: <span class="b">one ask, clearly stated, framed as a question they can say yes or no to.</span></p>
+
+  <p>Don&rsquo;t pitch. Don&rsquo;t give a speech about your offer. Ask if they&rsquo;d be open to learning more, or if they know someone who might benefit. Short is better. The goal is a response, not a sale &mdash; the sale happens on the call.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 290" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- wrong: pitch in the message -->
+      <text x="0" y="22" font-size="11.5" font-weight="800" fill="#B8A87A" letter-spacing="1.5">WRONG ASK &mdash; TOO LONG, TOO MUCH</text>
+      <rect x="0" y="36" width="654" height="80" rx="11" fill="#F5EFDB" stroke="#B8A87A" stroke-width="2"/>
+      <text x="20" y="62" font-size="13" font-style="italic" fill="#9A8552">&ldquo;I run a program called X that helps businesses do Y using Z. We have</text>
+      <text x="20" y="82" font-size="13" font-style="italic" fill="#9A8552">12 modules covering A, B, and C. It&rsquo;s $997 and there are only 3 spots left.</text>
+      <text x="20" y="102" font-size="13" font-style="italic" fill="#9A8552">Would you like to sign up?&rdquo;</text>
+      <!-- right: one question -->
+      <text x="0" y="140" font-size="11.5" font-weight="800" fill="#D98A0B" letter-spacing="1.5">RIGHT ASK &mdash; ONE QUESTION</text>
+      <rect x="0" y="154" width="654" height="52" rx="11" fill="#D98A0B"/>
+      <text x="327" y="178" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">&ldquo;Would you be open to hopping on a call to see if I could help?&rdquo;</text>
+      <text x="327" y="198" text-anchor="middle" font-size="13" font-weight="700" fill="#F0CE7E">Or: &ldquo;Do you know anyone who might want this?&rdquo;</text>
+      <!-- goal statement -->
+      <rect x="0" y="228" width="654" height="54" rx="11" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+      <text x="327" y="250" text-anchor="middle" font-size="13" font-weight="800" fill="#2A1F08">GOAL OF THE ASK: a YES or NO</text>
+      <text x="327" y="272" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4A3A14">The sale happens on the call. The message gets you the call.</text>
+    </svg>
+    <div class="caption">Short messages get responses. Pitches in messages get silence. Ask for a conversation, not a credit card.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · VOLUME ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WARM OUTREACH &amp; ACA</span><span>Volume Negates Luck</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Volume turns a <span class="em">hope</span> into a machine.</h2>
+
+  <p>Even at 20% conversion, you need to send messages to get calls. The math is simple: 100 warm messages &times; 20% reply = 20 conversations. Ten of those become calls. Three become clients.</p>
+
+  <p><span class="b">Send 100 before you judge the channel.</span> Most people send five, get two nos, and conclude warm outreach doesn&rsquo;t work. It works. They stopped too soon.</p>
+
+  <div class="band">
+    <div class="t">100 MESSAGES &rarr; 20 REPLIES &rarr; 3 CLIENTS</div>
+    <div class="s">at 20% reply rate &middot; 50% show rate &middot; 30% close rate</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- funnel bars -->
+    <svg viewBox="0 0 654 290" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="20" font-size="12" font-weight="800" fill="#2A1F08" letter-spacing="1">THE WARM OUTREACH FUNNEL</text>
+      <!-- 100 messages -->
+      <rect x="0" y="36" width="654" height="52" rx="10" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+      <text x="24" y="58" font-size="16" font-weight="800" fill="#2A1F08">100 messages sent (ACA framework)</text>
+      <text x="630" y="67" text-anchor="end" font-size="23" font-weight="800" fill="#D98A0B">100</text>
+      <!-- 20 replies -->
+      <rect x="65" y="108" width="524" height="52" rx="10" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2.5"/>
+      <text x="89" y="130" font-size="16" font-weight="800" fill="#2A1F08">20% reply (warm relationship)</text>
+      <text x="565" y="139" text-anchor="end" font-size="23" font-weight="800" fill="#D98A0B">20</text>
+      <!-- 10 calls -->
+      <rect x="130" y="180" width="394" height="52" rx="10" fill="#D98A0B"/>
+      <text x="154" y="202" font-size="16" font-weight="800" fill="#FFFFFF">50% show rate &rarr; 10 calls</text>
+      <text x="500" y="211" text-anchor="end" font-size="23" font-weight="800" fill="#FFFFFF">10</text>
+      <!-- 3 clients -->
+      <rect x="196" y="252" width="262" height="38" rx="10" fill="#9A5E04"/>
+      <text x="327" y="276" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">3 new clients &#10003;</text>
+    </svg>
+    <div class="caption">The funnel works. You just need to send enough messages to let the math do its job.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · CLOSE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">WARM OUTREACH &amp; ACA</span><span>Go Do It Today</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">Open your contacts. <span class="em">Start messaging.</span></h2>
+
+  <p>You don&rsquo;t need a funnel. You don&rsquo;t need ads. You don&rsquo;t need a CRM. You need a phone with contacts and thirty seconds per message.</p>
+
+  <p class="small" style="margin-bottom:6px">Set a daily goal: ten ACA messages before noon. In ten days you&rsquo;ve sent 100. The clients are already in there &mdash; you just haven&rsquo;t asked yet.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;Hey, I&rsquo;ve been working on something new! Want to check it out?&rdquo; &mdash; generic acknowledge, no compliment, vague ask.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;I saw your post about the 3 AM work session &mdash; respect. The way you&rsquo;re building in public is rare. Would you be open to a 20-min call to see if I could help with X?&rdquo;</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:16px 0">
+    <svg viewBox="0 0 654 120" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0" y="28" width="178" height="62" rx="11" fill="#D98A0B"/>
+      <text x="89" y="54" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">ACKNOWLEDGE</text>
+      <text x="89" y="74" text-anchor="middle" font-size="11" font-weight="700" fill="#F0CE7E">Specific. True. Recent.</text>
+      <g stroke="#2A1F08" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="182" y1="59" x2="206" y2="59"/>
+        <polyline points="196,50 210,59 196,68"/>
+      </g>
+      <rect x="212" y="28" width="178" height="62" rx="11" fill="#FBF0D6" stroke="#D98A0B" stroke-width="2"/>
+      <text x="301" y="54" text-anchor="middle" font-size="13" font-weight="800" fill="#2A1F08">COMPLIMENT</text>
+      <text x="301" y="74" text-anchor="middle" font-size="11" font-weight="700" fill="#4A3A14">Earned. Not flattery.</text>
+      <g stroke="#2A1F08" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="394" y1="59" x2="418" y2="59"/>
+        <polyline points="408,50 422,59 408,68"/>
+      </g>
+      <rect x="424" y="28" width="230" height="62" rx="11" fill="#2A1F08"/>
+      <text x="539" y="54" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">ASK</text>
+      <text x="539" y="74" text-anchor="middle" font-size="11" font-weight="700" fill="#F0CE7E">One question. Short. Yes or no.</text>
+    </svg>
+    <div class="caption">Write it, send it, count responses. Ten a day. Repeat until your calendar is full.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Leads &mdash; the book.</h3>
+    <p>The complete acquisition playbook: warm outreach, the four lead getters, and how to build a lead machine that runs without paid ads.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Open your contacts. Write ten ACAs. Send them today.</div>
+
+  <div class="stamp">Warm Outreach &middot; ACA Framework</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>

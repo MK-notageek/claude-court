@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Call-Out · Value · CTA — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;        /* white page               */
+    --panel:#F4F0FC;        /* light lavender panels    */
+    --ink:#1C1235;          /* deep violet-ink text     */
+    --ink-soft:#473A63;     /* secondary text           */
+    --muted:#8C7BA8;        /* captions, running heads  */
+    --line:#E5DCF6;         /* lavender hairlines       */
+    --violet:#7C3AED;       /* the accent (~10%)        */
+    --violet-deep:#4C1D95;  /* strong fills             */
+    --violet-soft:#C9B8F5;  /* glow / light strokes     */
+    --violet-fill:#EDE7FB;  /* faint violet block fill  */
+    --plum:#9A86B8;         /* destroys / minimize / cut*/
+    --plum-fill:#F0EBF6;    /* faint plum block fill    */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#d8cdf0; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  /* cover */
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#F3EEFC; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#E9DEFB; }
+
+  /* compare rows */
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #DCCEEA; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  /* CTA */
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#D9CCEF; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">3</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Leads</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Three words. Every message that converts.</div>
+    <h1 class="title">CALL-OUT<br>&middot; VALUE<br>&middot; CTA</h1>
+    <p class="cover-sub">Every ad, email, and post that generates leads runs on the same skeleton. <b>Call someone out. Give them something real. Make one ask.</b> Break any part and conversion collapses.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; the universal message skeleton</span></div>
+  </div>
+  <div class="stamp">Call-Out &middot; Value &middot; CTA</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · THE SKELETON ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CALL-OUT &middot; VALUE &middot; CTA</span><span>The Skeleton</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Every converting message has <span class="em">three bones.</span></h2>
+
+  <p class="lead">Ads, emails, DMs, scripts, podcast intros &mdash; strip any of them down and the skeleton is the same. Name the parts and you can diagnose any campaign that&rsquo;s failing.</p>
+
+  <p>Most people send messages with one bone or two. The missing part is always the reason leads don&rsquo;t come back.</p>
+
+  <div class="pull">Who &rarr; What &rarr; <span class="em">Where next.</span></div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 260" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Step 1: CALL-OUT -->
+      <rect x="0" y="40" width="186" height="164" rx="13" fill="#7C3AED"/>
+      <text x="93" y="90" text-anchor="middle" font-size="11.5" font-weight="800" fill="#C9B8F5" letter-spacing="2">STEP 01</text>
+      <text x="93" y="122" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF">CALL-OUT</text>
+      <text x="93" y="150" text-anchor="middle" font-size="12" fill="#C9B8F5">Stop the right person</text>
+      <text x="93" y="170" text-anchor="middle" font-size="12" fill="#C9B8F5">before they scroll.</text>
+      <!-- arrow 1→2 -->
+      <g stroke="#1C1235" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="190" y1="122" x2="218" y2="122"/>
+        <polyline points="208,113 222,122 208,131"/>
+      </g>
+      <!-- Step 2: VALUE -->
+      <rect x="228" y="40" width="198" height="164" rx="13" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="327" y="90" text-anchor="middle" font-size="11.5" font-weight="800" fill="#7C3AED" letter-spacing="2">STEP 02</text>
+      <text x="327" y="122" text-anchor="middle" font-size="20" font-weight="800" fill="#1C1235">VALUE</text>
+      <text x="327" y="150" text-anchor="middle" font-size="12" fill="#473A63">Give them something</text>
+      <text x="327" y="170" text-anchor="middle" font-size="12" fill="#473A63">worth keeping.</text>
+      <!-- arrow 2→3 -->
+      <g stroke="#1C1235" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="430" y1="122" x2="458" y2="122"/>
+        <polyline points="448,113 462,122 448,131"/>
+      </g>
+      <!-- Step 3: CTA -->
+      <rect x="468" y="40" width="186" height="164" rx="13" fill="#1C1235"/>
+      <text x="561" y="90" text-anchor="middle" font-size="11.5" font-weight="800" fill="#8C7BA8" letter-spacing="2">STEP 03</text>
+      <text x="561" y="122" text-anchor="middle" font-size="20" font-weight="800" fill="#FFFFFF">CTA</text>
+      <text x="561" y="150" text-anchor="middle" font-size="12" fill="#C9B8F5">One ask.</text>
+      <text x="561" y="170" text-anchor="middle" font-size="12" fill="#C9B8F5">No menu.</text>
+      <!-- label row -->
+      <text x="93" y="232" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF" style="fill:#7C3AED">Who</text>
+      <text x="93" y="232" text-anchor="middle" font-size="11" font-weight="700" fill="#7C3AED">Who</text>
+      <text x="327" y="232" text-anchor="middle" font-size="11" font-weight="700" fill="#7C3AED">What</text>
+      <text x="561" y="232" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">Where next</text>
+    </svg>
+    <div class="caption">Three parts. Remove any one and the message breaks. All three together and leads appear.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · THE CALL-OUT ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CALL-OUT &middot; VALUE &middot; CTA</span><span>Step 1 &mdash; Call-Out</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The call-out: name them <span class="em">before</span> they skip.</h2>
+
+  <p>The human brain filters for its own identity. Call out who they <em>are</em> &mdash; or who they&rsquo;re trying to become &mdash; and the scroll stops. Everything else keeps moving.</p>
+
+  <p><span class="b">Specificity is the lever.</span> &ldquo;Gym owners doing under $20k/month&rdquo; converts better than &ldquo;business owners.&rdquo; The audience shrinks; the intent spikes. You want fewer, better people reading your message.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 290" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Vague column header -->
+      <text x="0" y="22" font-size="11.5" font-weight="800" fill="#9A86B8" letter-spacing="1.5">VAGUE CALL-OUT</text>
+      <rect x="0" y="36" width="296" height="48" rx="10" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="20" y="66" font-size="15" font-weight="700" fill="#473A63">&ldquo;Business owners...&rdquo;</text>
+      <rect x="0" y="94" width="296" height="48" rx="10" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="20" y="124" font-size="15" font-weight="700" fill="#473A63">&ldquo;Entrepreneurs...&rdquo;</text>
+      <rect x="0" y="152" width="296" height="48" rx="10" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="20" y="182" font-size="15" font-weight="700" fill="#473A63">&ldquo;Anyone who wants more...&rdquo;</text>
+      <text x="0" y="236" font-size="12" font-weight="700" fill="#9A86B8">&#10007; Talks to everyone. Converts no one.</text>
+      <!-- divider arrow -->
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="310" y1="144" x2="340" y2="144"/>
+        <polyline points="330,135 344,144 330,153"/>
+      </g>
+      <text x="325" y="128" text-anchor="middle" font-size="10.5" font-weight="800" fill="#7C3AED">TIGHTEN</text>
+      <!-- Specific column header -->
+      <text x="358" y="22" font-size="11.5" font-weight="800" fill="#7C3AED" letter-spacing="1.5">SPECIFIC CALL-OUT</text>
+      <rect x="358" y="36" width="296" height="48" rx="10" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="378" y="57" font-size="13.5" font-weight="700" fill="#1C1235">&ldquo;Gym owners stuck</text>
+      <text x="378" y="76" font-size="13.5" font-weight="700" fill="#1C1235">under $20k/month...&rdquo;</text>
+      <rect x="358" y="94" width="296" height="48" rx="10" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="378" y="114" font-size="13.5" font-weight="700" fill="#1C1235">&ldquo;Dentists with 2+ chairs</text>
+      <text x="378" y="133" font-size="13.5" font-weight="700" fill="#1C1235">still filling their own...&rdquo;</text>
+      <rect x="358" y="152" width="296" height="48" rx="10" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="378" y="172" font-size="13.5" font-weight="700" fill="#1C1235">&ldquo;Coaches trading time</text>
+      <text x="378" y="191" font-size="13.5" font-weight="700" fill="#1C1235">for dollars...&rdquo;</text>
+      <text x="358" y="236" font-size="12" font-weight="700" fill="#7C3AED">&#10003; Small audience. High intent. Real leads.</text>
+    </svg>
+    <div class="caption">People who feel directly called don&rsquo;t scroll. They stop, lean in, and read every word.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · CALL-OUT TYPES ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CALL-OUT &middot; VALUE &middot; CTA</span><span>Call-Out Types</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Three ways to <span class="em">stop</span> the right person.</h2>
+
+  <p>Call someone out by what they <span class="b">are</span>, what they <span class="b">feel</span>, or what they <span class="b">want.</span> The best messages use exactly one &mdash; they rarely need all three at once.</p>
+
+  <p>Identity callouts are the bluntest. Pain callouts carry the most emotional weight. Aspiration callouts convert the highest &mdash; but only when the dream is specific enough to feel personally intended.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 300" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Type 1: Identity -->
+      <rect x="0" y="0" width="654" height="82" rx="13" fill="#7C3AED"/>
+      <text x="24" y="30" font-size="11.5" font-weight="800" fill="#C9B8F5" letter-spacing="2">01 &middot; IDENTITY CALL-OUT</text>
+      <text x="24" y="58" font-size="17" font-weight="800" fill="#FFFFFF">Who they ARE &mdash; role, industry, situation</text>
+      <text x="630" y="48" text-anchor="end" font-size="13" font-style="italic" fill="#E9DEFB">&ldquo;Gym owners...&rdquo;</text>
+      <!-- Type 2: Pain -->
+      <rect x="0" y="100" width="654" height="82" rx="13" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="24" y="130" font-size="11.5" font-weight="800" fill="#7C3AED" letter-spacing="2">02 &middot; PAIN CALL-OUT</text>
+      <text x="24" y="158" font-size="17" font-weight="800" fill="#1C1235">What they FEEL &mdash; the specific frustration</text>
+      <text x="630" y="148" text-anchor="end" font-size="13" font-style="italic" fill="#473A63">&ldquo;Tired of chasing leads...&rdquo;</text>
+      <!-- Type 3: Aspiration -->
+      <rect x="0" y="200" width="654" height="82" rx="13" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="24" y="230" font-size="11.5" font-weight="800" fill="#9A86B8" letter-spacing="2">03 &middot; ASPIRATION CALL-OUT</text>
+      <text x="24" y="258" font-size="17" font-weight="800" fill="#1C1235">What they WANT &mdash; the vivid dream outcome</text>
+      <text x="630" y="248" text-anchor="end" font-size="13" font-style="italic" fill="#8C7BA8">&ldquo;Want 100 clients this month...&rdquo;</text>
+    </svg>
+    <div class="caption">Identity is broadest. Pain is most emotional. Aspiration converts highest when it&rsquo;s vivid enough.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · THE VALUE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CALL-OUT &middot; VALUE &middot; CTA</span><span>Step 2 &mdash; Value</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Value: give more than you <span class="em">think</span> you should.</h2>
+
+  <p>Most ads hide the payoff to create mystery. That&rsquo;s the old model. The new model: deliver the value first. People who consume what you give are already your warmest leads &mdash; consuming proves interest.</p>
+
+  <p><span class="b">Trust is the currency.</span> Every useful thing you give adds to the account. The CTA is just a withdrawal &mdash; and it only clears if you&rsquo;ve deposited enough. Give first. Ask second.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 290" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="20" font-size="12" font-weight="800" fill="#1C1235" letter-spacing="1">LEAD TEMPERATURE BY VALUE DENSITY</text>
+      <!-- Long-form email: 85% -->
+      <text x="0" y="58" font-size="13" font-weight="700" fill="#473A63">Long-form email / newsletter</text>
+      <rect x="0" y="66" width="556" height="30" rx="7" fill="#7C3AED"/>
+      <text x="564" y="87" font-size="13" font-weight="800" fill="#7C3AED">85%</text>
+      <!-- Video/Podcast: 75% -->
+      <text x="0" y="124" font-size="13" font-weight="700" fill="#473A63">Video or podcast episode</text>
+      <rect x="0" y="132" width="490" height="30" rx="7" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="498" y="153" font-size="13" font-weight="800" fill="#473A63">75%</text>
+      <!-- Social post: 50% -->
+      <text x="0" y="190" font-size="13" font-weight="700" fill="#473A63">Long-form social post</text>
+      <rect x="0" y="198" width="326" height="30" rx="7" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="334" y="219" font-size="13" font-weight="800" fill="#473A63">50%</text>
+      <!-- Short ad: 10% -->
+      <text x="0" y="256" font-size="13" font-weight="700" fill="#8C7BA8">Short ad (&lt;30s, no value)</text>
+      <rect x="0" y="264" width="65" height="30" rx="7" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="73" y="285" font-size="13" font-weight="800" fill="#8C7BA8">10%</text>
+    </svg>
+    <div class="caption">Denser value &rarr; warmer leads &rarr; easier close. Give until it feels like too much. It usually isn&rsquo;t.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · THE CTA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CALL-OUT &middot; VALUE &middot; CTA</span><span>Step 3 &mdash; CTA</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">One ask. <span class="em">Not two.</span> Not a menu.</h2>
+
+  <p>Every additional option you give halves the chance any of them get clicked. Three CTAs don&rsquo;t triple results &mdash; they dilute attention until none of them win. <span class="b">Pick one ask and say it once.</span></p>
+
+  <p>The best CTAs are low-friction and specific. &ldquo;Comment YES,&rdquo; &ldquo;reply READY,&rdquo; &ldquo;click here and pick a time.&rdquo; The lighter the first step, the higher the take-rate &mdash; as long as it leads somewhere real.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 296" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- Left: multiple CTAs -->
+      <text x="0" y="22" font-size="11.5" font-weight="800" fill="#9A86B8" letter-spacing="1.5">MULTIPLE CTAS &mdash; SPLITS ATTENTION</text>
+      <rect x="0" y="34" width="282" height="220" rx="13" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <rect x="20" y="54" width="242" height="44" rx="9" fill="#9A86B8"/>
+      <text x="141" y="81" text-anchor="middle" font-size="13.5" font-weight="800" fill="#FFFFFF">Follow on Instagram</text>
+      <rect x="20" y="110" width="242" height="44" rx="9" fill="#9A86B8"/>
+      <text x="141" y="137" text-anchor="middle" font-size="13.5" font-weight="800" fill="#FFFFFF">Download the free guide</text>
+      <rect x="20" y="166" width="242" height="44" rx="9" fill="#9A86B8"/>
+      <text x="141" y="193" text-anchor="middle" font-size="13.5" font-weight="800" fill="#FFFFFF">Book a call with us</text>
+      <text x="141" y="238" text-anchor="middle" font-size="11.5" font-weight="700" fill="#9A86B8">&#10007; Paralysis. Nothing gets clicked.</text>
+      <!-- divider -->
+      <g stroke="#7C3AED" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="296" y1="144" x2="320" y2="144"/>
+        <polyline points="310,135 324,144 310,153"/>
+      </g>
+      <!-- Right: one CTA -->
+      <text x="334" y="22" font-size="11.5" font-weight="800" fill="#7C3AED" letter-spacing="1.5">ONE CTA &mdash; ONE DOOR</text>
+      <rect x="334" y="34" width="320" height="220" rx="13" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <rect x="354" y="104" width="280" height="64" rx="12" fill="#7C3AED"/>
+      <text x="494" y="130" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">Comment &ldquo;YES&rdquo; below</text>
+      <text x="494" y="153" text-anchor="middle" font-size="13" font-weight="700" fill="#C9B8F5">and I&rsquo;ll send the breakdown</text>
+      <text x="494" y="220" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7C3AED">&#10003; One door. High click-through.</text>
+    </svg>
+    <div class="caption">One door gets people through it. A hallway full of doors empties the room.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · CTA FRICTION LADDER ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CALL-OUT &middot; VALUE &middot; CTA</span><span>The Friction Ladder</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Match the ask to the <span class="em">trust you&rsquo;ve built.</span></h2>
+
+  <p>Cold audience &rarr; low-friction ask. Warm list &rarr; medium. Buyers &rarr; high-commitment close. The mismatch kills campaigns: you cannot cold-pitch a $5,000 program to someone who&rsquo;s never heard of you.</p>
+
+  <p>Build a ladder. The free-content CTA feeds the opt-in. The opt-in feeds the application. The application feeds the call. <span class="b">Each step earns the right to the next ask.</span></p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 296" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- top rung: Buy -->
+      <rect x="0" y="40" width="654" height="50" rx="10" fill="#7C3AED"/>
+      <text x="327" y="61" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">Buy / Enroll / Transfer</text>
+      <text x="327" y="81" text-anchor="middle" font-size="11" font-weight="700" fill="#C9B8F5">High friction &middot; earned only after all prior steps</text>
+      <!-- rung 3: Apply -->
+      <rect x="55" y="106" width="544" height="50" rx="10" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <text x="327" y="127" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">Apply / Schedule a call</text>
+      <text x="327" y="147" text-anchor="middle" font-size="11" font-weight="700" fill="#473A63">Qualified intent &middot; real commitment signal</text>
+      <!-- rung 2: Opt-in -->
+      <rect x="110" y="172" width="434" height="50" rx="10" fill="#EDE7FB" stroke="#4C1D95" stroke-width="2"/>
+      <text x="327" y="193" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">Download / Opt-in / Reply</text>
+      <text x="327" y="213" text-anchor="middle" font-size="11" font-weight="700" fill="#473A63">Small commitment &middot; email captured</text>
+      <!-- lowest rung: Comment -->
+      <rect x="165" y="238" width="324" height="50" rx="10" fill="#FFFFFF" stroke="#8C7BA8" stroke-width="2"/>
+      <text x="327" y="259" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">Comment / Like / Save</text>
+      <text x="327" y="279" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">Zero friction &middot; volume move for cold traffic</text>
+      <!-- label -->
+      <text x="0" y="28" font-size="11.5" font-weight="800" fill="#9A86B8" letter-spacing="1">HIGH FRICTION &#9650;</text>
+    </svg>
+    <div class="caption">The ask can never outrun the trust. Low-friction first, high-commitment last.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · FULL EXAMPLE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CALL-OUT &middot; VALUE &middot; CTA</span><span>The Full Pattern</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">All three parts, <span class="em">assembled.</span></h2>
+
+  <p>Remove any bone and conversion drops. The callout without a CTA is content. The CTA without value is spam. The value without a callout speaks to a room that&rsquo;s empty.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;Here&rsquo;s a tip for growing your business. Click here.&rdquo; &mdash; who is this for? what do I get? why now?</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;Gym owners stuck under $20k/month &mdash; here&rsquo;s the one booking change that added $14k MRR for 3 clients in 30 days. Reply GROW and I&rsquo;ll send the 2-page breakdown.&rdquo;</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 320" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- message box -->
+      <rect x="0" y="0" width="654" height="160" rx="14" fill="#F4F0FC" stroke="#E5DCF6" stroke-width="2"/>
+      <text x="24" y="36" font-size="14.5" font-weight="800" fill="#7C3AED">&ldquo;Gym owners stuck under $20k/month &mdash;</text>
+      <text x="24" y="62" font-size="14.5" font-weight="700" fill="#1C1235">here&rsquo;s the one booking change that added</text>
+      <text x="24" y="88" font-size="14.5" font-weight="700" fill="#1C1235">$14k MRR for 3 of my clients in 30 days.</text>
+      <text x="24" y="120" font-size="14.5" font-weight="700" fill="#473A63">Reply <tspan font-weight="800" fill="#7C3AED">GROW</tspan> and I&rsquo;ll send the 2-page breakdown.&rdquo;</text>
+      <!-- annotation: call-out -->
+      <line x1="420" y1="36" x2="480" y2="192" stroke="#7C3AED" stroke-width="1.5" stroke-dasharray="6 4"/>
+      <rect x="480" y="178" width="174" height="42" rx="9" fill="#7C3AED"/>
+      <text x="567" y="195" text-anchor="middle" font-size="11" font-weight="800" fill="#FFFFFF">CALL-OUT</text>
+      <text x="567" y="212" text-anchor="middle" font-size="10" font-weight="700" fill="#C9B8F5">Identity + pain (&ldquo;stuck under&rdquo;)</text>
+      <!-- annotation: value -->
+      <line x1="180" y1="88" x2="80" y2="242" stroke="#4C1D95" stroke-width="1.5" stroke-dasharray="6 4"/>
+      <rect x="0" y="238" width="170" height="42" rx="9" fill="#4C1D95"/>
+      <text x="85" y="255" text-anchor="middle" font-size="11" font-weight="800" fill="#FFFFFF">VALUE</text>
+      <text x="85" y="272" text-anchor="middle" font-size="10" font-weight="700" fill="#C9B8F5">Specific proof + promised result</text>
+      <!-- annotation: CTA -->
+      <line x1="260" y1="120" x2="310" y2="296" stroke="#8C7BA8" stroke-width="1.5" stroke-dasharray="6 4"/>
+      <rect x="188" y="292" width="244" height="26" rx="9" fill="#FFFFFF" stroke="#8C7BA8" stroke-width="2"/>
+      <text x="310" y="310" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1235">CTA &mdash; low friction, one step (&ldquo;Reply GROW&rdquo;)</text>
+    </svg>
+    <div class="caption">Every word earns its place in exactly one of the three parts.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · CLOSE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">CALL-OUT &middot; VALUE &middot; CTA</span><span>Go Build It</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">One framework. <span class="em">Every medium.</span></h2>
+
+  <p>Email, Instagram post, YouTube pre-roll, cold DM, webinar opener, podcast ad &mdash; they all run on the same skeleton. When a campaign underperforms, trace back: which bone is missing?</p>
+
+  <p class="small">Write the callout first. Then the value. Then one CTA. Read it back. If any part feels weak, fix that part. When all three are tight, the message is ready.</p>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:16px 0">
+    <svg viewBox="0 0 654 110" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0" y="20" width="176" height="66" rx="11" fill="#7C3AED"/>
+      <text x="88" y="48" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">CALL-OUT</text>
+      <text x="88" y="70" text-anchor="middle" font-size="11" font-weight="700" fill="#C9B8F5">Name who. Be tight.</text>
+      <g stroke="#1C1235" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="180" y1="53" x2="204" y2="53"/>
+        <polyline points="194,44 208,53 194,62"/>
+      </g>
+      <rect x="210" y="20" width="176" height="66" rx="11" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="298" y="48" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">VALUE</text>
+      <text x="298" y="70" text-anchor="middle" font-size="11" font-weight="700" fill="#473A63">Give something real.</text>
+      <g stroke="#1C1235" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="390" y1="53" x2="414" y2="53"/>
+        <polyline points="404,44 418,53 404,62"/>
+      </g>
+      <rect x="420" y="20" width="234" height="66" rx="11" fill="#1C1235"/>
+      <text x="537" y="48" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">ONE CTA</text>
+      <text x="537" y="70" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">One door. No menu.</text>
+    </svg>
+    <div class="caption">Write it. Apply it to every piece of content you make. Repeat until it&rsquo;s reflex.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Leads &mdash; the book.</h3>
+    <p>Every lead-getting framework: the four lead getters, call-out &middot; value &middot; CTA, and how to build a self-sustaining acquisition machine that never runs dry.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Name them. Give them something. Make one ask. Repeat.</div>
+
+  <div class="stamp">Call-Out &middot; Value &middot; CTA</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>
