@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Four Lead Getters — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --panel:#E6E5FB;
+    --ink:#14163A;
+    --ink-soft:#2E335E;
+    --muted:#7A7FA6;
+    --line:#DADCF2;
+    --violet:#4F46E5;
+    --violet-deep:#312C9C;
+    --violet-soft:#A9A8F0;
+    --violet-fill:#E6E5FB;
+    --plum:#9A9BC4;
+    --plum-fill:#F0F0FA;
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#c3c8ee; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#EEEEFB; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#D4D3F8; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #DCDCF0; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#C8C9ED; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 · COVER -->
+<section class="page">
+  <div class="cover-glyph">4</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Leads</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Every lead comes from one of four places</div>
+    <h1 class="title">THE<br>FOUR<br>LEAD<br>GETTERS</h1>
+    <p class="cover-sub">Most businesses rely on one channel and call it a strategy. There are exactly <b>four ways to get leads</b> — and only two ways to run each one. Master the map, and growth stops being mysterious.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; warm &middot; content &middot; cold &middot; paid</span></div>
+  </div>
+  <div class="stamp">The Four Lead Getters &middot; $100M Leads</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- PAGE 2 · THE PROBLEM -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR LEAD GETTERS</span><span>The Single-Channel Trap</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Most businesses run on <span class="em">one channel.</span></h2>
+
+  <p class="lead">If that channel dries up — an algorithm shifts, a list goes cold, a platform changes its rules — the business stops growing. That&rsquo;s not a strategy. It&rsquo;s a dependency.</p>
+
+  <p>There are exactly <span class="b">four ways</span> to acquire a lead. Not ten, not a hundred. Four. Every tactic you can name slots into one of them. Once you see the map, you stop treating channels as separate religions and start treating them as tools.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:28px 0">
+    <svg viewBox="0 0 654 240" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- single channel bar -->
+      <rect x="0" y="8" width="654" height="58" rx="12" fill="#F0F0FA" stroke="#9A9BC4" stroke-width="2"/>
+      <text x="28" y="34" font-size="13" font-weight="800" fill="#9A9BC4" letter-spacing="1">THE AVERAGE BUSINESS</text>
+      <text x="28" y="56" font-size="16" font-weight="800" fill="#2E335E">Relies on 1 of 4 channels &mdash; maybe 2 on a good day</text>
+
+      <!-- four channels stacked -->
+      <rect x="0" y="90" width="140" height="56" rx="11" fill="#4F46E5"/>
+      <text x="70" y="118" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">WARM</text>
+      <text x="70" y="136" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">OUTREACH</text>
+
+      <rect x="172" y="90" width="140" height="56" rx="11" fill="#4F46E5"/>
+      <text x="242" y="118" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">POST</text>
+      <text x="242" y="136" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">CONTENT</text>
+
+      <rect x="344" y="90" width="140" height="56" rx="11" fill="#4F46E5"/>
+      <text x="414" y="118" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">COLD</text>
+      <text x="414" y="136" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">OUTREACH</text>
+
+      <rect x="516" y="90" width="138" height="56" rx="11" fill="#4F46E5"/>
+      <text x="585" y="118" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">PAID</text>
+      <text x="585" y="136" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">ADS</text>
+
+      <!-- X marks on 3 of them -->
+      <text x="70" y="176" text-anchor="middle" font-size="26" font-weight="800" fill="#9A9BC4">&#10007;</text>
+      <text x="242" y="176" text-anchor="middle" font-size="26" font-weight="800" fill="#9A9BC4">&#10007;</text>
+      <text x="414" y="176" text-anchor="middle" font-size="26" font-weight="800" fill="#9A9BC4">&#10007;</text>
+      <text x="585" y="176" text-anchor="middle" font-size="26" font-weight="800" fill="#14163A">&#10003;</text>
+      <text x="585" y="200" text-anchor="middle" font-size="11" font-weight="800" fill="#4F46E5">active</text>
+
+      <text x="327" y="232" text-anchor="middle" font-size="12.5" font-style="italic" font-weight="600" fill="#7A7FA6">Three untapped channels sit idle while one does all the work.</text>
+    </svg>
+    <div class="caption">Single-channel dependence is fragile. Four active channels is a business.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- PAGE 3 · THE 2x2 MAP -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR LEAD GETTERS</span><span>The Map</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Two axes. <span class="em">Four quadrants.</span></h2>
+
+  <p>The first axis is <span class="b">who you&rsquo;re talking to</span>: people you know (warm) or strangers (cold). The second is <span class="b">who does the work</span>: you, or someone/something else.</p>
+
+  <p>Cross those two and you get exactly four strategies. Every ad campaign, every podcast, every DM, every referral fits here. None is better in the abstract &mdash; each has a moment where it&rsquo;s the right tool.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 390" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- axis labels -->
+      <text x="180" y="22" text-anchor="middle" font-size="12" font-weight="800" fill="#7A7FA6" letter-spacing="1">YOU KNOW THEM</text>
+      <text x="480" y="22" text-anchor="middle" font-size="12" font-weight="800" fill="#7A7FA6" letter-spacing="1">THEY&rsquo;RE STRANGERS</text>
+      <text x="16" y="152" text-anchor="middle" font-size="12" font-weight="800" fill="#7A7FA6" letter-spacing="1" transform="rotate(-90 16 152)">YOU DO IT</text>
+      <text x="16" y="310" text-anchor="middle" font-size="12" font-weight="800" fill="#7A7FA6" letter-spacing="1" transform="rotate(-90 16 310)">OTHERS DO IT</text>
+
+      <!-- dividers -->
+      <line x1="36" y1="30" x2="36" y2="386" stroke="#DADCF2" stroke-width="2"/>
+      <line x1="36" y1="208" x2="654" y2="208" stroke="#DADCF2" stroke-width="2"/>
+      <line x1="348" y1="30" x2="348" y2="386" stroke="#DADCF2" stroke-width="2"/>
+
+      <!-- Q1 WARM OUTREACH (you, warm) -->
+      <rect x="46" y="36" width="290" height="162" rx="12" fill="#4F46E5"/>
+      <text x="66" y="64" font-size="11" font-weight="800" fill="#D4D3F8" letter-spacing="1.5">01 · WARM OUTREACH</text>
+      <text x="66" y="92" font-size="20" font-weight="800" fill="#FFFFFF">You reach out</text>
+      <text x="66" y="116" font-size="20" font-weight="800" fill="#FFFFFF">to people you</text>
+      <text x="66" y="140" font-size="20" font-weight="800" fill="#FFFFFF">already know.</text>
+      <text x="66" y="182" font-size="12.5" font-style="italic" fill="#A9A8F0">texts, calls, DMs to contacts</text>
+
+      <!-- Q2 COLD OUTREACH (you, strangers) -->
+      <rect x="358" y="36" width="296" height="162" rx="12" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="378" y="64" font-size="11" font-weight="800" fill="#4F46E5" letter-spacing="1.5">02 · COLD OUTREACH</text>
+      <text x="378" y="92" font-size="20" font-weight="800" fill="#14163A">You contact</text>
+      <text x="378" y="116" font-size="20" font-weight="800" fill="#14163A">strangers who</text>
+      <text x="378" y="140" font-size="20" font-weight="800" fill="#14163A">fit your avatar.</text>
+      <text x="378" y="182" font-size="12.5" font-style="italic" fill="#7A7FA6">emails, DMs, calls to lists</text>
+
+      <!-- Q3 CONTENT (others = algo, warm) -->
+      <rect x="46" y="218" width="290" height="162" rx="12" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="66" y="246" font-size="11" font-weight="800" fill="#4F46E5" letter-spacing="1.5">03 · POST CONTENT</text>
+      <text x="66" y="274" font-size="20" font-weight="800" fill="#14163A">You create it.</text>
+      <text x="66" y="298" font-size="20" font-weight="800" fill="#14163A">The platform</text>
+      <text x="66" y="322" font-size="20" font-weight="800" fill="#14163A">distributes it.</text>
+      <text x="66" y="364" font-size="12.5" font-style="italic" fill="#7A7FA6">posts, videos, podcasts, threads</text>
+
+      <!-- Q4 PAID ADS (others, strangers) -->
+      <rect x="358" y="218" width="296" height="162" rx="12" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="378" y="246" font-size="11" font-weight="800" fill="#4F46E5" letter-spacing="1.5">04 · PAID ADS</text>
+      <text x="378" y="274" font-size="20" font-weight="800" fill="#14163A">You pay for</text>
+      <text x="378" y="298" font-size="20" font-weight="800" fill="#14163A">strangers to</text>
+      <text x="378" y="322" font-size="20" font-weight="800" fill="#14163A">see your offer.</text>
+      <text x="378" y="364" font-size="12.5" font-style="italic" fill="#7A7FA6">Meta, Google, YouTube, TikTok</text>
+    </svg>
+    <div class="caption">Two axes, four cells. Every lead-gen tactic you can name slots into one quadrant.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- PAGE 4 · WARM OUTREACH -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR LEAD GETTERS</span><span>Warm Outreach</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Channel 1: <span class="em">Warm outreach.</span></h2>
+
+  <p class="lead">This is the fastest path to revenue that exists. You know these people. They already have a reason to take your call.</p>
+
+  <p>Go through your contacts — phone, social media, email — and sort them into three buckets: <span class="b">buyers, referrers, and reconnects.</span> Then message each with a relevant reason to talk, not a pitch.</p>
+
+  <p>Most people skip this because it feels uncomfortable to sell to people they know. That discomfort is where the money is.</p>
+
+  <div class="band">
+    <div class="t">YOUR EXISTING LIST IS YOUR FIRST CAMPAIGN.</div>
+    <div class="s">before you spend a dollar, mine what you already have</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 300" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- three contact buckets -->
+      <rect x="0" y="0" width="196" height="220" rx="12" fill="#4F46E5"/>
+      <text x="98" y="32" text-anchor="middle" font-size="11" font-weight="800" fill="#D4D3F8" letter-spacing="1.5">BUCKET 1</text>
+      <text x="98" y="62" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">BUYERS</text>
+      <text x="98" y="94" text-anchor="middle" font-size="12.5" fill="#D4D3F8">People you&rsquo;ve sold</text>
+      <text x="98" y="112" text-anchor="middle" font-size="12.5" fill="#D4D3F8">before &mdash; or who</text>
+      <text x="98" y="130" text-anchor="middle" font-size="12.5" fill="#D4D3F8">almost bought.</text>
+      <text x="98" y="170" text-anchor="middle" font-size="13" font-weight="800" fill="#A9A8F0">&#10003; Reach back out</text>
+      <text x="98" y="196" text-anchor="middle" font-size="12.5" fill="#D4D3F8">highest close rate</text>
+
+      <rect x="230" y="0" width="196" height="220" rx="12" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="328" y="32" text-anchor="middle" font-size="11" font-weight="800" fill="#4F46E5" letter-spacing="1.5">BUCKET 2</text>
+      <text x="328" y="62" text-anchor="middle" font-size="18" font-weight="800" fill="#14163A">REFERRERS</text>
+      <text x="328" y="94" text-anchor="middle" font-size="12.5" fill="#2E335E">People who know</text>
+      <text x="328" y="112" text-anchor="middle" font-size="12.5" fill="#2E335E">people who need</text>
+      <text x="328" y="130" text-anchor="middle" font-size="12.5" fill="#2E335E">what you do.</text>
+      <text x="328" y="170" text-anchor="middle" font-size="13" font-weight="800" fill="#4F46E5">&#10003; Ask for intros</text>
+      <text x="328" y="196" text-anchor="middle" font-size="12.5" fill="#7A7FA6">compound over time</text>
+
+      <rect x="460" y="0" width="194" height="220" rx="12" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="557" y="32" text-anchor="middle" font-size="11" font-weight="800" fill="#4F46E5" letter-spacing="1.5">BUCKET 3</text>
+      <text x="557" y="62" text-anchor="middle" font-size="18" font-weight="800" fill="#14163A">RECONNECTS</text>
+      <text x="557" y="94" text-anchor="middle" font-size="12.5" fill="#2E335E">Old contacts you</text>
+      <text x="557" y="112" text-anchor="middle" font-size="12.5" fill="#2E335E">haven&rsquo;t spoken to</text>
+      <text x="557" y="130" text-anchor="middle" font-size="12.5" fill="#2E335E">in over a year.</text>
+      <text x="557" y="170" text-anchor="middle" font-size="13" font-weight="800" fill="#4F46E5">&#10003; Re-engage first</text>
+      <text x="557" y="196" text-anchor="middle" font-size="12.5" fill="#7A7FA6">warm before pitching</text>
+
+      <text x="327" y="270" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">Your phone has hundreds of leads you haven&rsquo;t asked yet.</text>
+      <text x="327" y="294" text-anchor="middle" font-size="12" fill="#7A7FA6">Sort first. Message second. Pitch last.</text>
+    </svg>
+    <div class="caption">Three buckets, three approaches &mdash; all starting with people who already know your name.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- PAGE 5 · POST CONTENT -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR LEAD GETTERS</span><span>Post Content</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Channel 2: <span class="em">Post content.</span></h2>
+
+  <p>You create it once. The platform distributes it forever. This is the only channel that builds a compounding asset &mdash; each post adds to a library that keeps generating leads long after you publish it.</p>
+
+  <p>The cost is time and consistency, not money. The payoff is inbound leads who already trust you before they ever send a message.</p>
+
+  <p>Content does not replace outreach. It <span class="b">amplifies it</span>. When someone gets your DM and then sees your content, the trust compounds. That&rsquo;s the lever.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 310" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- compounding curve -->
+      <line x1="40" y1="20" x2="40" y2="260" stroke="#14163A" stroke-width="2.5"/>
+      <line x1="40" y1="260" x2="634" y2="260" stroke="#14163A" stroke-width="2.5"/>
+      <!-- axis labels -->
+      <text x="20" y="144" text-anchor="middle" font-size="11" font-weight="800" fill="#7A7FA6" transform="rotate(-90 20 144)">INBOUND LEADS</text>
+      <text x="337" y="292" text-anchor="middle" font-size="11" font-weight="800" fill="#7A7FA6">TIME (months)</text>
+      <!-- month ticks -->
+      <g font-size="10" font-weight="700" fill="#7A7FA6" text-anchor="middle">
+        <text x="134" y="278">3</text><text x="228" y="278">6</text>
+        <text x="322" y="278">9</text><text x="416" y="278">12</text><text x="510" y="278">15</text>
+        <text x="604" y="278">18</text>
+      </g>
+      <!-- compound curve path (approximated with polyline) -->
+      <polyline points="40,258 134,250 228,232 322,200 416,152 510,86 604,18" stroke="#4F46E5" stroke-width="4" fill="none" stroke-linejoin="round"/>
+      <!-- fill under curve -->
+      <polygon points="40,258 134,250 228,232 322,200 416,152 510,86 604,18 604,258" fill="#E6E5FB"/>
+      <!-- month 6 annotation -->
+      <line x1="228" y1="232" x2="228" y2="140" stroke="#4F46E5" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <rect x="242" y="118" width="180" height="42" rx="8" fill="#FFFFFF" stroke="#4F46E5" stroke-width="1.5"/>
+      <text x="332" y="136" text-anchor="middle" font-size="12" font-weight="800" fill="#14163A">Library starts</text>
+      <text x="332" y="152" text-anchor="middle" font-size="12" font-weight="800" fill="#4F46E5">compounding</text>
+      <!-- today annotation -->
+      <line x1="510" y1="86" x2="510" y2="46" stroke="#4F46E5" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <rect x="430" y="24" width="160" height="36" rx="8" fill="#4F46E5"/>
+      <text x="510" y="46" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">Inbound pulls</text>
+    </svg>
+    <div class="caption">Content builds slowly and then all at once &mdash; every post adds to a permanent lead machine.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- PAGE 6 · COLD OUTREACH -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR LEAD GETTERS</span><span>Cold Outreach</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Channel 3: <span class="em">Cold outreach.</span></h2>
+
+  <p>You contact strangers who match your ideal customer profile. No relationship, no referral &mdash; just a targeted message to a qualified list.</p>
+
+  <p><span class="b">It&rsquo;s a volume game with a quality filter.</span> 1,000 emails might yield 30 replies and 5 sales calls. That&rsquo;s not failure — that&rsquo;s the model. The math works when the offer is strong and the list is right.</p>
+
+  <p>The single biggest mistake: selling in the first message. Cold outreach opens a conversation. It does not close a deal.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- funnel stages -->
+      <!-- Stage 1: List -->
+      <rect x="152" y="0" width="350" height="54" rx="10" fill="#E6E5FB" stroke="#DADCF2" stroke-width="2"/>
+      <text x="327" y="22" text-anchor="middle" font-size="12" font-weight="800" fill="#7A7FA6" letter-spacing="1">STAGE 1 &mdash; TARGETED LIST</text>
+      <text x="327" y="44" text-anchor="middle" font-size="18" font-weight="800" fill="#14163A">1,000 contacts</text>
+
+      <!-- arrow -->
+      <polygon points="302,62 352,62 327,80" fill="#DADCF2"/>
+
+      <!-- Stage 2: Sent -->
+      <rect x="177" y="88" width="300" height="54" rx="10" fill="#E6E5FB" stroke="#DADCF2" stroke-width="2"/>
+      <text x="327" y="110" text-anchor="middle" font-size="12" font-weight="800" fill="#7A7FA6" letter-spacing="1">STAGE 2 &mdash; OPENS</text>
+      <text x="327" y="132" text-anchor="middle" font-size="18" font-weight="800" fill="#14163A">300 opened</text>
+
+      <polygon points="302,150 352,150 327,168" fill="#DADCF2"/>
+
+      <!-- Stage 3: Replies -->
+      <rect x="202" y="176" width="250" height="54" rx="10" fill="#DADCF2" stroke="#A9A8F0" stroke-width="2"/>
+      <text x="327" y="198" text-anchor="middle" font-size="12" font-weight="800" fill="#7A7FA6" letter-spacing="1">STAGE 3 &mdash; REPLIES</text>
+      <text x="327" y="220" text-anchor="middle" font-size="18" font-weight="800" fill="#14163A">30 replied</text>
+
+      <polygon points="302,238 352,238 327,256" fill="#4F46E5"/>
+
+      <!-- Stage 4: Calls -->
+      <rect x="227" y="264" width="200" height="26" rx="10" fill="#4F46E5"/>
+      <text x="327" y="282" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">5 sales calls</text>
+
+      <!-- annotation right -->
+      <text x="580" y="20" text-anchor="middle" font-size="11" font-weight="800" fill="#9A9BC4">3% open</text>
+      <text x="580" y="110" text-anchor="middle" font-size="11" font-weight="800" fill="#9A9BC4">10% reply</text>
+      <text x="580" y="280" text-anchor="middle" font-size="11" font-weight="800" fill="#4F46E5">&#10003; close</text>
+    </svg>
+    <div class="caption">Cold outreach is a funnel, not a lottery. The math repeats every cycle if you fix your list and message.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- PAGE 7 · PAID ADS -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR LEAD GETTERS</span><span>Paid Ads</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Channel 4: <span class="em">Paid ads.</span></h2>
+
+  <p>Paid ads let you trade money for speed. You reach strangers at scale, immediately, without waiting for content to compound or lists to warm up.</p>
+
+  <p>The catch: they expose your offer to reality instantly. A weak offer fails fast and expensively. A strong offer scales fast and profitably. Paid ads are a <span class="b">pressure test before they&rsquo;re a growth engine.</span></p>
+
+  <p>Start with the offer. Then test cheap. Then scale what wins.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- before: weak offer -->
+      <rect x="0" y="0" width="300" height="280" rx="12" fill="#FFFFFF" stroke="#9A9BC4" stroke-width="2.5"/>
+      <text x="150" y="34" text-anchor="middle" font-size="11" font-weight="800" fill="#9A9BC4" letter-spacing="1.5">WEAK OFFER + ADS</text>
+      <!-- spend bar -->
+      <rect x="28" y="58" width="244" height="40" rx="8" fill="#F0F0FA" stroke="#9A9BC4" stroke-width="2"/>
+      <text x="150" y="83" text-anchor="middle" font-size="13" font-weight="800" fill="#9A9BC4">$5,000 spend</text>
+      <!-- arrow down -->
+      <polygon points="130,110 170,110 150,126" fill="#9A9BC4"/>
+      <!-- result: bad -->
+      <rect x="28" y="134" width="244" height="40" rx="8" fill="#F0F0FA" stroke="#9A9BC4" stroke-width="2"/>
+      <text x="150" y="159" text-anchor="middle" font-size="13" font-weight="800" fill="#9A9BC4">3 leads &mdash; $1,666 CPL</text>
+      <!-- verdict -->
+      <rect x="28" y="202" width="244" height="50" rx="8" fill="#F0F0FA"/>
+      <text x="150" y="224" text-anchor="middle" font-size="19" font-weight="800" fill="#9A9BC4">&#10007; EXPOSED</text>
+      <text x="150" y="246" text-anchor="middle" font-size="12" font-weight="600" fill="#9A9BC4">weak offer, not ad problem</text>
+
+      <!-- after: strong offer -->
+      <rect x="354" y="0" width="300" height="280" rx="12" fill="#FFFFFF" stroke="#4F46E5" stroke-width="2.5"/>
+      <text x="504" y="34" text-anchor="middle" font-size="11" font-weight="800" fill="#4F46E5" letter-spacing="1.5">STRONG OFFER + ADS</text>
+      <!-- spend bar -->
+      <rect x="378" y="58" width="250" height="40" rx="8" fill="#4F46E5"/>
+      <text x="503" y="83" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">$5,000 spend</text>
+      <!-- arrow down -->
+      <polygon points="484,110 524,110 504,126" fill="#4F46E5"/>
+      <!-- result: good -->
+      <rect x="378" y="134" width="250" height="40" rx="8" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2"/>
+      <text x="503" y="159" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">200 leads &mdash; $25 CPL</text>
+      <!-- verdict -->
+      <rect x="378" y="202" width="250" height="50" rx="8" fill="#4F46E5"/>
+      <text x="503" y="224" text-anchor="middle" font-size="19" font-weight="800" fill="#FFFFFF">&#10003; SCALE</text>
+      <text x="503" y="246" text-anchor="middle" font-size="12" font-weight="800" fill="#D4D3F8">turn up the spend</text>
+    </svg>
+    <div class="caption">Ads don&rsquo;t fix a weak offer &mdash; they reveal it faster. Fix the offer, then buy scale.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- PAGE 8 · THE SEQUENCE -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR LEAD GETTERS</span><span>The Sequence</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Start here. <span class="em">Build in order.</span></h2>
+
+  <p>The four channels are not equal at every stage. <span class="b">Warm outreach first</span> &mdash; it&rsquo;s free, fast, and proves your offer. Then add cold outreach for volume. Then content for compounding. Then ads to pour fuel on a proven fire.</p>
+
+  <p>Most founders do this backwards &mdash; they buy ads before they know their offer converts, then blame the channel.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>Run paid ads on a new, unproven offer. Spend $10k learning the hard way.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>Prove the offer with warm outreach for free. Then pour paid ads on a model that already works.</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- timeline flow -->
+      <!-- Step 1 -->
+      <rect x="0" y="60" width="138" height="80" rx="11" fill="#4F46E5"/>
+      <text x="69" y="90" text-anchor="middle" font-size="10" font-weight="800" fill="#D4D3F8" letter-spacing="1">STEP 1</text>
+      <text x="69" y="112" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">WARM</text>
+      <text x="69" y="130" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">OUTREACH</text>
+      <text x="69" y="170" text-anchor="middle" font-size="11" fill="#7A7FA6">free · fast</text>
+      <text x="69" y="186" text-anchor="middle" font-size="11" fill="#7A7FA6">proves offer</text>
+
+      <!-- arrow -->
+      <g stroke="#4F46E5" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="142" y1="100" x2="164" y2="100"/><polyline points="155,91 168,100 155,109"/>
+      </g>
+
+      <!-- Step 2 -->
+      <rect x="170" y="60" width="138" height="80" rx="11" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="239" y="90" text-anchor="middle" font-size="10" font-weight="800" fill="#4F46E5" letter-spacing="1">STEP 2</text>
+      <text x="239" y="112" text-anchor="middle" font-size="14" font-weight="800" fill="#14163A">COLD</text>
+      <text x="239" y="130" text-anchor="middle" font-size="14" font-weight="800" fill="#14163A">OUTREACH</text>
+      <text x="239" y="170" text-anchor="middle" font-size="11" fill="#7A7FA6">adds volume</text>
+      <text x="239" y="186" text-anchor="middle" font-size="11" fill="#7A7FA6">systematic</text>
+
+      <!-- arrow -->
+      <g stroke="#4F46E5" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="312" y1="100" x2="334" y2="100"/><polyline points="325,91 338,100 325,109"/>
+      </g>
+
+      <!-- Step 3 -->
+      <rect x="340" y="60" width="138" height="80" rx="11" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="409" y="90" text-anchor="middle" font-size="10" font-weight="800" fill="#4F46E5" letter-spacing="1">STEP 3</text>
+      <text x="409" y="112" text-anchor="middle" font-size="14" font-weight="800" fill="#14163A">POST</text>
+      <text x="409" y="130" text-anchor="middle" font-size="14" font-weight="800" fill="#14163A">CONTENT</text>
+      <text x="409" y="170" text-anchor="middle" font-size="11" fill="#7A7FA6">compounds</text>
+      <text x="409" y="186" text-anchor="middle" font-size="11" fill="#7A7FA6">long-term asset</text>
+
+      <!-- arrow -->
+      <g stroke="#4F46E5" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="482" y1="100" x2="504" y2="100"/><polyline points="495,91 508,100 495,109"/>
+      </g>
+
+      <!-- Step 4 -->
+      <rect x="510" y="60" width="144" height="80" rx="11" fill="#FFFFFF" stroke="#14163A" stroke-width="2.5"/>
+      <text x="582" y="90" text-anchor="middle" font-size="10" font-weight="800" fill="#4F46E5" letter-spacing="1">STEP 4</text>
+      <text x="582" y="112" text-anchor="middle" font-size="14" font-weight="800" fill="#14163A">PAID</text>
+      <text x="582" y="130" text-anchor="middle" font-size="14" font-weight="800" fill="#14163A">ADS</text>
+      <text x="582" y="170" text-anchor="middle" font-size="11" fill="#7A7FA6">scale</text>
+      <text x="582" y="186" text-anchor="middle" font-size="11" fill="#7A7FA6">proven model</text>
+
+      <!-- result band -->
+      <rect x="0" y="220" width="654" height="58" rx="12" fill="#4F46E5"/>
+      <text x="327" y="248" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">Prove with warm. Systematise with cold. Compound with content. Scale with paid.</text>
+      <text x="327" y="270" text-anchor="middle" font-size="12" font-weight="700" fill="#D4D3F8">Each stage validates the next &mdash; do them in order.</text>
+    </svg>
+    <div class="caption">The sequence prevents expensive mistakes and builds each channel on a proven foundation.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- PAGE 9 · CLOSE + CTA -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR LEAD GETTERS</span><span>Your Lead System</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">Four channels. <span class="em">One system.</span></h2>
+
+  <p>Warm outreach gives you speed. Cold outreach gives you scale. Content gives you compounding authority. Paid ads give you leverage. Running all four means no single channel failure can stop your growth.</p>
+
+  <p class="small">Start with one. Master it until it produces leads consistently. Then add the next. Never spread so thin you do all four badly.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;We tried cold email. It doesn&rsquo;t work.&rdquo; &mdash; 200 emails, no follow-ups, generic message.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>1,000 targeted contacts, personalised first lines, 3-touch follow-up sequence. Different game.</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:16px 0">
+    <svg viewBox="0 0 654 180" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- 4 channels feeding into leads -->
+      <rect x="0" y="28" width="130" height="50" rx="10" fill="#4F46E5"/>
+      <text x="65" y="58" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">WARM</text>
+      <rect x="0" y="102" width="130" height="50" rx="10" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2"/>
+      <text x="65" y="132" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">CONTENT</text>
+
+      <rect x="260" y="28" width="130" height="50" rx="10" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2"/>
+      <text x="325" y="58" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">COLD</text>
+      <rect x="260" y="102" width="130" height="50" rx="10" fill="#E6E5FB" stroke="#4F46E5" stroke-width="2"/>
+      <text x="325" y="132" text-anchor="middle" font-size="13" font-weight="800" fill="#14163A">PAID ADS</text>
+
+      <!-- arrows to centre -->
+      <g stroke="#4F46E5" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="134" y1="53" x2="490" y2="90"/><polyline points="479,82 494,92 481,98"/>
+        <line x1="134" y1="127" x2="490" y2="92"/><polyline points="479,86 494,92 481,98"/>
+        <line x1="394" y1="53" x2="490" y2="90"/>
+        <line x1="394" y1="127" x2="490" y2="92"/>
+      </g>
+
+      <!-- leads box -->
+      <rect x="496" y="62" width="158" height="56" rx="11" fill="#4F46E5"/>
+      <text x="575" y="88" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">CONSISTENT</text>
+      <text x="575" y="108" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">LEADS</text>
+    </svg>
+    <div class="caption">Four active channels feeding one pipeline &mdash; no single point of failure.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Leads &mdash; the book.</h3>
+    <p>The full lead-getter playbook, the advertising frameworks, and every channel broken down with real numbers &mdash; never run out of leads again.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Build all four. Master one at a time. Never be a single-channel business again.</div>
+
+  <div class="stamp">The Four Lead Getters &middot; $100M Leads</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>
