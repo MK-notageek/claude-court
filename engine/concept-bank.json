@@ -1,7 +1,7 @@
 {
   "_comment": "Claude Court concept bank. The daily routine picks the 2 lowest-priority UNUSED concepts (status != 'done'), generates them, then flips status to 'done' with the date + url. When all are done, reset every status to 'pending' to start a fresh cycle. 'palette' rotates the look so docs don't feel cloned.",
   "version": 1,
-  "last_run": "2026-06-29",
+  "last_run": "2026-06-30",
   "concepts": [
     { "slug": "the-value-equation", "title": "The Value Equation", "source": "$100M Offers", "palette": "violet", "status": "done", "note": "Pre-existing exemplar at repo root the-value-equation.html", "url": "https://mk-notageek.github.io/claude-court/concepts/the-value-equation.html" },
     { "slug": "the-trust-bet", "title": "The Trust Bet", "source": "Hormozi / trust", "palette": "violet", "status": "done", "note": "Pre-existing exemplar", "url": "https://mk-notageek.github.io/claude-court/concepts/the-trust-bet.html" },
@@ -28,8 +28,8 @@
     { "slug": "warm-outreach", "title": "Warm Outreach & the ACA Framework", "source": "$100M Leads", "palette": "amber", "status": "done", "date": "2026-06-28", "url": "https://mk-notageek.github.io/claude-court/concepts/warm-outreach.html" },
     { "slug": "the-four-lead-getters", "title": "The Four Lead Getters", "source": "$100M Leads", "palette": "indigo", "status": "done", "date": "2026-06-29", "url": "https://mk-notageek.github.io/claude-court/concepts/the-four-lead-getters.html" },
     { "slug": "give-until-they-ask", "title": "Give Until They Ask", "source": "$100M Leads", "palette": "emerald", "status": "done", "date": "2026-06-29", "url": "https://mk-notageek.github.io/claude-court/concepts/give-until-they-ask.html" },
-    { "slug": "volume-negates-luck", "title": "Volume Negates Luck", "source": "Hormozi", "palette": "crimson", "status": "pending" },
-    { "slug": "skill-stacking", "title": "Skill Stacking & Rare Pairs", "source": "Hormozi", "palette": "teal", "status": "pending" },
+    { "slug": "volume-negates-luck", "title": "Volume Negates Luck", "source": "Hormozi", "palette": "crimson", "status": "done", "date": "2026-06-30", "url": "https://mk-notageek.github.io/claude-court/concepts/volume-negates-luck.html" },
+    { "slug": "skill-stacking", "title": "Skill Stacking & Rare Pairs", "source": "Hormozi", "palette": "teal", "status": "done", "date": "2026-06-30", "url": "https://mk-notageek.github.io/claude-court/concepts/skill-stacking.html" },
     { "slug": "the-divergent-list", "title": "Divergent Thinking: Solve Every Problem", "source": "$100M Offers", "palette": "violet", "status": "pending" },
     { "slug": "trim-and-stack", "title": "Trim & Stack", "source": "$100M Offers", "palette": "amber", "status": "pending" },
     { "slug": "the-four-guarantees", "title": "The Four Guarantees", "source": "$100M Offers", "palette": "crimson", "status": "pending" },

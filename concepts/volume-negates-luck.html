@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Volume Negates Luck — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFDFD;
+    --panel:#FBE0E0;
+    --ink:#340F12;
+    --ink-soft:#5E2328;
+    --muted:#A66A6F;
+    --line:#F0D6D8;
+    --violet:#DC2626;
+    --violet-deep:#991218;
+    --violet-soft:#F0A0A0;
+    --violet-fill:#FBE0E0;
+    --plum:#A66A6F;
+    --plum-fill:#F5E8E8;
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#e8c4c4; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#FBEDED; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#F9D8D8; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #E8C4C4; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#E8C8CA; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 · COVER -->
+<section class="page">
+  <div class="cover-glyph">&#8734;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; Hormozi / Business</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">The law that makes talent optional</div>
+    <h1 class="title">VOLUME<br>NEGATES<br>LUCK</h1>
+    <p class="cover-sub">Most people wait for a break. They protect their reputation from failure. They take three careful shots a year. Here&rsquo;s what actually works: <b>do the thing so many times that luck stops being a variable.</b></p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; attempts &middot; feedback &middot; compound</span></div>
+  </div>
+  <div class="stamp">Volume Negates Luck</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- PAGE 2 · WHAT IS LUCK -->
+<section class="page">
+  <div class="rhead"><span class="v">VOLUME NEGATES LUCK</span><span>The Problem with Luck</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Luck is real. It&rsquo;s also <span class="em">irrelevant</span> at scale.</h2>
+
+  <p class="lead">If you flip a coin once and need heads, you&rsquo;re at the mercy of chance. Flip it 10,000 times and you know exactly what you&rsquo;re getting: 5,000 heads.</p>
+  <p>Opportunity works the same way. The right person reads your tenth email. The right mentor shows up after your hundredth post. The breakthrough client appears on your two-hundredth cold call.</p>
+  <p>Volume doesn&rsquo;t eliminate luck &mdash; it <span class="b">makes luck irrelevant.</span> You don&rsquo;t need the universe to cooperate when you&rsquo;re generating your own sample size.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- bar chart: luck influence vs volume -->
+    <svg viewBox="0 0 654 310" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="22" font-size="12" font-weight="800" fill="#A66A6F" letter-spacing="1.5">LUCK&rsquo;S INFLUENCE ON YOUR RESULT</text>
+      <!-- axis -->
+      <line x1="60" y1="40" x2="60" y2="250" stroke="#340F12" stroke-width="2.5"/>
+      <line x1="60" y1="250" x2="630" y2="250" stroke="#340F12" stroke-width="2.5"/>
+      <!-- y label -->
+      <text x="14" y="148" font-size="11" font-weight="800" fill="#340F12" transform="rotate(-90 14 148)" text-anchor="middle">LUCK DEPENDENCY</text>
+      <text x="345" y="278" font-size="11" font-weight="800" fill="#340F12" text-anchor="middle">VOLUME OF ATTEMPTS</text>
+      <!-- high bar -->
+      <rect x="80" y="60" width="70" height="190" rx="6" fill="#F0A0A0" stroke="#DC2626" stroke-width="2"/>
+      <text x="115" y="90" text-anchor="middle" font-size="11" font-weight="800" fill="#340F12" transform="rotate(-90 115 90)">HIGH</text>
+      <text x="115" y="268" text-anchor="middle" font-size="11" font-weight="800" fill="#5E2328">1&ndash;5</text>
+      <!-- mid bar -->
+      <rect x="200" y="110" width="70" height="140" rx="6" fill="#F5D0D0" stroke="#DC2626" stroke-width="2"/>
+      <text x="235" y="268" text-anchor="middle" font-size="11" font-weight="800" fill="#5E2328">10&ndash;50</text>
+      <!-- low bar -->
+      <rect x="320" y="165" width="70" height="85" rx="6" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="355" y="268" text-anchor="middle" font-size="11" font-weight="800" fill="#5E2328">100&ndash;500</text>
+      <!-- very low bar -->
+      <rect x="440" y="220" width="70" height="30" rx="6" fill="#DC2626"/>
+      <text x="475" y="268" text-anchor="middle" font-size="11" font-weight="800" fill="#5E2328">1,000+</text>
+      <!-- almost zero bar -->
+      <rect x="560" y="240" width="54" height="10" rx="4" fill="#991218"/>
+      <text x="587" y="268" text-anchor="middle" font-size="11" font-weight="800" fill="#340F12">10,000+</text>
+      <!-- label -->
+      <text x="610" y="233" font-size="10.5" font-weight="800" fill="#DC2626">&#8594; NEAR ZERO</text>
+    </svg>
+    <div class="caption">As volume rises, luck&rsquo;s ability to ruin you — or save you — converges toward zero.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- PAGE 3 · THE PROBABILITY FORMULA -->
+<section class="page">
+  <div class="rhead"><span class="v">VOLUME NEGATES LUCK</span><span>The Formula</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Results are a <span class="em">math problem</span>, not a luck problem.</h2>
+
+  <p>Every salesperson, creator, and founder is running the same equation. Three inputs. One output. The only variable they control is the one they most often ignore: <span class="b">how many times they try.</span></p>
+
+  <p>A 1-in-100 conversion rate sounds brutal. Until you realise that means you have 10 clients after 1,000 attempts &mdash; a business. The formula doesn&rsquo;t care about your fear of rejection.</p>
+
+  <div class="band">
+    <div class="t">ATTEMPTS &times; HIT RATE = RESULTS</div>
+    <div class="s">the only part most people under-invest in is attempts</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0">
+    <!-- fraction / formula diagram -->
+    <svg viewBox="0 0 654 360" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- RESULTS label -->
+      <text x="6" y="198" font-size="42" font-weight="800" fill="#340F12">RESULTS</text>
+      <text x="312" y="198" font-size="42" font-weight="800" fill="#DC2626">=</text>
+      <!-- attempts box -->
+      <rect x="356" y="60" width="280" height="90" rx="12" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="496" y="100" text-anchor="middle" font-size="18" font-weight="800" fill="#340F12">ATTEMPTS</text>
+      <text x="496" y="124" text-anchor="middle" font-size="13" font-weight="700" fill="#5E2328">the volume you generate</text>
+      <text x="498" y="55" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.5">&#9650; MAXIMIZE THIS FIRST</text>
+      <!-- times -->
+      <text x="346" y="160" font-size="28" font-weight="800" fill="#DC2626">&times;</text>
+      <!-- fraction bar -->
+      <rect x="356" y="174" width="280" height="5" rx="2" fill="#340F12"/>
+      <!-- hit rate box -->
+      <rect x="356" y="210" width="280" height="90" rx="12" fill="#F5E8E8" stroke="#A66A6F" stroke-width="2.5"/>
+      <text x="496" y="250" text-anchor="middle" font-size="18" font-weight="800" fill="#5E2328">HIT RATE</text>
+      <text x="496" y="274" text-anchor="middle" font-size="13" font-weight="700" fill="#A66A6F">your skill at converting</text>
+      <text x="498" y="316" font-size="12" font-weight="800" fill="#A66A6F" letter-spacing="1">&#9660; SKILL IMPROVES THROUGH ATTEMPTS</text>
+      <!-- example row -->
+      <rect x="0" y="340" width="654" height="0" rx="0" fill="none"/>
+    </svg>
+    <div class="caption">Hit rate is a function of skill. Skill is a function of attempts. So attempts drive both sides.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- PAGE 4 · VOLUME VS VARIANCE -->
+<section class="page">
+  <div class="rhead"><span class="v">VOLUME NEGATES LUCK</span><span>The Before &amp; After</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Low volume means <span class="em">any single shot</span> can define you.</h2>
+
+  <p>When you only attempt something a handful of times, each result carries enormous weight. One bad meeting destroys your quarterly number. One unanswered email kills the deal. You are entirely hostage to variance.</p>
+
+  <p>At high volume, individual results stop mattering. A bad call on Tuesday is noise. The pattern across 50 calls this week is signal. You can <span class="b">read what&rsquo;s actually working.</span></p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- before / after panels -->
+    <svg viewBox="0 0 654 290" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- BEFORE panel -->
+      <rect x="0" y="0" width="308" height="280" rx="13" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="20" y="34" font-size="12" font-weight="800" fill="#A66A6F" letter-spacing="1.5">BEFORE &middot; LOW VOLUME</text>
+      <text x="20" y="64" font-size="17" font-weight="800" fill="#340F12">10 cold emails</text>
+      <text x="20" y="86" font-size="12.5" font-weight="600" fill="#5E2328">sent per month</text>
+      <!-- outcome dots -->
+      <circle cx="40" cy="126" r="11" fill="#F0A0A0" stroke="#A66A6F" stroke-width="2"/>
+      <text x="40" y="131" text-anchor="middle" font-size="11" font-weight="800" fill="#A66A6F">&#10007;</text>
+      <circle cx="78" cy="126" r="11" fill="#F0A0A0" stroke="#A66A6F" stroke-width="2"/>
+      <text x="78" y="131" text-anchor="middle" font-size="11" font-weight="800" fill="#A66A6F">&#10007;</text>
+      <circle cx="116" cy="126" r="11" fill="#F0A0A0" stroke="#A66A6F" stroke-width="2"/>
+      <text x="116" y="131" text-anchor="middle" font-size="11" font-weight="800" fill="#A66A6F">&#10007;</text>
+      <circle cx="154" cy="126" r="11" fill="#F0A0A0" stroke="#A66A6F" stroke-width="2"/>
+      <text x="154" y="131" text-anchor="middle" font-size="11" font-weight="800" fill="#A66A6F">&#10007;</text>
+      <circle cx="192" cy="126" r="11" fill="#F0A0A0" stroke="#A66A6F" stroke-width="2"/>
+      <text x="192" y="131" text-anchor="middle" font-size="11" font-weight="800" fill="#A66A6F">&#10007;</text>
+      <circle cx="230" cy="126" r="11" fill="#F0A0A0" stroke="#A66A6F" stroke-width="2"/>
+      <text x="230" y="131" text-anchor="middle" font-size="11" font-weight="800" fill="#A66A6F">&#10007;</text>
+      <circle cx="268" cy="126" r="11" fill="#F0A0A0" stroke="#A66A6F" stroke-width="2"/>
+      <text x="268" y="131" text-anchor="middle" font-size="11" font-weight="800" fill="#A66A6F">&#10007;</text>
+      <circle cx="40" cy="168" r="11" fill="#F0A0A0" stroke="#A66A6F" stroke-width="2"/>
+      <text x="40" y="173" text-anchor="middle" font-size="11" font-weight="800" fill="#A66A6F">&#10007;</text>
+      <circle cx="78" cy="168" r="11" fill="#F0A0A0" stroke="#A66A6F" stroke-width="2"/>
+      <text x="78" y="173" text-anchor="middle" font-size="11" font-weight="800" fill="#A66A6F">&#10007;</text>
+      <circle cx="116" cy="168" r="11" fill="#DC2626"/>
+      <text x="116" y="173" text-anchor="middle" font-size="11" font-weight="800" fill="#FFFDFD">&#10003;</text>
+      <text x="154" y="212" font-size="13.5" font-weight="800" fill="#DC2626">1 reply</text>
+      <text x="20" y="246" font-size="12" font-weight="700" fill="#A66A6F" font-style="italic">That one &ldquo;yes&rdquo; feels like luck.</text>
+      <text x="20" y="266" font-size="12" font-weight="700" fill="#A66A6F" font-style="italic">Because it is.</text>
+
+      <!-- AFTER panel -->
+      <rect x="346" y="0" width="308" height="280" rx="13" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="366" y="34" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.5">AFTER &middot; HIGH VOLUME</text>
+      <text x="366" y="64" font-size="17" font-weight="800" fill="#340F12">200 cold emails</text>
+      <text x="366" y="86" font-size="12.5" font-weight="600" fill="#5E2328">sent per month</text>
+      <!-- result math -->
+      <rect x="366" y="106" width="268" height="58" rx="10" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="500" y="130" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">200 &times; 1% = 2 clients</text>
+      <text x="500" y="152" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">predictable. every month.</text>
+      <!-- arrow down -->
+      <line x1="500" y1="168" x2="500" y2="192" stroke="#DC2626" stroke-width="3"/>
+      <polygon points="490,185 500,198 510,185" fill="#DC2626"/>
+      <rect x="400" y="200" width="200" height="38" rx="10" fill="#DC2626"/>
+      <text x="500" y="224" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFDFD">not luck — math</text>
+      <text x="366" y="266" font-size="12" font-weight="700" fill="#A66A6F" font-style="italic">Each &ldquo;yes&rdquo; is expected, not celebrated.</text>
+    </svg>
+    <div class="caption">Low volume makes every result feel like fate. High volume makes every result feel like arithmetic.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- PAGE 5 · THE REPS CURVE -->
+<section class="page">
+  <div class="rhead"><span class="v">VOLUME NEGATES LUCK</span><span>Volume Builds Skill</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Reps don&rsquo;t just generate results &mdash; <span class="em">reps create skill.</span></h2>
+
+  <p>There is no shortcut to competence. You cannot study your way there. You cannot watch enough YouTube. The neural pathways that make you good at anything are built by <span class="b">doing the thing, badly, and learning.</span></p>
+
+  <p>A person with 1,000 sales calls is not running the same program as a person with 10. They hear the objections before they arrive. They feel the close before the prospect knows it&rsquo;s coming. Reps are the only currency that buys that.</p>
+
+  <div class="pull">Your hit rate grows <span class="em">because</span> of your attempt count &mdash; not despite it.</div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- skill curve: reps vs hit rate -->
+    <svg viewBox="0 0 654 300" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- axes -->
+      <line x1="60" y1="20" x2="60" y2="240" stroke="#340F12" stroke-width="2.5"/>
+      <line x1="60" y1="240" x2="620" y2="240" stroke="#340F12" stroke-width="2.5"/>
+      <text x="14" y="134" font-size="11" font-weight="800" fill="#340F12" transform="rotate(-90 14 134)" text-anchor="middle">HIT RATE (SKILL)</text>
+      <text x="340" y="270" font-size="11" font-weight="800" fill="#340F12" text-anchor="middle">CUMULATIVE ATTEMPTS</text>
+      <!-- tick labels -->
+      <text x="100" y="258" font-size="10" fill="#A66A6F" text-anchor="middle">10</text>
+      <text x="200" y="258" font-size="10" fill="#A66A6F" text-anchor="middle">100</text>
+      <text x="340" y="258" font-size="10" fill="#A66A6F" text-anchor="middle">500</text>
+      <text x="500" y="258" font-size="10" fill="#A66A6F" text-anchor="middle">1,000</text>
+      <text x="600" y="258" font-size="10" fill="#A66A6F" text-anchor="middle">5,000</text>
+      <!-- hit rate curve (S-curve) -->
+      <path d="M60,230 C80,228 90,225 100,218 C130,200 160,175 210,148 C270,115 340,90 430,72 C510,57 570,52 620,50"
+        stroke="#DC2626" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <!-- shade area under curve -->
+      <path d="M60,230 C80,228 90,225 100,218 C130,200 160,175 210,148 C270,115 340,90 430,72 C510,57 570,52 620,50 L620,240 L60,240 Z"
+        fill="#FBE0E0" opacity="0.5"/>
+      <!-- milestone markers -->
+      <circle cx="100" cy="218" r="6" fill="#A66A6F"/>
+      <text x="110" y="210" font-size="11" font-weight="700" fill="#A66A6F">beginner</text>
+      <circle cx="210" cy="148" r="6" fill="#DC2626"/>
+      <text x="220" y="140" font-size="11" font-weight="800" fill="#DC2626">competent</text>
+      <circle cx="430" cy="72" r="6" fill="#991218"/>
+      <text x="440" y="64" font-size="11" font-weight="800" fill="#991218">dangerous</text>
+    </svg>
+    <div class="caption">The curve is steep early, then flattens — but the first 200 reps move you from amateur to real.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- PAGE 6 · THE 2x2 QUADRANT -->
+<section class="page">
+  <div class="rhead"><span class="v">VOLUME NEGATES LUCK</span><span>The Four Players</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Only one quadrant <span class="em">wins</span> consistently.</h2>
+
+  <p>Map every operator you know on two axes: volume of activity and quality of execution. You&rsquo;ll find four types. Three of them have a story about why things aren&rsquo;t working. One of them is just printing money.</p>
+
+  <p>The path isn&rsquo;t from low-volume to high-quality first. It&rsquo;s from low-volume to <span class="b">high-volume</span> first &mdash; because quality follows reps, not the other way around.</p>
+
+  <p class="small">High quality, low volume is the &ldquo;perfectionist&rdquo; trap. They&rsquo;d be rich if only they shipped. They never ship.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- 2x2 quadrant -->
+    <svg viewBox="0 0 654 320" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- winner quadrant highlight (high vol, high quality = top right) -->
+      <rect x="328" y="20" width="310" height="144" rx="0" fill="#FBE0E0"/>
+      <!-- axes -->
+      <line x1="60" y1="20" x2="60" y2="280" stroke="#340F12" stroke-width="2.5"/>
+      <line x1="60" y1="280" x2="638" y2="280" stroke="#340F12" stroke-width="2.5"/>
+      <!-- mid lines -->
+      <line x1="328" y1="20" x2="328" y2="280" stroke="#F0D6D8" stroke-width="2"/>
+      <line x1="60" y1="164" x2="638" y2="164" stroke="#F0D6D8" stroke-width="2"/>
+      <!-- axis labels -->
+      <text x="14" y="152" font-size="11" font-weight="800" fill="#340F12" transform="rotate(-90 14 152)" text-anchor="middle">QUALITY OF EXECUTION</text>
+      <text x="349" y="304" font-size="11" font-weight="800" fill="#340F12" text-anchor="middle">VOLUME OF ACTIVITY</text>
+      <!-- Q1: low vol, high quality -->
+      <text x="80" y="54" font-size="12" font-weight="800" fill="#A66A6F">HIGH QUALITY</text>
+      <text x="80" y="72" font-size="12" font-weight="800" fill="#A66A6F">LOW VOLUME</text>
+      <text x="80" y="100" font-size="14" font-weight="800" fill="#5E2328">The Perfectionist</text>
+      <text x="80" y="120" font-size="11.5" fill="#A66A6F" font-style="italic">waiting for the perfect moment</text>
+      <text x="80" y="138" font-size="11.5" fill="#A66A6F" font-style="italic">that never comes</text>
+      <!-- Q2: high vol, high quality = WINNER -->
+      <text x="348" y="34" font-size="12" font-weight="800" fill="#DC2626">HIGH QUALITY</text>
+      <text x="348" y="52" font-size="12" font-weight="800" fill="#DC2626">HIGH VOLUME &#10003;</text>
+      <text x="348" y="80" font-size="16" font-weight="800" fill="#340F12">The Machine</text>
+      <text x="348" y="100" font-size="11.5" fill="#5E2328" font-style="italic">prints money. consistently.</text>
+      <text x="348" y="118" font-size="11.5" fill="#5E2328" font-style="italic">luck is not a factor.</text>
+      <rect x="444" y="132" width="130" height="26" rx="13" fill="#DC2626"/>
+      <text x="509" y="150" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFDFD">TARGET STATE</text>
+      <!-- Q3: low vol, low quality -->
+      <text x="80" y="200" font-size="12" font-weight="800" fill="#A66A6F">LOW QUALITY</text>
+      <text x="80" y="218" font-size="12" font-weight="800" fill="#A66A6F">LOW VOLUME</text>
+      <text x="80" y="246" font-size="14" font-weight="800" fill="#5E2328">The Hobbyist</text>
+      <text x="80" y="266" font-size="11.5" fill="#A66A6F" font-style="italic">calls it a business</text>
+      <!-- Q4: high vol, low quality -->
+      <text x="348" y="200" font-size="12" font-weight="800" fill="#5E2328">LOW QUALITY</text>
+      <text x="348" y="218" font-size="12" font-weight="800" fill="#DC2626">HIGH VOLUME</text>
+      <text x="348" y="246" font-size="14" font-weight="800" fill="#5E2328">The Grinder</text>
+      <text x="348" y="266" font-size="11.5" fill="#5E2328" font-style="italic">volume → skill → quality</text>
+    </svg>
+    <div class="caption">Start as the Grinder — volume teaches quality. Never start as the Perfectionist.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- PAGE 7 · DAILY REPS PROTOCOL -->
+<section class="page">
+  <div class="rhead"><span class="v">VOLUME NEGATES LUCK</span><span>The Protocol</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Set a <span class="em">daily minimum.</span> Then honour it like a bill.</h2>
+
+  <p>Motivation is a feeling. Feelings are unreliable. The only thing that shows up every day regardless of how you feel is a <span class="b">minimum non-negotiable rep count.</span></p>
+
+  <p>Five sales calls a day sounds laughably small. It&rsquo;s 1,825 calls a year. A 2% close rate means 36 new clients. That&rsquo;s a business. The compound is in the consistency, not the sprint.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;I&rsquo;ll do 50 calls next week when I&rsquo;m feeling motivated.&rdquo; &mdash; never happens, or happens once</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;Five calls before noon, every day, no exceptions.&rdquo; &mdash; 1,825 calls this year</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- flow: daily reps compound -->
+    <svg viewBox="0 0 654 280" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- step 1 -->
+      <rect x="0" y="30" width="148" height="74" rx="11" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="74" y="60" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">SET YOUR</text>
+      <text x="74" y="80" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">MINIMUM</text>
+      <text x="74" y="98" text-anchor="middle" font-size="11" fill="#5E2328">(non-negotiable)</text>
+      <!-- arrow -->
+      <line x1="150" y1="67" x2="178" y2="67" stroke="#DC2626" stroke-width="3"/>
+      <polygon points="170,58 183,67 170,76" fill="#DC2626"/>
+      <!-- step 2 -->
+      <rect x="184" y="30" width="148" height="74" rx="11" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="258" y="60" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">DO THE</text>
+      <text x="258" y="80" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">REPS DAILY</text>
+      <text x="258" y="98" text-anchor="middle" font-size="11" fill="#5E2328">(regardless of mood)</text>
+      <!-- arrow -->
+      <line x1="334" y1="67" x2="362" y2="67" stroke="#DC2626" stroke-width="3"/>
+      <polygon points="354,58 367,67 354,76" fill="#DC2626"/>
+      <!-- step 3 -->
+      <rect x="368" y="30" width="148" height="74" rx="11" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="442" y="60" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">REVIEW &amp;</text>
+      <text x="442" y="80" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">ADJUST</text>
+      <text x="442" y="98" text-anchor="middle" font-size="11" fill="#5E2328">(what worked? why?)</text>
+      <!-- arrow -->
+      <line x1="518" y1="67" x2="546" y2="67" stroke="#DC2626" stroke-width="3"/>
+      <polygon points="538,58 551,67 538,76" fill="#DC2626"/>
+      <!-- step 4 -->
+      <rect x="552" y="30" width="102" height="74" rx="11" fill="#DC2626"/>
+      <text x="603" y="64" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFDFD">SKILL</text>
+      <text x="603" y="84" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFDFD">RISES</text>
+      <!-- math box -->
+      <rect x="0" y="140" width="654" height="110" rx="13" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="30" y="170" font-size="13" font-weight="800" fill="#A66A6F" letter-spacing="1">COMPOUND MATH</text>
+      <text x="30" y="198" font-size="16" font-weight="800" fill="#340F12">5 calls/day &times; 250 work days = 1,250 calls</text>
+      <text x="30" y="222" font-size="16" font-weight="800" fill="#340F12">1,250 &times; 2% close rate = <tspan fill="#DC2626">25 new clients/year</tspan></text>
+      <text x="30" y="242" font-size="12" font-weight="700" fill="#A66A6F" font-style="italic">and your close rate climbs as reps compound</text>
+    </svg>
+    <div class="caption">A tiny daily minimum, done every single day, produces what binge weeks never can.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- PAGE 8 · THE REAL BOTTLENECK -->
+<section class="page">
+  <div class="rhead"><span class="v">VOLUME NEGATES LUCK</span><span>The Real Bottleneck</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The bottleneck is almost never <span class="em">ability.</span></h2>
+
+  <p>When founders say &ldquo;the market isn&rsquo;t ready&rdquo; or &ldquo;I need to refine my offer first,&rdquo; what they&rsquo;re usually confessing is that they haven&rsquo;t done enough reps to know whether any of that is true.</p>
+
+  <p>You cannot diagnose a low-volume problem by getting better at the skill. You need to send more emails to find out your email is broken. You need to pitch more prospects to discover your pricing is off. <span class="b">Volume surfaces the real constraint.</span></p>
+
+  <div class="pull">The answer to &ldquo;why isn&rsquo;t it working?&rdquo; is almost always <span class="em">&ldquo;not enough attempts to know.&rdquo;</span></div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- bar chart: stated vs real constraints -->
+    <svg viewBox="0 0 654 300" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="22" font-size="12" font-weight="800" fill="#A66A6F" letter-spacing="1.5">WHAT FOUNDERS SAY VS. WHAT&rsquo;S ACTUALLY TRUE</text>
+      <!-- row 1 -->
+      <text x="0" y="60" font-size="13" font-weight="800" fill="#5E2328">&ldquo;My offer isn&rsquo;t good enough.&rdquo;</text>
+      <rect x="0" y="68" width="130" height="20" rx="5" fill="#A66A6F" opacity="0.4"/>
+      <text x="136" y="83" font-size="11" font-weight="700" fill="#DC2626">REAL: I haven&rsquo;t done 50 pitches to know.</text>
+      <!-- row 2 -->
+      <text x="0" y="116" font-size="13" font-weight="800" fill="#5E2328">&ldquo;The market isn&rsquo;t ready.&rdquo;</text>
+      <rect x="0" y="124" width="80" height="20" rx="5" fill="#A66A6F" opacity="0.4"/>
+      <text x="86" y="139" font-size="11" font-weight="700" fill="#DC2626">REAL: I&rsquo;ve spoken to 4 prospects.</text>
+      <!-- row 3 -->
+      <text x="0" y="172" font-size="13" font-weight="800" fill="#5E2328">&ldquo;I need to improve my skills first.&rdquo;</text>
+      <rect x="0" y="180" width="100" height="20" rx="5" fill="#A66A6F" opacity="0.4"/>
+      <text x="106" y="195" font-size="11" font-weight="700" fill="#DC2626">REAL: Skills come from reps, not study.</text>
+      <!-- row 4 -->
+      <text x="0" y="228" font-size="13" font-weight="800" fill="#5E2328">&ldquo;My outreach isn&rsquo;t converting.&rdquo;</text>
+      <rect x="0" y="236" width="280" height="20" rx="5" fill="#DC2626"/>
+      <text x="286" y="251" font-size="11" font-weight="800" fill="#DC2626">TRUE &mdash; do 10x the outreach to fix it.</text>
+      <!-- legend -->
+      <rect x="0" y="270" width="16" height="12" rx="3" fill="#A66A6F" opacity="0.4"/>
+      <text x="22" y="281" font-size="11" fill="#A66A6F">stated concern</text>
+      <rect x="150" y="270" width="16" height="12" rx="3" fill="#DC2626"/>
+      <text x="172" y="281" font-size="11" fill="#DC2626">actual volume problem</text>
+    </svg>
+    <div class="caption">Every false diagnosis becomes clear the moment you have a real sample size to examine.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- PAGE 9 · VOLUME AS IDENTITY -->
+<section class="page">
+  <div class="rhead"><span class="v">VOLUME NEGATES LUCK</span><span>The Identity Shift</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">High-volume operators think about <span class="em">rejection differently.</span></h2>
+
+  <p>Low-volume operators treat each rejection as evidence. Each &ldquo;no&rdquo; confirms the story they&rsquo;ve been telling: that the market is tough, that the timing is wrong, that they&rsquo;re not quite ready yet.</p>
+
+  <p>High-volume operators treat rejection as data and fuel. They need forty &ldquo;no&rsquo;s&rdquo; to understand <em>why</em> people are saying no. They need the reps to tune the machine. <span class="b">Rejection is the raw material they work with, not the verdict they receive.</span></p>
+
+  <div class="band">
+    <div class="t">AT 1,000 REPS, REJECTION STOPS BEING PERSONAL.</div>
+    <div class="s">it becomes a pattern to optimise — not a feeling to recover from</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- flow: rejection becomes data -->
+    <svg viewBox="0 0 654 280" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- low vol path -->
+      <rect x="0" y="0" width="654" height="118" rx="13" fill="#F5E8E8" stroke="#A66A6F" stroke-width="2"/>
+      <text x="22" y="30" font-size="12" font-weight="800" fill="#A66A6F" letter-spacing="1.5">LOW VOLUME OPERATOR</text>
+      <rect x="22" y="42" width="110" height="52" rx="9" fill="#FFFDFD" stroke="#A66A6F" stroke-width="2"/>
+      <text x="77" y="64" text-anchor="middle" font-size="11.5" font-weight="800" fill="#5E2328">REJECTION</text>
+      <text x="77" y="83" text-anchor="middle" font-size="11.5" font-weight="800" fill="#A66A6F">(1 of 5)</text>
+      <line x1="134" y1="68" x2="162" y2="68" stroke="#A66A6F" stroke-width="2.5"/>
+      <polygon points="154,60 167,68 154,76" fill="#A66A6F"/>
+      <rect x="168" y="42" width="140" height="52" rx="9" fill="#FFFDFD" stroke="#A66A6F" stroke-width="2"/>
+      <text x="238" y="68" text-anchor="middle" font-size="11.5" font-weight="800" fill="#5E2328">EVIDENCE</text>
+      <text x="238" y="83" text-anchor="middle" font-size="10" fill="#A66A6F">that I&rsquo;m failing</text>
+      <line x1="310" y1="68" x2="338" y2="68" stroke="#A66A6F" stroke-width="2.5"/>
+      <polygon points="330,60 343,68 330,76" fill="#A66A6F"/>
+      <rect x="344" y="42" width="140" height="52" rx="9" fill="#FFFDFD" stroke="#A66A6F" stroke-width="2"/>
+      <text x="414" y="68" text-anchor="middle" font-size="11.5" font-weight="800" fill="#5E2328">STOP</text>
+      <text x="414" y="83" text-anchor="middle" font-size="10" fill="#A66A6F">or scale back</text>
+      <text x="22" y="108" font-size="11" fill="#A66A6F" font-style="italic">Each no feels like the market speaking directly to them.</text>
+      <!-- high vol path -->
+      <rect x="0" y="140" width="654" height="132" rx="13" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="22" y="170" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.5">HIGH VOLUME OPERATOR</text>
+      <rect x="22" y="182" width="110" height="52" rx="9" fill="#FFFDFD" stroke="#DC2626" stroke-width="2"/>
+      <text x="77" y="204" text-anchor="middle" font-size="11.5" font-weight="800" fill="#340F12">REJECTION</text>
+      <text x="77" y="223" text-anchor="middle" font-size="11.5" font-weight="800" fill="#DC2626">(1 of 500)</text>
+      <line x1="134" y1="208" x2="162" y2="208" stroke="#DC2626" stroke-width="2.5"/>
+      <polygon points="154,200 167,208 154,216" fill="#DC2626"/>
+      <rect x="168" y="182" width="140" height="52" rx="9" fill="#FFFDFD" stroke="#DC2626" stroke-width="2"/>
+      <text x="238" y="208" text-anchor="middle" font-size="11.5" font-weight="800" fill="#340F12">DATA</text>
+      <text x="238" y="223" text-anchor="middle" font-size="10" fill="#5E2328">pattern #37 this week</text>
+      <line x1="310" y1="208" x2="338" y2="208" stroke="#DC2626" stroke-width="2.5"/>
+      <polygon points="330,200 343,208 330,216" fill="#DC2626"/>
+      <rect x="344" y="182" width="140" height="52" rx="9" fill="#DC2626"/>
+      <text x="414" y="208" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFDFD">ADJUST</text>
+      <text x="414" y="223" text-anchor="middle" font-size="10" fill="#F0A0A0">and re-enter</text>
+      <text x="22" y="260" font-size="11" fill="#5E2328" font-style="italic">Rejection is a clue to be decoded, not a verdict to accept.</text>
+    </svg>
+    <div class="caption">Volume transforms the emotional weight of rejection into actionable feedback.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">09</div>
+</section>
+
+<!-- PAGE 10 · CTA -->
+<section class="page">
+  <div class="rhead"><span class="v">VOLUME NEGATES LUCK</span><span>Put It to Work</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">Pick a number. <span class="em">Do it today.</span></h2>
+
+  <p>Not next Monday. Not after you fix the offer. Decide on the one activity that drives revenue for your business &mdash; calls, emails, posts, DMs &mdash; and assign a daily minimum number to it. Then do it.</p>
+
+  <p class="small" style="margin-bottom:6px">Start absurdly small if you have to. Five is fine. Five builds the habit. The habit builds the volume. The volume builds the skill. The skill builds the business.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;I&rsquo;ll wait until everything is ready.&rdquo; &mdash; nothing will ever be ready</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>Write the number down. Do five before noon. Tomorrow, do five again.</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:10px 0">
+    <!-- summary ladder -->
+    <svg viewBox="0 0 654 170" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0" y="0" width="654" height="44" rx="10" fill="#F5E8E8" stroke="#A66A6F" stroke-width="2"/>
+      <text x="30" y="27" font-size="14" font-weight="800" fill="#A66A6F">1. Pick your activity</text>
+      <line x1="327" y1="44" x2="327" y2="62" stroke="#DC2626" stroke-width="3"/>
+      <polygon points="318,56 327,66 336,56" fill="#DC2626"/>
+      <rect x="0" y="66" width="654" height="44" rx="10" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="30" y="93" font-size="14" font-weight="800" fill="#340F12">2. Set a daily minimum (non-negotiable)</text>
+      <line x1="327" y1="110" x2="327" y2="128" stroke="#DC2626" stroke-width="3"/>
+      <polygon points="318,122 327,132 336,122" fill="#DC2626"/>
+      <rect x="0" y="132" width="654" height="44" rx="10" fill="#DC2626"/>
+      <text x="30" y="159" font-size="14" font-weight="800" fill="#FFFDFD">3. Do it. Review. Adjust. Repeat.</text>
+    </svg>
+    <div class="caption">Three steps. No inspiration required. Just arithmetic and discipline.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Leads &amp; beyond &mdash; the Hormozi library.</h3>
+    <p>Every framework in Claude Court traces back to one obsession: help people build businesses that can&rsquo;t be stopped. Volume, systems, offers, leads &mdash; it&rsquo;s all here.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Luck is for people who haven&rsquo;t done the reps yet.</div>
+
+  <div class="stamp">Volume Negates Luck</div>
+  <div class="folio">10</div>
+</section>
+
+</body>
+</html>

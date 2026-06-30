@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Skill Stacking &amp; Rare Pairs — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --panel:#DCF2EF;
+    --ink:#0E2A2A;
+    --ink-soft:#234746;
+    --muted:#6E908E;
+    --line:#D2E6E3;
+    --violet:#0E9488;
+    --violet-deep:#075E55;
+    --violet-soft:#8FD4CC;
+    --violet-fill:#DCF2EF;
+    --plum:#6E908E;
+    --plum-fill:#E9F1F0;
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#b9d6d2; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:76px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#EAF6F4; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#C2EDE7; }
+
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #C8DEDD; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#A8CCC8; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 · COVER -->
+<section class="page">
+  <div class="cover-glyph">&#9733;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; Hormozi / Career &amp; Business</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">The alternative to being world-class at one thing</div>
+    <h1 class="title">SKILL<br>STACKING<br>&amp; RARE<br>PAIRS</h1>
+    <p class="cover-sub">Most career advice tells you to go deep: become the best at one thing. That path takes a decade and most people never get there. Here&rsquo;s the better bet: <b>combine two or three skills nobody else combines.</b></p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; stack &middot; compound &middot; become rare</span></div>
+  </div>
+  <div class="stamp">Skill Stacking &amp; Rare Pairs</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- PAGE 2 · THE 1-IN-1M PROBLEM -->
+<section class="page">
+  <div class="rhead"><span class="v">SKILL STACKING</span><span>The Single-Skill Trap</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Getting to the top 1% <span class="em">takes a decade.</span> There&rsquo;s a faster path.</h2>
+
+  <p class="lead">To be world-class at a single skill, you need the top 1% of practitioners to consider you a peer. In most fields that requires 10,000 hours of deliberate practice &mdash; roughly seven years of full-time work.</p>
+
+  <p>Most people can&rsquo;t or won&rsquo;t do that. And in any single skill, the competition is everyone who has ever specialised in it &mdash; a very large pool.</p>
+
+  <p>The rare-pair path sidesteps both problems. Instead of chasing the top 1%, you combine skills until you&rsquo;re in a category where the pool is <span class="b">tiny by definition.</span></p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- fraction: top 1% × top 1% = 1 in 10,000 -->
+    <svg viewBox="0 0 654 330" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- path A: single skill -->
+      <rect x="0" y="0" width="308" height="310" rx="13" fill="#FFFFFF" stroke="#0E2A2A" stroke-width="2.5"/>
+      <text x="22" y="32" font-size="12" font-weight="800" fill="#6E908E" letter-spacing="1.5">PATH A · SINGLE SKILL</text>
+      <text x="22" y="66" font-size="18" font-weight="800" fill="#0E2A2A">Top 1%</text>
+      <text x="22" y="88" font-size="13" font-weight="600" fill="#234746">at one skill</text>
+      <text x="22" y="116" font-size="13" font-weight="800" fill="#6E908E">Requirements:</text>
+      <text x="22" y="138" font-size="13" font-weight="700" fill="#234746">&bull; 10,000+ deliberate hours</text>
+      <text x="22" y="158" font-size="13" font-weight="700" fill="#234746">&bull; 7&ndash;10 years full-time</text>
+      <text x="22" y="178" font-size="13" font-weight="700" fill="#234746">&bull; Compete vs. everyone</text>
+      <text x="22" y="220" font-size="15" font-weight="800" fill="#6E908E">Competitor pool:</text>
+      <rect x="22" y="232" width="264" height="26" rx="5" fill="#E9F1F0" stroke="#6E908E" stroke-width="2"/>
+      <rect x="22" y="232" width="264" height="26" rx="5" fill="none" stroke="#6E908E" stroke-width="2"/>
+      <text x="30" y="250" font-size="13" font-weight="800" fill="#6E908E">MILLIONS of specialists</text>
+      <text x="22" y="288" font-size="13" font-weight="700" fill="#6E908E" font-style="italic">Most never get there. The few who do are exhausted.</text>
+
+      <!-- path B: rare pair -->
+      <rect x="346" y="0" width="308" height="310" rx="13" fill="#DCF2EF" stroke="#0E9488" stroke-width="2.5"/>
+      <text x="368" y="32" font-size="12" font-weight="800" fill="#0E9488" letter-spacing="1.5">PATH B · RARE PAIR &#10003;</text>
+      <text x="368" y="66" font-size="18" font-weight="800" fill="#0E2A2A">Top 25%</text>
+      <text x="368" y="88" font-size="13" font-weight="600" fill="#234746">at two skills</text>
+      <text x="368" y="116" font-size="13" font-weight="800" fill="#0E9488">Requirements:</text>
+      <text x="368" y="138" font-size="13" font-weight="700" fill="#234746">&bull; ~2,000 hours per skill</text>
+      <text x="368" y="158" font-size="13" font-weight="700" fill="#234746">&bull; 1&ndash;2 years per skill</text>
+      <text x="368" y="178" font-size="13" font-weight="700" fill="#234746">&bull; Combination is the moat</text>
+      <text x="368" y="220" font-size="15" font-weight="800" fill="#0E9488">Competitor pool:</text>
+      <rect x="368" y="232" width="74" height="26" rx="5" fill="#0E9488"/>
+      <text x="412" y="250" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">HUNDREDS</text>
+      <text x="368" y="288" font-size="13" font-weight="700" fill="#234746" font-style="italic">The combination is your rarity. Nobody else did both.</text>
+    </svg>
+    <div class="caption">Rarity from combination is far more achievable than rarity from single-skill supremacy.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- PAGE 3 · THE TOP 25% FORMULA -->
+<section class="page">
+  <div class="rhead"><span class="v">SKILL STACKING</span><span>The Formula</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Top 25% in two skills = <span class="em">1-in-a-thousand.</span></h2>
+
+  <p>If you&rsquo;re in the top 25% of the population at any skill, roughly 1 in 4 people can&rsquo;t beat you. Find two such skills and the math is 1-in-4 times 1-in-4 &mdash; you&rsquo;re now 1-in-16 in that combination.</p>
+
+  <p>Add a third skill where you&rsquo;re in the top 25% and you&rsquo;re now 1-in-64. Keep the skills genuinely useful and their combination <span class="b">amplifying</span> &mdash; not just random &mdash; and you&rsquo;ve built something markets will pay an enormous premium for.</p>
+
+  <div class="band">
+    <div class="t">TOP 25% &times; TOP 25% &times; TOP 25% = 1 IN 64</div>
+    <div class="s">three skills. two thousand hours each. genuinely rare.</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0">
+    <!-- probability fraction diagram -->
+    <svg viewBox="0 0 654 340" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- 1 skill -->
+      <rect x="0" y="0" width="654" height="82" rx="11" fill="#FFFFFF" stroke="#0E2A2A" stroke-width="2"/>
+      <text x="20" y="26" font-size="12" font-weight="800" fill="#6E908E" letter-spacing="1.5">1 SKILL AT TOP 25%</text>
+      <rect x="20" y="36" width="158" height="30" rx="7" fill="#0E9488"/>
+      <text x="99" y="57" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">1 in 4</text>
+      <rect x="184" y="36" width="450" height="30" rx="7" fill="#E9F1F0" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="409" y="57" text-anchor="middle" font-size="12" font-weight="700" fill="#6E908E">market tier: generalist</text>
+      <!-- 2 skills -->
+      <rect x="0" y="98" width="654" height="82" rx="11" fill="#FFFFFF" stroke="#0E9488" stroke-width="2"/>
+      <text x="20" y="124" font-size="12" font-weight="800" fill="#0E9488" letter-spacing="1.5">2 SKILLS AT TOP 25%</text>
+      <rect x="20" y="134" width="80" height="30" rx="7" fill="#0E9488"/>
+      <text x="60" y="155" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">1 in 16</text>
+      <rect x="106" y="134" width="528" height="30" rx="7" fill="#DCF2EF" stroke="#8FD4CC" stroke-width="2"/>
+      <text x="370" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="#234746">market tier: specialist · commands premium</text>
+      <!-- 3 skills -->
+      <rect x="0" y="196" width="654" height="82" rx="11" fill="#DCF2EF" stroke="#0E9488" stroke-width="2.5"/>
+      <text x="20" y="222" font-size="12" font-weight="800" fill="#075E55" letter-spacing="1.5">3 SKILLS AT TOP 25%</text>
+      <rect x="20" y="232" width="46" height="30" rx="7" fill="#075E55"/>
+      <text x="43" y="253" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">1/64</text>
+      <rect x="72" y="232" width="562" height="30" rx="7" fill="#0E9488"/>
+      <text x="353" y="253" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">market tier: rare pair · category of one</text>
+      <!-- example labels -->
+      <text x="0" y="308" font-size="14" font-weight="800" fill="#234746">Example:</text>
+      <rect x="0" y="316" width="190" height="24" rx="6" fill="#DCF2EF" stroke="#8FD4CC" stroke-width="2"/>
+      <text x="95" y="333" text-anchor="middle" font-size="12" font-weight="800" fill="#0E2A2A">Marketing</text>
+      <text x="198" y="333" font-size="14" font-weight="800" fill="#0E9488">+</text>
+      <rect x="212" y="316" width="190" height="24" rx="6" fill="#DCF2EF" stroke="#8FD4CC" stroke-width="2"/>
+      <text x="307" y="333" text-anchor="middle" font-size="12" font-weight="800" fill="#0E2A2A">Data / Analytics</text>
+      <text x="410" y="333" font-size="14" font-weight="800" fill="#0E9488">+</text>
+      <rect x="424" y="316" width="190" height="24" rx="6" fill="#0E9488"/>
+      <text x="519" y="333" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">Copywriting</text>
+    </svg>
+    <div class="caption">Each additional skill doesn&rsquo;t just add — it multiplies your rarity in the market.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- PAGE 4 · RARE PAIR EXAMPLES -->
+<section class="page">
+  <div class="rhead"><span class="v">SKILL STACKING</span><span>Real-World Pairs</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The most valuable stacks are <span class="em">non-obvious combinations.</span></h2>
+
+  <p>The person who is both a good programmer and a good communicator doesn&rsquo;t just get paid as a programmer. They lead the team. They manage the clients. They write the documentation that actually makes sense.</p>
+
+  <p>The person who understands both sales and fulfilment doesn&rsquo;t just close deals &mdash; they close deals they can keep. The stack creates the leverage; the leverage creates the premium. <span class="b">Look for where two worlds collide and nobody is standing at the intersection.</span></p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <!-- before / after: single vs stacked -->
+    <svg viewBox="0 0 654 310" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- row headers -->
+      <text x="200" y="20" text-anchor="middle" font-size="11" font-weight="800" fill="#6E908E" letter-spacing="1">SINGLE SKILL</text>
+      <text x="490" y="20" text-anchor="middle" font-size="11" font-weight="800" fill="#0E9488" letter-spacing="1">STACKED PAIR &#10003;</text>
+
+      <!-- row 1: designer -->
+      <rect x="0" y="32" width="180" height="50" rx="9" fill="#FFFFFF" stroke="#0E2A2A" stroke-width="2"/>
+      <text x="90" y="54" text-anchor="middle" font-size="13" font-weight="800" fill="#0E2A2A">Designer</text>
+      <text x="90" y="72" text-anchor="middle" font-size="11" fill="#6E908E">spec work &amp; competition</text>
+      <text x="188" y="62" font-size="18" font-weight="800" fill="#0E9488">+</text>
+      <rect x="196" y="32" width="180" height="50" rx="9" fill="#FFFFFF" stroke="#0E2A2A" stroke-width="2"/>
+      <text x="286" y="54" text-anchor="middle" font-size="13" font-weight="800" fill="#0E2A2A">Copywriter</text>
+      <text x="286" y="72" text-anchor="middle" font-size="11" fill="#6E908E">commoditised</text>
+      <line x1="380" y1="57" x2="406" y2="57" stroke="#0E9488" stroke-width="2.5"/>
+      <polygon points="398,49 410,57 398,65" fill="#0E9488"/>
+      <rect x="412" y="32" width="242" height="50" rx="9" fill="#0E9488"/>
+      <text x="533" y="54" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">Brand Strategist</text>
+      <text x="533" y="74" text-anchor="middle" font-size="11" fill="#C2EDE7">writes AND designs the system</text>
+
+      <!-- row 2: engineer + sales -->
+      <rect x="0" y="98" width="180" height="50" rx="9" fill="#FFFFFF" stroke="#0E2A2A" stroke-width="2"/>
+      <text x="90" y="120" text-anchor="middle" font-size="13" font-weight="800" fill="#0E2A2A">Engineer</text>
+      <text x="90" y="138" text-anchor="middle" font-size="11" fill="#6E908E">executes specs only</text>
+      <text x="188" y="128" font-size="18" font-weight="800" fill="#0E9488">+</text>
+      <rect x="196" y="98" width="180" height="50" rx="9" fill="#FFFFFF" stroke="#0E2A2A" stroke-width="2"/>
+      <text x="286" y="120" text-anchor="middle" font-size="13" font-weight="800" fill="#0E2A2A">Sales</text>
+      <text x="286" y="138" text-anchor="middle" font-size="11" fill="#6E908E">no product depth</text>
+      <line x1="380" y1="123" x2="406" y2="123" stroke="#0E9488" stroke-width="2.5"/>
+      <polygon points="398,115 410,123 398,131" fill="#0E9488"/>
+      <rect x="412" y="98" width="242" height="50" rx="9" fill="#0E9488"/>
+      <text x="533" y="120" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">Technical Founder</text>
+      <text x="533" y="140" text-anchor="middle" font-size="11" fill="#C2EDE7">sells what they can build</text>
+
+      <!-- row 3: coach + marketer -->
+      <rect x="0" y="164" width="180" height="50" rx="9" fill="#FFFFFF" stroke="#0E2A2A" stroke-width="2"/>
+      <text x="90" y="186" text-anchor="middle" font-size="13" font-weight="800" fill="#0E2A2A">Coach</text>
+      <text x="90" y="204" text-anchor="middle" font-size="11" fill="#6E908E">word-of-mouth only</text>
+      <text x="188" y="194" font-size="18" font-weight="800" fill="#0E9488">+</text>
+      <rect x="196" y="164" width="180" height="50" rx="9" fill="#FFFFFF" stroke="#0E2A2A" stroke-width="2"/>
+      <text x="286" y="186" text-anchor="middle" font-size="13" font-weight="800" fill="#0E2A2A">Content Creator</text>
+      <text x="286" y="204" text-anchor="middle" font-size="11" fill="#6E908E">no authority</text>
+      <line x1="380" y1="189" x2="406" y2="189" stroke="#0E9488" stroke-width="2.5"/>
+      <polygon points="398,181 410,189 398,197" fill="#0E9488"/>
+      <rect x="412" y="164" width="242" height="50" rx="9" fill="#0E9488"/>
+      <text x="533" y="186" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">Paid Authority Coach</text>
+      <text x="533" y="206" text-anchor="middle" font-size="11" fill="#C2EDE7">attracts clients at scale</text>
+
+      <!-- row 4: ops + finance -->
+      <rect x="0" y="230" width="180" height="50" rx="9" fill="#FFFFFF" stroke="#0E2A2A" stroke-width="2"/>
+      <text x="90" y="252" text-anchor="middle" font-size="13" font-weight="800" fill="#0E2A2A">Ops Manager</text>
+      <text x="90" y="270" text-anchor="middle" font-size="11" fill="#6E908E">execution without vision</text>
+      <text x="188" y="260" font-size="18" font-weight="800" fill="#0E9488">+</text>
+      <rect x="196" y="230" width="180" height="50" rx="9" fill="#FFFFFF" stroke="#0E2A2A" stroke-width="2"/>
+      <text x="286" y="252" text-anchor="middle" font-size="13" font-weight="800" fill="#0E2A2A">Finance</text>
+      <text x="286" y="270" text-anchor="middle" font-size="11" fill="#6E908E">spreadsheets, no context</text>
+      <line x1="380" y1="255" x2="406" y2="255" stroke="#0E9488" stroke-width="2.5"/>
+      <polygon points="398,247 410,255 398,263" fill="#0E9488"/>
+      <rect x="412" y="230" width="242" height="50" rx="9" fill="#075E55"/>
+      <text x="533" y="252" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">COO / Fractional CFO</text>
+      <text x="533" y="272" text-anchor="middle" font-size="11" fill="#8FD4CC">builds and owns the whole engine</text>
+    </svg>
+    <div class="caption">Each combination unlocks a role that neither skill could access alone.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- PAGE 5 · THE ACQUISITION STACK -->
+<section class="page">
+  <div class="rhead"><span class="v">SKILL STACKING</span><span>The Business Stack</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Hormozi&rsquo;s own stack shows <span class="em">how it compounds.</span></h2>
+
+  <p>The framework isn&rsquo;t abstract &mdash; it describes how the most formidable operators are actually built. They didn&rsquo;t pick one skill. They built a sequence of skills, each amplifying the last.</p>
+
+  <p>A marketer who can close is 10&times; more effective than either alone. A closer who understands fulfilment never oversells and never gets a refund. An operator who can create content self-funds their own acquisition. <span class="b">Each skill makes the previous ones more powerful, not redundant.</span></p>
+
+  <div class="pull">The stack isn&rsquo;t a resume. It&rsquo;s a <span class="em">compound machine.</span></div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- flow: acquisition stack -->
+    <svg viewBox="0 0 654 290" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- layer 1: content -->
+      <rect x="0" y="0" width="654" height="50" rx="10" fill="#E9F1F0" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="22" y="20" font-size="11" font-weight="800" fill="#6E908E" letter-spacing="1">LAYER 1</text>
+      <text x="22" y="40" font-size="15" font-weight="800" fill="#234746">Content Creation &amp; Distribution</text>
+      <text x="544" y="33" font-size="11" font-weight="700" fill="#6E908E" text-anchor="end">attracts leads</text>
+      <!-- arrow down -->
+      <line x1="327" y1="52" x2="327" y2="68" stroke="#0E9488" stroke-width="3"/>
+      <polygon points="318,62 327,72 336,62" fill="#0E9488"/>
+      <!-- layer 2: offer -->
+      <rect x="0" y="70" width="654" height="50" rx="10" fill="#DCF2EF" stroke="#8FD4CC" stroke-width="2"/>
+      <text x="22" y="90" font-size="11" font-weight="800" fill="#0E9488" letter-spacing="1">LAYER 2</text>
+      <text x="22" y="110" font-size="15" font-weight="800" fill="#0E2A2A">Offer Design &amp; Pricing</text>
+      <text x="544" y="103" font-size="11" font-weight="700" fill="#0E9488" text-anchor="end">converts intent to cash</text>
+      <!-- arrow down -->
+      <line x1="327" y1="122" x2="327" y2="138" stroke="#0E9488" stroke-width="3"/>
+      <polygon points="318,132 327,142 336,132" fill="#0E9488"/>
+      <!-- layer 3: sales -->
+      <rect x="0" y="140" width="654" height="50" rx="10" fill="#DCF2EF" stroke="#0E9488" stroke-width="2"/>
+      <text x="22" y="160" font-size="11" font-weight="800" fill="#075E55" letter-spacing="1">LAYER 3</text>
+      <text x="22" y="180" font-size="15" font-weight="800" fill="#0E2A2A">Sales &amp; Objection Handling</text>
+      <text x="544" y="173" font-size="11" font-weight="700" fill="#075E55" text-anchor="end">closes without discounting</text>
+      <!-- arrow down -->
+      <line x1="327" y1="192" x2="327" y2="208" stroke="#0E9488" stroke-width="3"/>
+      <polygon points="318,202 327,212 336,202" fill="#0E9488"/>
+      <!-- layer 4: ops/delivery -->
+      <rect x="0" y="210" width="654" height="50" rx="10" fill="#0E9488"/>
+      <text x="22" y="230" font-size="11" font-weight="800" fill="#C2EDE7" letter-spacing="1">LAYER 4</text>
+      <text x="22" y="250" font-size="15" font-weight="800" fill="#FFFFFF">Fulfilment &amp; Retention Systems</text>
+      <text x="544" y="243" font-size="11" font-weight="700" fill="#8FD4CC" text-anchor="end">delivers on the promise</text>
+      <!-- annotation -->
+      <text x="0" y="282" font-size="12" font-weight="700" fill="#6E908E" font-style="italic">&#9658; Each layer makes all layers above it more effective — they compound, not compete.</text>
+    </svg>
+    <div class="caption">A business operator who understands all four layers sees opportunities invisible to specialists in any one.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- PAGE 6 · HOW TO FIND YOUR STACK -->
+<section class="page">
+  <div class="rhead"><span class="v">SKILL STACKING</span><span>Find Your Stack</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The right combination is at the <span class="em">intersection of energy and utility.</span></h2>
+
+  <p>Two filters. First: is there a genuine market willing to pay for this combination? Second: can you stay curious about both skills long enough to get to the top 25%?</p>
+
+  <p>Skills you hate don&rsquo;t stick. Skills with no market don&rsquo;t pay. The sweet spot is where you are <span class="b">naturally energised</span> by the work and the market is <span class="b">actively under-served</span> by people who can do both.</p>
+
+  <p class="small">Start by listing what you already know and what you find yourself reading about at midnight. Then ask: who desperately needs someone who can do both?</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- 2x2: energy × market demand -->
+    <svg viewBox="0 0 654 320" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- winner quadrant highlight (high energy, high demand) -->
+      <rect x="328" y="20" width="310" height="144" rx="0" fill="#DCF2EF"/>
+      <!-- axes -->
+      <line x1="60" y1="20" x2="60" y2="280" stroke="#0E2A2A" stroke-width="2.5"/>
+      <line x1="60" y1="280" x2="638" y2="280" stroke="#0E2A2A" stroke-width="2.5"/>
+      <!-- mid lines -->
+      <line x1="328" y1="20" x2="328" y2="280" stroke="#D2E6E3" stroke-width="2"/>
+      <line x1="60" y1="164" x2="638" y2="164" stroke="#D2E6E3" stroke-width="2"/>
+      <!-- axis labels -->
+      <text x="14" y="152" font-size="11" font-weight="800" fill="#0E2A2A" transform="rotate(-90 14 152)" text-anchor="middle">YOUR ENERGY &amp; CURIOSITY</text>
+      <text x="349" y="304" font-size="11" font-weight="800" fill="#0E2A2A" text-anchor="middle">MARKET DEMAND FOR THE COMBINATION</text>
+      <!-- Q1: low energy, high demand -->
+      <text x="80" y="52" font-size="12" font-weight="800" fill="#6E908E">HIGH ENERGY</text>
+      <text x="80" y="70" font-size="12" font-weight="800" fill="#6E908E">LOW DEMAND</text>
+      <text x="80" y="98" font-size="14" font-weight="800" fill="#234746">The Passion Project</text>
+      <text x="80" y="118" font-size="11.5" fill="#6E908E" font-style="italic">fulfilling but hard to sell</text>
+      <text x="80" y="136" font-size="11.5" fill="#6E908E" font-style="italic">find a paying application</text>
+      <!-- Q2: high energy, high demand = WINNER -->
+      <text x="348" y="34" font-size="12" font-weight="800" fill="#0E9488">HIGH ENERGY</text>
+      <text x="348" y="52" font-size="12" font-weight="800" fill="#0E9488">HIGH DEMAND &#10003;</text>
+      <text x="348" y="80" font-size="16" font-weight="800" fill="#0E2A2A">The Rare Pair</text>
+      <text x="348" y="100" font-size="11.5" fill="#234746" font-style="italic">you&rsquo;re motivated. market needs you.</text>
+      <text x="348" y="118" font-size="11.5" fill="#234746" font-style="italic">this is the stack to build.</text>
+      <rect x="444" y="132" width="130" height="26" rx="13" fill="#0E9488"/>
+      <text x="509" y="150" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFFFF">BUILD THIS</text>
+      <!-- Q3: low energy, low demand -->
+      <text x="80" y="200" font-size="12" font-weight="800" fill="#6E908E">LOW ENERGY</text>
+      <text x="80" y="218" font-size="12" font-weight="800" fill="#6E908E">LOW DEMAND</text>
+      <text x="80" y="246" font-size="14" font-weight="800" fill="#234746">Dead End</text>
+      <text x="80" y="264" font-size="11.5" fill="#6E908E" font-style="italic">abandon this stack</text>
+      <!-- Q4: low energy, high demand -->
+      <text x="348" y="200" font-size="12" font-weight="800" fill="#6E908E">LOW ENERGY</text>
+      <text x="348" y="218" font-size="12" font-weight="800" fill="#0E9488">HIGH DEMAND</text>
+      <text x="348" y="246" font-size="14" font-weight="800" fill="#234746">The Grind</text>
+      <text x="348" y="264" font-size="11.5" fill="#6E908E" font-style="italic">pays but burns you out</text>
+    </svg>
+    <div class="caption">The quadrant you're building toward is where you can't help but get better — and the market is already looking.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- PAGE 7 · BUILDING THE STACK -->
+<section class="page">
+  <div class="rhead"><span class="v">SKILL STACKING</span><span>The Build Sequence</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Build skills in <span class="em">sequence,</span> not all at once.</h2>
+
+  <p>Don&rsquo;t try to acquire three skills simultaneously. Pick the one with the most immediate leverage on your current work or income. Get it to the top 25%. Then add the second.</p>
+
+  <p>The sequencing matters because each new skill is learned <span class="b">faster in context.</span> A marketer learning data analysis already understands which metrics matter. A salesperson learning content already knows which objections make for compelling stories. The previous skills compress the learning curve of the next one.</p>
+
+  <div class="pull">Skill #2 takes half as long to learn if you already have Skill #1.</div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- bar chart: time to top 25% per skill -->
+    <svg viewBox="0 0 654 300" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="20" font-size="12" font-weight="800" fill="#6E908E" letter-spacing="1.5">TIME TO TOP 25% PER SKILL (ILLUSTRATIVE)</text>
+      <!-- axis -->
+      <line x1="0" y1="250" x2="654" y2="250" stroke="#0E2A2A" stroke-width="2"/>
+      <!-- skill 1 bar -->
+      <rect x="20" y="60" width="180" height="190" rx="8" fill="#E9F1F0" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="110" y="106" text-anchor="middle" font-size="15" font-weight="800" fill="#234746">SKILL 1</text>
+      <text x="110" y="130" text-anchor="middle" font-size="22" font-weight="800" fill="#0E2A2A">24</text>
+      <text x="110" y="152" text-anchor="middle" font-size="13" font-weight="700" fill="#6E908E">months</text>
+      <text x="110" y="226" text-anchor="middle" font-size="11" fill="#6E908E">starting from zero</text>
+      <!-- skill 2 bar -->
+      <rect x="240" y="120" width="180" height="130" rx="8" fill="#DCF2EF" stroke="#8FD4CC" stroke-width="2"/>
+      <text x="330" y="156" text-anchor="middle" font-size="15" font-weight="800" fill="#0E9488">SKILL 2</text>
+      <text x="330" y="180" text-anchor="middle" font-size="22" font-weight="800" fill="#0E2A2A">12</text>
+      <text x="330" y="202" text-anchor="middle" font-size="13" font-weight="700" fill="#6E908E">months</text>
+      <text x="330" y="226" text-anchor="middle" font-size="11" fill="#0E9488">context accelerates</text>
+      <!-- skill 3 bar -->
+      <rect x="460" y="160" width="180" height="90" rx="8" fill="#0E9488"/>
+      <text x="550" y="196" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">SKILL 3</text>
+      <text x="550" y="216" text-anchor="middle" font-size="22" font-weight="800" fill="#FFFFFF">6</text>
+      <text x="550" y="233" text-anchor="middle" font-size="13" font-weight="700" fill="#C2EDE7">months</text>
+      <text x="550" y="270" text-anchor="middle" font-size="11" fill="#0E9488">pattern-matching kicks in</text>
+      <!-- total -->
+      <rect x="0" y="280" width="654" height="0" rx="0" fill="none"/>
+    </svg>
+    <div class="caption">Each skill you add builds faster than the one before it. The stack is a compounding asset, not a linear checklist.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- PAGE 8 · DOCUMENTING BUILDS THE STACK -->
+<section class="page">
+  <div class="rhead"><span class="v">SKILL STACKING</span><span>Building in Public</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Sharing the journey <span class="em">accelerates</span> the stack.</h2>
+
+  <p>When you document your skill-building process publicly &mdash; showing what you&rsquo;re learning, how it connects to what you already know, where you&rsquo;re stuck &mdash; something unexpected happens: it functions as a fourth skill.</p>
+
+  <p>Content creation <em>about</em> your stack surface your rare combination to the exact people who need it. The audience you build while learning is the market you&rsquo;ll serve when you arrive. <span class="b">The act of teaching accelerates the learning.</span></p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>Learn privately for 3 years. Emerge as an expert. Hope someone notices.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>Learn in public. Document the combination. The right clients find you while you&rsquo;re still building.</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- flow: learn publicly -->
+    <svg viewBox="0 0 654 270" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- private path -->
+      <rect x="0" y="0" width="654" height="110" rx="13" fill="#E9F1F0" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="22" y="26" font-size="12" font-weight="800" fill="#6E908E" letter-spacing="1.5">PRIVATE LEARNING</text>
+      <rect x="22" y="36" width="120" height="50" rx="9" fill="#FFFFFF" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="82" y="64" text-anchor="middle" font-size="12" font-weight="800" fill="#234746">Learn Skill 1</text>
+      <line x1="144" y1="61" x2="170" y2="61" stroke="#6E908E" stroke-width="2.5"/>
+      <polygon points="162,53 175,61 162,69" fill="#6E908E"/>
+      <rect x="176" y="36" width="120" height="50" rx="9" fill="#FFFFFF" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="236" y="64" text-anchor="middle" font-size="12" font-weight="800" fill="#234746">Learn Skill 2</text>
+      <line x1="298" y1="61" x2="324" y2="61" stroke="#6E908E" stroke-width="2.5"/>
+      <polygon points="316,53 329,61 316,69" fill="#6E908E"/>
+      <rect x="330" y="36" width="120" height="50" rx="9" fill="#FFFFFF" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="390" y="64" text-anchor="middle" font-size="12" font-weight="800" fill="#234746">Emerge expert</text>
+      <line x1="452" y1="61" x2="478" y2="61" stroke="#6E908E" stroke-width="2.5"/>
+      <polygon points="470,53 483,61 470,69" fill="#6E908E"/>
+      <rect x="484" y="36" width="148" height="50" rx="9" fill="#E9F1F0" stroke="#6E908E" stroke-width="2"/>
+      <text x="558" y="58" text-anchor="middle" font-size="12" font-weight="800" fill="#6E908E">Hope clients</text>
+      <text x="558" y="76" text-anchor="middle" font-size="12" font-weight="800" fill="#6E908E">find you</text>
+      <text x="22" y="100" font-size="11.5" fill="#6E908E" font-style="italic">Years pass. The audience is zero. You&rsquo;re starting from nothing.</text>
+      <!-- public path -->
+      <rect x="0" y="130" width="654" height="130" rx="13" fill="#DCF2EF" stroke="#0E9488" stroke-width="2"/>
+      <text x="22" y="156" font-size="12" font-weight="800" fill="#0E9488" letter-spacing="1.5">PUBLIC LEARNING (DOCUMENT THE STACK)</text>
+      <rect x="22" y="166" width="130" height="50" rx="9" fill="#FFFFFF" stroke="#0E9488" stroke-width="2"/>
+      <text x="87" y="188" text-anchor="middle" font-size="12" font-weight="800" fill="#0E2A2A">Learn &amp; post</text>
+      <text x="87" y="206" text-anchor="middle" font-size="11" fill="#0E9488">Skill 1 insights</text>
+      <line x1="154" y1="191" x2="178" y2="191" stroke="#0E9488" stroke-width="2.5"/>
+      <polygon points="170,183 183,191 170,199" fill="#0E9488"/>
+      <rect x="184" y="166" width="130" height="50" rx="9" fill="#FFFFFF" stroke="#0E9488" stroke-width="2"/>
+      <text x="249" y="188" text-anchor="middle" font-size="12" font-weight="800" fill="#0E2A2A">Layer &amp; post</text>
+      <text x="249" y="206" text-anchor="middle" font-size="11" fill="#0E9488">Skill 1 + 2 combo</text>
+      <line x1="316" y1="191" x2="340" y2="191" stroke="#0E9488" stroke-width="2.5"/>
+      <polygon points="332,183 345,191 332,199" fill="#0E9488"/>
+      <rect x="346" y="166" width="290" height="50" rx="9" fill="#0E9488"/>
+      <text x="491" y="188" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">Audience finds you mid-build</text>
+      <text x="491" y="206" text-anchor="middle" font-size="11" fill="#C2EDE7">clients arrive before you finish</text>
+      <text x="22" y="250" font-size="11.5" fill="#234746" font-style="italic">You arrive with proof, an audience, and inbound work. The stack paid during the build.</text>
+    </svg>
+    <div class="caption">Public documentation is not a distraction from skill-building. It is skill-building with a compounding side effect.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- PAGE 9 · THE MARKET OF ONE -->
+<section class="page">
+  <div class="rhead"><span class="v">SKILL STACKING</span><span>The Market of One</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Your stack should make you <span class="em">incomparable,</span> not just better.</h2>
+
+  <p>The goal of skill stacking isn&rsquo;t to win a comparison. It&rsquo;s to exit the comparison entirely. When you combine skills that don&rsquo;t normally go together, prospects can&rsquo;t find an apples-to-apples substitute for you.</p>
+
+  <p>They can&rsquo;t negotiate on price, because there&rsquo;s no benchmark. They can&rsquo;t shop around, because there&rsquo;s no equivalent. The rare pair doesn&rsquo;t win the commodity race &mdash; it <span class="b">refuses to run it.</span></p>
+
+  <div class="band">
+    <div class="t">INCOMPARABLE &gt; BEST.</div>
+    <div class="s">best can be beaten. incomparable has no competition at all.</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- comparison: commodity vs rare pair market position -->
+    <svg viewBox="0 0 654 280" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- commodity position -->
+      <rect x="0" y="0" width="308" height="266" rx="13" fill="#FFFFFF" stroke="#0E2A2A" stroke-width="2.5"/>
+      <text x="22" y="34" font-size="12" font-weight="800" fill="#6E908E" letter-spacing="1.5">COMMODITY SPECIALIST</text>
+      <text x="22" y="64" font-size="16" font-weight="800" fill="#234746">Single skill, well-known</text>
+      <text x="22" y="88" font-size="13" fill="#6E908E">&bull; 5,000 other options for the buyer</text>
+      <text x="22" y="112" font-size="13" fill="#6E908E">&bull; Price-shopped constantly</text>
+      <text x="22" y="136" font-size="13" fill="#6E908E">&bull; Race to the bottom on rates</text>
+      <text x="22" y="160" font-size="13" fill="#6E908E">&bull; Reputation = only differentiator</text>
+      <text x="22" y="184" font-size="13" fill="#6E908E">&bull; Harder to replace but not impossible</text>
+      <!-- benchmark label -->
+      <rect x="22" y="216" width="264" height="30" rx="8" fill="#E9F1F0" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="154" y="236" text-anchor="middle" font-size="13" font-weight="800" fill="#6E908E">EASILY REPLACED</text>
+      <!-- rare pair position -->
+      <rect x="346" y="0" width="308" height="266" rx="13" fill="#DCF2EF" stroke="#0E9488" stroke-width="2.5"/>
+      <text x="368" y="34" font-size="12" font-weight="800" fill="#0E9488" letter-spacing="1.5">RARE PAIR &#10003;</text>
+      <text x="368" y="64" font-size="16" font-weight="800" fill="#0E2A2A">Unique combination</text>
+      <text x="368" y="88" font-size="13" fill="#234746">&bull; Handful of equivalents globally</text>
+      <text x="368" y="112" font-size="13" fill="#234746">&bull; Price is set by you, not the market</text>
+      <text x="368" y="136" font-size="13" fill="#234746">&bull; Clients feel lucky to get access</text>
+      <text x="368" y="160" font-size="13" fill="#234746">&bull; Hard to copy — takes years to build</text>
+      <text x="368" y="184" font-size="13" fill="#234746">&bull; Referrals cite the combination specifically</text>
+      <!-- rare label -->
+      <rect x="368" y="216" width="264" height="30" rx="8" fill="#0E9488"/>
+      <text x="500" y="236" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF">EFFECTIVELY IRREPLACEABLE</text>
+    </svg>
+    <div class="caption">When they can&rsquo;t shop around, they stop negotiating. That&rsquo;s where pricing power lives.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">09</div>
+</section>
+
+<!-- PAGE 10 · CTA -->
+<section class="page">
+  <div class="rhead"><span class="v">SKILL STACKING</span><span>Start the Stack</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">Write your <span class="em">current stack.</span> Then find the gap.</h2>
+
+  <p>Pull out a piece of paper. List every skill where you&rsquo;re already in the top 25% &mdash; or close. List what you find yourself reading at midnight. Then ask: what combination of two or three of these would make someone say &ldquo;I have never met anyone who can do all of that?&rdquo;</p>
+
+  <p class="small" style="margin-bottom:6px">That sentence is your rare pair. The market is whoever would say it. Your job now is to get to the top 25% of each component &mdash; and document the journey loudly enough that the right buyers find you on the way.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>&ldquo;I need to be world-class at one thing before I can charge a premium.&rdquo;</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;I need to be genuinely good at two things no one else combines &mdash; and I need to show that combination consistently.&rdquo;</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:10px 0">
+    <!-- 3-step summary -->
+    <svg viewBox="0 0 654 170" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0" y="0" width="654" height="44" rx="10" fill="#E9F1F0" stroke="#D2E6E3" stroke-width="2"/>
+      <text x="30" y="27" font-size="14" font-weight="800" fill="#234746">1. Inventory your current top-25% skills</text>
+      <line x1="327" y1="44" x2="327" y2="62" stroke="#0E9488" stroke-width="3"/>
+      <polygon points="318,56 327,66 336,56" fill="#0E9488"/>
+      <rect x="0" y="66" width="654" height="44" rx="10" fill="#DCF2EF" stroke="#0E9488" stroke-width="2"/>
+      <text x="30" y="93" font-size="14" font-weight="800" fill="#0E2A2A">2. Find the non-obvious combination the market needs</text>
+      <line x1="327" y1="110" x2="327" y2="128" stroke="#0E9488" stroke-width="3"/>
+      <polygon points="318,122 327,132 336,122" fill="#0E9488"/>
+      <rect x="0" y="132" width="654" height="44" rx="10" fill="#0E9488"/>
+      <text x="30" y="159" font-size="14" font-weight="800" fill="#FFFFFF">3. Build each skill publicly. Let the stack compound.</text>
+    </svg>
+    <div class="caption">Three steps. No permission required. The market will tell you when you&rsquo;ve arrived.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>The Hormozi library &mdash; skills, offers, leads, and leverage.</h3>
+    <p>Skill stacking is one pillar of a broader framework for building businesses and careers that compound instead of plateau. The rest is at acquisition.com.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">You don&rsquo;t need to be the best. You need to be the only one who does both.</div>
+
+  <div class="stamp">Skill Stacking &amp; Rare Pairs</div>
+  <div class="folio">10</div>
+</section>
+
+</body>
+</html>
