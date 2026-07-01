@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Divergent List — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;        /* white page               */
+    --panel:#F4F0FC;        /* light lavender panels    */
+    --ink:#1C1235;          /* deep violet-ink text     */
+    --ink-soft:#473A63;     /* secondary text           */
+    --muted:#8C7BA8;        /* captions, running heads  */
+    --line:#E5DCF6;         /* lavender hairlines       */
+    --violet:#7C3AED;       /* the accent (~10%)        */
+    --violet-deep:#4C1D95;  /* strong fills             */
+    --violet-soft:#C9B8F5;  /* glow / light strokes     */
+    --violet-fill:#EDE7FB;  /* faint violet block fill  */
+    --plum:#9A86B8;         /* destroys / minimize / cut*/
+    --plum-fill:#F0EBF6;    /* faint plum block fill    */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#d8cdf0; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page: full-width CTA, upper content in a bounded landscape row */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  /* cover */
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#F3EEFC; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#E9DEFB; }
+
+  /* compare rows */
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #DCCEEA; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  /* CTA */
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#D9CCEF; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">&#247;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Offers</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">The raw material for every great offer</div>
+    <h1 class="title">THE<br>DIVERGENT<br>LIST</h1>
+    <p class="cover-sub">Most offers solve one problem and stop. But the buyer&rsquo;s path is lined with obstacles, and each unsolved one becomes an objection. Here is how to find them all first &mdash; and build solutions before anyone asks.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; diverge first &middot; converge second</span></div>
+  </div>
+  <div class="stamp">The Divergent List &middot; $100M Offers</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · WHY SHALLOW OFFERS LOSE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE DIVERGENT LIST</span><span>Why Shallow Offers Lose</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">One solution. <span class="em">A dozen reasons to walk.</span></h2>
+
+  <p class="lead">Every buyer has a dream outcome. Between them and it: a road full of obstacles. Solve only the headline problem and all the others become objections.</p>
+
+  <p>The shallow offer answers the loudest fear and stops. The buyer nods, then quietly thinks of nine more reasons this won&rsquo;t work. Each unanswered obstacle is a reason to delay, hesitate, or leave.</p>
+
+  <p>The deep offer <span class="b">anticipates the full journey</span> and removes friction at every stage. The buyer runs out of objections before they finish hearing it.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 286" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- SHALLOW offer -->
+      <text x="0" y="22" font-size="12.5" font-weight="800" fill="#9A86B8" letter-spacing="1">SHALLOW OFFER</text>
+      <rect x="0" y="32" width="220" height="46" rx="10" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2.5"/>
+      <text x="110" y="61" text-anchor="middle" font-size="15" font-weight="800" fill="#473A63">Core Promise Only</text>
+      <!-- objection bubbles floating around -->
+      <rect x="0" y="96" width="104" height="30" rx="8" fill="#F4F0FC" stroke="#DCCEEA" stroke-width="1.5"/>
+      <text x="52" y="116" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">no time</text>
+      <rect x="114" y="96" width="104" height="30" rx="8" fill="#F4F0FC" stroke="#DCCEEA" stroke-width="1.5"/>
+      <text x="166" y="116" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">skill gap</text>
+      <rect x="0" y="138" width="104" height="30" rx="8" fill="#F4F0FC" stroke="#DCCEEA" stroke-width="1.5"/>
+      <text x="52" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">fear of failing</text>
+      <rect x="114" y="138" width="104" height="30" rx="8" fill="#F4F0FC" stroke="#DCCEEA" stroke-width="1.5"/>
+      <text x="166" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">wrong software</text>
+      <rect x="0" y="180" width="104" height="30" rx="8" fill="#F4F0FC" stroke="#DCCEEA" stroke-width="1.5"/>
+      <text x="52" y="200" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">no accountability</text>
+      <rect x="114" y="180" width="104" height="30" rx="8" fill="#F4F0FC" stroke="#DCCEEA" stroke-width="1.5"/>
+      <text x="166" y="200" text-anchor="middle" font-size="11" font-weight="700" fill="#8C7BA8">no process</text>
+      <text x="110" y="248" text-anchor="middle" font-size="13.5" font-weight="800" fill="#9A86B8">&#10007; BUYER HESITATES</text>
+
+      <!-- divider -->
+      <line x1="248" y1="20" x2="248" y2="266" stroke="#E5DCF6" stroke-width="2" stroke-dasharray="6 4"/>
+
+      <!-- DEEP offer -->
+      <text x="264" y="22" font-size="12.5" font-weight="800" fill="#7C3AED" letter-spacing="1">DEEP OFFER</text>
+      <rect x="264" y="32" width="390" height="46" rx="10" fill="#7C3AED"/>
+      <text x="459" y="61" text-anchor="middle" font-size="15" font-weight="800" fill="#FFFFFF">Core Promise + Solved Obstacles</text>
+      <!-- solved chips -->
+      <rect x="264" y="96" width="112" height="30" rx="8" fill="#EDE7FB" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="320" y="116" text-anchor="middle" font-size="11" font-weight="700" fill="#4C1D95">no time &#10003;</text>
+      <rect x="386" y="96" width="112" height="30" rx="8" fill="#EDE7FB" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="442" y="116" text-anchor="middle" font-size="11" font-weight="700" fill="#4C1D95">skill gap &#10003;</text>
+      <rect x="508" y="96" width="112" height="30" rx="8" fill="#EDE7FB" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="564" y="116" text-anchor="middle" font-size="11" font-weight="700" fill="#4C1D95">fear &#10003;</text>
+      <rect x="264" y="138" width="112" height="30" rx="8" fill="#EDE7FB" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="320" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="#4C1D95">software &#10003;</text>
+      <rect x="386" y="138" width="112" height="30" rx="8" fill="#EDE7FB" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="442" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="#4C1D95">accountability &#10003;</text>
+      <rect x="508" y="138" width="112" height="30" rx="8" fill="#EDE7FB" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="564" y="158" text-anchor="middle" font-size="11" font-weight="700" fill="#4C1D95">process &#10003;</text>
+      <text x="459" y="248" text-anchor="middle" font-size="13.5" font-weight="800" fill="#7C3AED">&#10003; BUYER BUYS</text>
+    </svg>
+    <div class="caption">Every unanswered obstacle is an invisible objection. The deep offer kills them before they form.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · THE THREE STEPS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE DIVERGENT LIST</span><span>The Three Steps</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Three moves. <span class="em">One unrefusable offer.</span></h2>
+
+  <p class="lead">The divergent list is a three-phase process. Two phases are this document. The third is its sequel.</p>
+
+  <p><span class="b">Phase 1 &mdash; List:</span> Write every obstacle between the customer and their dream outcome. No filter. The goal is exhaustion, not selection.</p>
+
+  <p><span class="b">Phase 2 &mdash; Dream:</span> For each obstacle, write the absolute best solution &mdash; what you&rsquo;d do if cost and time were irrelevant. Still no filter.</p>
+
+  <p><span class="b">Phase 3 &mdash; Trim &amp; Stack:</span> Score each solution on value vs. delivery cost. Keep only the stars. Bundle them into the offer. That&rsquo;s the next breakdown.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:22px 0">
+    <svg viewBox="0 0 654 280" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- step 1 -->
+      <rect x="0" y="20" width="186" height="100" rx="13" fill="#7C3AED"/>
+      <text x="93" y="54" text-anchor="middle" font-size="12" font-weight="800" fill="#E9DEFB" letter-spacing="1">PHASE 1</text>
+      <text x="93" y="78" text-anchor="middle" font-size="22" font-weight="800" fill="#FFFFFF">LIST</text>
+      <text x="93" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#C9B8F5">every obstacle</text>
+      <!-- arrow 1 -->
+      <g stroke="#1C1235" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="188" y1="70" x2="224" y2="70"/>
+        <polyline points="215,61 228,70 215,79"/>
+      </g>
+      <!-- step 2 -->
+      <rect x="228" y="20" width="198" height="100" rx="13" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="327" y="54" text-anchor="middle" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1">PHASE 2</text>
+      <text x="327" y="78" text-anchor="middle" font-size="22" font-weight="800" fill="#1C1235">DREAM</text>
+      <text x="327" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#473A63">perfect solutions</text>
+      <!-- arrow 2 -->
+      <g stroke="#1C1235" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="428" y1="70" x2="464" y2="70"/>
+        <polyline points="455,61 468,70 455,79"/>
+      </g>
+      <!-- step 3 -->
+      <rect x="468" y="20" width="186" height="100" rx="13" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="561" y="54" text-anchor="middle" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1">PHASE 3</text>
+      <text x="561" y="78" text-anchor="middle" font-size="22" font-weight="800" fill="#1C1235">TRIM</text>
+      <text x="561" y="104" text-anchor="middle" font-size="12" font-weight="700" fill="#473A63">&amp; STACK</text>
+
+      <!-- this doc / next doc labels -->
+      <rect x="0" y="142" width="426" height="32" rx="8" fill="#7C3AED" fill-opacity="0.12" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="213" y="163" text-anchor="middle" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1">&#9664; THIS BREAKDOWN</text>
+      <rect x="468" y="142" width="186" height="32" rx="8" fill="#EDE7FB" stroke="#7C3AED" stroke-width="1.5" stroke-dasharray="5 3"/>
+      <text x="561" y="163" text-anchor="middle" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1">NEXT &#9654;</text>
+
+      <!-- outcome strip -->
+      <rect x="0" y="196" width="654" height="66" rx="12" fill="#1C1235"/>
+      <text x="327" y="222" text-anchor="middle" font-size="13" font-weight="800" fill="#E9DEFB" letter-spacing="1.5">COMBINED RESULT</text>
+      <text x="327" y="248" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">An offer so thorough, the prospect runs out of objections.</text>
+    </svg>
+    <div class="caption">Phases 1 and 2 are divergent (generate everything). Phase 3 is convergent (keep the best).</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · MAP THE JOURNEY ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE DIVERGENT LIST</span><span>Phase 1 &mdash; Map Every Obstacle</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">What could stop them <span class="em">at any point?</span></h2>
+
+  <p>Take the dream outcome. Trace the entire path back to where the customer is today. That path is not a straight line &mdash; it is a sequence of decision points, skill gaps, logistics problems, and moments of doubt.</p>
+
+  <p><span class="b">Write them all down:</span> the obstacles before they start, the ones on day one, the ones at week three when motivation falls, and the hardest ones just before they succeed.</p>
+
+  <p>Do not stop until the list feels excessive. A hundred items is correct. Thirty is almost certainly too few &mdash; you stopped when it got uncomfortable.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 280" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- road line -->
+      <line x1="40" y1="138" x2="620" y2="138" stroke="#E5DCF6" stroke-width="3" stroke-dasharray="10 5"/>
+      <!-- start node -->
+      <circle cx="40" cy="138" r="30" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2.5"/>
+      <text x="40" y="134" text-anchor="middle" font-size="10" font-weight="800" fill="#473A63">START</text>
+      <text x="40" y="148" text-anchor="middle" font-size="10" font-weight="800" fill="#473A63">TODAY</text>
+      <!-- obstacle 1 -->
+      <rect x="74" y="100" width="100" height="56" rx="10" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="124" y="124" text-anchor="middle" font-size="11" font-weight="800" fill="#473A63">No time</text>
+      <text x="124" y="140" text-anchor="middle" font-size="10" font-weight="600" fill="#8C7BA8">logistics</text>
+      <text x="124" y="170" text-anchor="middle" font-size="10" font-weight="600" fill="#9A86B8">obstacle 1</text>
+      <!-- obstacle 2 -->
+      <rect x="194" y="86" width="100" height="70" rx="10" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="244" y="114" text-anchor="middle" font-size="11" font-weight="800" fill="#473A63">Skill gap</text>
+      <text x="244" y="130" text-anchor="middle" font-size="10" font-weight="600" fill="#8C7BA8">knowledge</text>
+      <text x="244" y="170" text-anchor="middle" font-size="10" font-weight="600" fill="#9A86B8">obstacle 2</text>
+      <!-- obstacle 3 — violet (the one most offers DO solve) -->
+      <rect x="314" y="92" width="100" height="66" rx="10" fill="#7C3AED"/>
+      <text x="364" y="118" text-anchor="middle" font-size="11" font-weight="800" fill="#FFFFFF">Fear of</text>
+      <text x="364" y="134" text-anchor="middle" font-size="11" font-weight="800" fill="#FFFFFF">failure</text>
+      <text x="364" y="170" text-anchor="middle" font-size="10" font-weight="600" fill="#C9B8F5">what most offers solve</text>
+      <!-- obstacle 4 -->
+      <rect x="434" y="100" width="100" height="56" rx="10" fill="#F0EBF6" stroke="#9A86B8" stroke-width="2"/>
+      <text x="484" y="124" text-anchor="middle" font-size="11" font-weight="800" fill="#473A63">No system</text>
+      <text x="484" y="140" text-anchor="middle" font-size="10" font-weight="600" fill="#8C7BA8">process</text>
+      <text x="484" y="170" text-anchor="middle" font-size="10" font-weight="600" fill="#9A86B8">obstacle 4</text>
+      <!-- dream node -->
+      <circle cx="620" cy="138" r="30" fill="#7C3AED"/>
+      <text x="620" y="134" text-anchor="middle" font-size="9.5" font-weight="800" fill="#FFFFFF">DREAM</text>
+      <text x="620" y="148" text-anchor="middle" font-size="9.5" font-weight="800" fill="#FFFFFF">OUTCOME</text>
+      <!-- insight strip -->
+      <rect x="0" y="210" width="654" height="52" rx="10" fill="#EDE7FB" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="327" y="234" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">EVERY GREY BOX IS A FUTURE COMPONENT OF YOUR OFFER</text>
+      <text x="327" y="252" text-anchor="middle" font-size="11.5" font-weight="600" fill="#473A63">Most offers solve only the violet box &mdash; the grey boxes become objections</text>
+    </svg>
+    <div class="caption">Write the whole road first. Every obstacle you list becomes a potential bonus or feature.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · DREAM SOLUTIONS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE DIVERGENT LIST</span><span>Phase 2 &mdash; Dream Solutions</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">If cost didn&rsquo;t matter, <span class="em">what would you do?</span></h2>
+
+  <p>For each obstacle, write the most complete solution you can imagine &mdash; not the most practical. The one a thoughtful buyer would design if given unlimited resources.</p>
+
+  <p>This forces you away from cheap shortcuts and toward <span class="b">genuine value.</span> And often the dream solution is cheaper to deliver than it first appears.</p>
+
+  <div class="band">
+    <div class="t">VOLUME IS THE GOAL. FILTER NOTHING.</div>
+    <div class="s">you cannot trim what you have not yet written down</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 310" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- one obstacle in centre -->
+      <rect x="202" y="0" width="250" height="58" rx="12" fill="#1C1235"/>
+      <text x="327" y="26" text-anchor="middle" font-size="13" font-weight="800" fill="#E9DEFB" letter-spacing="1">OBSTACLE</text>
+      <text x="327" y="48" text-anchor="middle" font-size="19" font-weight="800" fill="#FFFFFF">&ldquo;No time to do this&rdquo;</text>
+      <!-- radiating solution lines -->
+      <line x1="327" y1="58" x2="90" y2="126" stroke="#C9B8F5" stroke-width="1.8"/>
+      <line x1="327" y1="58" x2="224" y2="130" stroke="#C9B8F5" stroke-width="1.8"/>
+      <line x1="327" y1="58" x2="370" y2="130" stroke="#C9B8F5" stroke-width="1.8"/>
+      <line x1="327" y1="58" x2="530" y2="126" stroke="#C9B8F5" stroke-width="1.8"/>
+      <line x1="327" y1="58" x2="140" y2="236" stroke="#C9B8F5" stroke-width="1.4" stroke-dasharray="5 3"/>
+      <line x1="327" y1="58" x2="490" y2="230" stroke="#C9B8F5" stroke-width="1.4" stroke-dasharray="5 3"/>
+      <!-- solution boxes -->
+      <rect x="10" y="118" width="160" height="50" rx="10" fill="#7C3AED"/>
+      <text x="90" y="140" text-anchor="middle" font-size="12.5" font-weight="800" fill="#FFFFFF">DONE-FOR-YOU</text>
+      <text x="90" y="156" text-anchor="middle" font-size="11" font-weight="600" fill="#C9B8F5">we handle it entirely</text>
+      <rect x="180" y="122" width="152" height="50" rx="10" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="256" y="144" text-anchor="middle" font-size="12.5" font-weight="800" fill="#1C1235">TEMPLATE PACK</text>
+      <text x="256" y="160" text-anchor="middle" font-size="11" font-weight="600" fill="#473A63">plug in &amp; launch</text>
+      <rect x="338" y="122" width="152" height="50" rx="10" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="414" y="144" text-anchor="middle" font-size="12.5" font-weight="800" fill="#1C1235">SCHEDULER TOOL</text>
+      <text x="414" y="160" text-anchor="middle" font-size="11" font-weight="600" fill="#473A63">batch it once a week</text>
+      <rect x="494" y="118" width="160" height="50" rx="10" fill="#7C3AED"/>
+      <text x="574" y="140" text-anchor="middle" font-size="12.5" font-weight="800" fill="#FFFFFF">ACCOUNTABILITY</text>
+      <text x="574" y="156" text-anchor="middle" font-size="11" font-weight="600" fill="#C9B8F5">group check-ins</text>
+      <!-- second tier -->
+      <rect x="60" y="228" width="160" height="50" rx="10" fill="#F4F0FC" stroke="#E5DCF6" stroke-width="2"/>
+      <text x="140" y="250" text-anchor="middle" font-size="12.5" font-weight="800" fill="#473A63">5-MIN CHECKLIST</text>
+      <text x="140" y="266" text-anchor="middle" font-size="11" font-weight="600" fill="#8C7BA8">daily micro-action</text>
+      <rect x="420" y="228" width="160" height="50" rx="10" fill="#F4F0FC" stroke="#E5DCF6" stroke-width="2"/>
+      <text x="500" y="250" text-anchor="middle" font-size="12.5" font-weight="800" fill="#473A63">SOFTWARE TOOL</text>
+      <text x="500" y="266" text-anchor="middle" font-size="11" font-weight="600" fill="#8C7BA8">automates the task</text>
+    </svg>
+    <div class="caption">One obstacle generates six or more possible solutions. Now multiply this by every obstacle on your list.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · FOUR PROBLEM CATEGORIES ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE DIVERGENT LIST</span><span>The Four Types of Obstacles</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">All obstacles are one of <span class="em">four kinds.</span></h2>
+
+  <p>Understanding which type an obstacle is tells you <span class="b">which delivery form solves it cheapest</span> &mdash; and which ones buyers value most highly.</p>
+
+  <p><span class="b">Internal blocks</span> (mindset, belief, confidence) respond best to community, coaching, and early wins. <span class="b">External blocks</span> (time, money, technology) respond to systems, tools, and done-for-you delivery.</p>
+
+  <p><span class="b">Pre-existing</span> problems walk in with the buyer. <span class="b">Process-created</span> problems appear after they start. Solve both and you build trust at every stage of the journey.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- quadrant fills -->
+      <rect x="46" y="20" width="298" height="130" rx="4" fill="#EDE7FB"/>
+      <rect x="350" y="20" width="304" height="130" rx="4" fill="#F0EBF6"/>
+      <rect x="46" y="156" width="298" height="130" rx="4" fill="#F4F0FC"/>
+      <rect x="350" y="156" width="304" height="130" rx="4" fill="#F4F0FC"/>
+      <!-- axes -->
+      <line x1="46" y1="20" x2="46" y2="286" stroke="#1C1235" stroke-width="2.5"/>
+      <line x1="46" y1="153" x2="654" y2="153" stroke="#1C1235" stroke-width="2.5"/>
+      <!-- quadrant labels -->
+      <text x="195" y="48" text-anchor="middle" font-size="11.5" font-weight="800" fill="#7C3AED" letter-spacing="1">INTERNAL &middot; PRE-EXISTING</text>
+      <text x="195" y="70" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">&ldquo;I don&rsquo;t believe I can.&rdquo;</text>
+      <text x="195" y="98" text-anchor="middle" font-size="12" font-weight="600" fill="#473A63">Fix with: case studies,</text>
+      <text x="195" y="116" text-anchor="middle" font-size="12" font-weight="600" fill="#473A63">quick wins, community</text>
+      <text x="502" y="48" text-anchor="middle" font-size="11.5" font-weight="800" fill="#9A86B8" letter-spacing="1">EXTERNAL &middot; PRE-EXISTING</text>
+      <text x="502" y="70" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">&ldquo;I don&rsquo;t have the time.&rdquo;</text>
+      <text x="502" y="98" text-anchor="middle" font-size="12" font-weight="600" fill="#473A63">Fix with: DFY, templates,</text>
+      <text x="502" y="116" text-anchor="middle" font-size="12" font-weight="600" fill="#473A63">schedulers, systems</text>
+      <text x="195" y="184" text-anchor="middle" font-size="11.5" font-weight="800" fill="#7C3AED" letter-spacing="1">INTERNAL &middot; PROCESS</text>
+      <text x="195" y="206" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">&ldquo;This feels hard to learn.&rdquo;</text>
+      <text x="195" y="230" text-anchor="middle" font-size="12" font-weight="600" fill="#473A63">Fix with: walkthroughs,</text>
+      <text x="195" y="248" text-anchor="middle" font-size="12" font-weight="600" fill="#473A63">live coaching, Q&amp;A calls</text>
+      <text x="502" y="184" text-anchor="middle" font-size="11.5" font-weight="800" fill="#9A86B8" letter-spacing="1">EXTERNAL &middot; PROCESS</text>
+      <text x="502" y="206" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">&ldquo;I need the right software.&rdquo;</text>
+      <text x="502" y="230" text-anchor="middle" font-size="12" font-weight="600" fill="#473A63">Fix with: integrations,</text>
+      <text x="502" y="248" text-anchor="middle" font-size="12" font-weight="600" fill="#473A63">tools, tech support</text>
+      <!-- axis labels -->
+      <text x="22" y="90" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1235" transform="rotate(-90 22 90)">INTERNAL</text>
+      <text x="22" y="226" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1235" transform="rotate(-90 22 226)">EXTERNAL</text>
+      <text x="195" y="310" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1235">PRE-EXISTING</text>
+      <text x="502" y="310" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1235">PROCESS-CREATED</text>
+    </svg>
+    <div class="caption">Classify each obstacle first. The quadrant tells you the best delivery form &mdash; and how valuable the fix will feel.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · DELIVERY FORMS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE DIVERGENT LIST</span><span>Delivery Forms</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The same solution. <span class="em">Many delivery forms.</span></h2>
+
+  <p>Once you have the ideal solution for an obstacle, decide <span class="b">how it reaches the customer.</span> Each delivery form has a different cost-to-perceived-value ratio.</p>
+
+  <p>Done-for-you has the highest perceived value but also the highest delivery cost. Digital assets have near-zero marginal cost. Most high-margin businesses live in the middle row.</p>
+
+  <p class="small">A weekly group call costs you 90 minutes once and serves 40 people. A 10-page PDF costs nothing after creation. Match the delivery form to your economics &mdash; not to what feels most impressive.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- header row -->
+      <text x="0" y="18" font-size="11.5" font-weight="800" fill="#8C7BA8" letter-spacing="1">DELIVERY FORM</text>
+      <text x="416" y="18" font-size="11.5" font-weight="800" fill="#8C7BA8" letter-spacing="1" text-anchor="middle">COST TO YOU</text>
+      <text x="600" y="18" font-size="11.5" font-weight="800" fill="#8C7BA8" letter-spacing="1" text-anchor="middle">BUYER VALUE</text>
+      <!-- row: DFY -->
+      <rect x="0" y="28" width="236" height="48" rx="10" fill="#7C3AED"/>
+      <text x="118" y="51" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">DONE-FOR-YOU</text>
+      <text x="118" y="67" text-anchor="middle" font-size="11" font-weight="600" fill="#C9B8F5">we do the work</text>
+      <rect x="332" y="36" width="118" height="14" rx="7" fill="#9A86B8"/>
+      <text x="460" y="48" font-size="11" font-weight="700" fill="#473A63">HIGH</text>
+      <rect x="532" y="36" width="118" height="14" rx="7" fill="#7C3AED"/>
+      <text x="654" y="48" font-size="11" font-weight="700" fill="#473A63" text-anchor="end">VERY HIGH</text>
+      <!-- row: DWY -->
+      <rect x="0" y="90" width="236" height="48" rx="10" fill="#FFFFFF" stroke="#1C1235" stroke-width="2"/>
+      <text x="118" y="113" text-anchor="middle" font-size="14" font-weight="800" fill="#1C1235">DONE-WITH-YOU</text>
+      <text x="118" y="129" text-anchor="middle" font-size="11" font-weight="600" fill="#473A63">coaching / group calls</text>
+      <rect x="332" y="98" width="78" height="14" rx="7" fill="#C9B8F5"/>
+      <text x="460" y="110" font-size="11" font-weight="700" fill="#473A63">MED</text>
+      <rect x="532" y="98" width="98" height="14" rx="7" fill="#7C3AED"/>
+      <text x="654" y="110" font-size="11" font-weight="700" fill="#473A63" text-anchor="end">HIGH</text>
+      <!-- row: self-directed -->
+      <rect x="0" y="152" width="236" height="48" rx="10" fill="#F4F0FC" stroke="#E5DCF6" stroke-width="2"/>
+      <text x="118" y="175" text-anchor="middle" font-size="14" font-weight="800" fill="#1C1235">SELF-DIRECTED</text>
+      <text x="118" y="191" text-anchor="middle" font-size="11" font-weight="600" fill="#473A63">course / video training</text>
+      <rect x="332" y="160" width="44" height="14" rx="7" fill="#C9B8F5"/>
+      <text x="460" y="172" font-size="11" font-weight="700" fill="#473A63">LOW</text>
+      <rect x="532" y="160" width="72" height="14" rx="7" fill="#C9B8F5"/>
+      <text x="654" y="172" font-size="11" font-weight="700" fill="#473A63" text-anchor="end">MED</text>
+      <!-- row: digital asset -->
+      <rect x="0" y="214" width="236" height="48" rx="10" fill="#F4F0FC" stroke="#E5DCF6" stroke-width="2"/>
+      <text x="118" y="237" text-anchor="middle" font-size="14" font-weight="800" fill="#1C1235">DIGITAL ASSET</text>
+      <text x="118" y="253" text-anchor="middle" font-size="11" font-weight="600" fill="#473A63">template / PDF / tool</text>
+      <rect x="332" y="222" width="10" height="14" rx="5" fill="#EDE7FB" stroke="#C9B8F5" stroke-width="1.5"/>
+      <text x="460" y="234" font-size="11" font-weight="700" fill="#473A63">NEAR ZERO</text>
+      <rect x="532" y="222" width="52" height="14" rx="7" fill="#EDE7FB" stroke="#C9B8F5" stroke-width="1.5"/>
+      <text x="654" y="234" font-size="11" font-weight="700" fill="#473A63" text-anchor="end">MED-LOW</text>
+      <!-- sweet spot -->
+      <rect x="0" y="280" width="654" height="36" rx="9" fill="#EDE7FB" stroke="#7C3AED" stroke-width="1.5"/>
+      <text x="327" y="303" text-anchor="middle" font-size="13" font-weight="800" fill="#1C1235">SWEET SPOT: Done-With-You + Digital Assets &rarr; high buyer value, manageable cost</text>
+    </svg>
+    <div class="caption">Pick the delivery form per obstacle &mdash; not per what sounds impressive. Economics decide.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · THE DIVERGENCE PRINCIPLE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE DIVERGENT LIST</span><span>The Principle</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Generate <span class="em">before</span> you judge.</h2>
+
+  <p>The failure mode is filtering too early. You build a short list, look at the first few solutions, conclude they cost too much, and stop. The result is a thin offer that competes on price.</p>
+
+  <p>A 10-item list is a product. A <span class="b">100-item list trimmed to 10</span> is a Grand Slam Offer &mdash; because the items that survived the cut are genuinely the best available.</p>
+
+  <p>Think of it as a diamond: spread wide first, then narrow hard. The narrowing only works if the spreading was real. A shallow well never produces clean water.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- labels -->
+      <text x="0" y="22" font-size="12.5" font-weight="800" fill="#7C3AED" letter-spacing="1">DIVERGE &rarr; GENERATE EVERYTHING</text>
+      <text x="654" y="22" font-size="12.5" font-weight="800" fill="#1C1235" letter-spacing="1" text-anchor="end">CONVERGE &rarr; KEEP THE BEST</text>
+      <!-- left wide cone -->
+      <polygon points="60,48 60,282 300,165" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2.5"/>
+      <!-- idea dots -->
+      <circle cx="100" cy="88" r="14" fill="#7C3AED"/>
+      <text x="100" y="92" text-anchor="middle" font-size="9" font-weight="800" fill="#FFFFFF">100+</text>
+      <circle cx="100" cy="165" r="14" fill="#C9B8F5"/>
+      <text x="100" y="169" text-anchor="middle" font-size="9" font-weight="800" fill="#1C1235">ideas</text>
+      <circle cx="100" cy="242" r="14" fill="#7C3AED"/>
+      <text x="100" y="246" text-anchor="middle" font-size="9" font-weight="800" fill="#FFFFFF">100+</text>
+      <!-- labels left -->
+      <text x="140" y="94" font-size="11" font-weight="700" fill="#473A63">all problems</text>
+      <text x="140" y="170" font-size="11" font-weight="700" fill="#473A63">all solutions</text>
+      <text x="140" y="248" font-size="11" font-weight="700" fill="#473A63">all delivery forms</text>
+      <!-- right narrow cone -->
+      <polygon points="400,165 610,48 610,282" fill="#1C1235"/>
+      <!-- filter label -->
+      <text x="338" y="155" text-anchor="middle" font-size="12" font-weight="800" fill="#1C1235">TRIM</text>
+      <text x="338" y="172" text-anchor="middle" font-size="12" font-weight="800" fill="#1C1235">&amp; STACK</text>
+      <!-- output star -->
+      <circle cx="596" cy="165" r="36" fill="#7C3AED" stroke="#FFFFFF" stroke-width="4"/>
+      <text x="596" y="160" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">GRAND</text>
+      <text x="596" y="176" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF">SLAM</text>
+      <!-- thin offer comparison -->
+      <rect x="0" y="296" width="294" height="22" rx="6" fill="#F0EBF6" stroke="#9A86B8" stroke-width="1.5"/>
+      <text x="147" y="312" text-anchor="middle" font-size="11" font-weight="800" fill="#9A86B8">10 ideas &rarr; 10-item offer = commodity</text>
+      <rect x="360" y="296" width="294" height="22" rx="6" fill="#7C3AED"/>
+      <text x="507" y="312" text-anchor="middle" font-size="11" font-weight="800" fill="#FFFFFF">100 ideas &rarr; 10-item offer = Grand Slam</text>
+    </svg>
+    <div class="caption">You can&rsquo;t trim what doesn&rsquo;t exist. Go wide first &mdash; then cut without mercy.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · CLOSE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE DIVERGENT LIST</span><span>Do It Now</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:28px">Open a blank page. <span class="em">Start listing.</span></h2>
+
+  <p class="small" style="margin-bottom:10px">Write the dream outcome at the top. Walk the journey. List every obstacle, however small. Then write the best possible solution for each &mdash; no edits, no filters, no budgets.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&#10007;</span><span>Start by brainstorming solutions &mdash; you&rsquo;ll build the first idea that comes to mind, not the best one.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>Start with the full list of problems first &mdash; every obstacle to the dream outcome, exhaustively, before writing a single solution.</span></div>
+  </div>
+
+  <div class="pull" style="margin-top:16px">A hundred problems.<br>A hundred dream solutions.<br><span class="em">Then you trim.</span></div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:10px 0">
+    <svg viewBox="0 0 654 170" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- three phase boxes -->
+      <rect x="0" y="24" width="180" height="100" rx="12" fill="#7C3AED"/>
+      <text x="90" y="58" text-anchor="middle" font-size="12" font-weight="800" fill="#E9DEFB" letter-spacing="1">PHASE 1</text>
+      <text x="90" y="80" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF">LIST</text>
+      <text x="90" y="104" text-anchor="middle" font-size="11" font-weight="600" fill="#C9B8F5">obstacles</text>
+      <g stroke="#1C1235" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="182" y1="74" x2="208" y2="74"/>
+        <polyline points="199,65 212,74 199,83"/>
+      </g>
+      <rect x="212" y="24" width="180" height="100" rx="12" fill="#FFFFFF" stroke="#1C1235" stroke-width="2.5"/>
+      <text x="302" y="58" text-anchor="middle" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1">PHASE 2</text>
+      <text x="302" y="80" text-anchor="middle" font-size="18" font-weight="800" fill="#1C1235">DREAM</text>
+      <text x="302" y="104" text-anchor="middle" font-size="11" font-weight="600" fill="#473A63">solutions</text>
+      <g stroke="#1C1235" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="394" y1="74" x2="420" y2="74"/>
+        <polyline points="411,65 424,74 411,83"/>
+      </g>
+      <rect x="424" y="24" width="230" height="100" rx="12" fill="#EDE7FB" stroke="#7C3AED" stroke-width="2"/>
+      <text x="539" y="58" text-anchor="middle" font-size="12" font-weight="800" fill="#7C3AED" letter-spacing="1">PHASE 3</text>
+      <text x="539" y="80" text-anchor="middle" font-size="18" font-weight="800" fill="#1C1235">TRIM &amp; STACK</text>
+      <text x="539" y="104" text-anchor="middle" font-size="11" font-weight="600" fill="#473A63">next breakdown</text>
+    </svg>
+    <div class="caption">This doc was phases 1 and 2. Phase 3 is the Trim &amp; Stack breakdown.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Offers &mdash; the book.</h3>
+    <p>The divergent list, the trim, the stack, and every other tool for building offers so good people feel stupid saying no.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">List everything. Dream big. Then trim without mercy.</div>
+
+  <div class="stamp">The Divergent List &middot; $100M Offers</div>
+  <div class="folio">09</div>
+</section>
+
+</body>
+</html>
