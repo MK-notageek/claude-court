@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Reactivation Campaign — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFFFF;        /* white page               */
+    --panel:#DBF2E4;        /* light emerald panels     */
+    --ink:#0C2A18;          /* deep emerald-ink text    */
+    --ink-soft:#21452F;     /* secondary text           */
+    --muted:#6B9078;        /* captions, running heads  */
+    --line:#D0E9D8;         /* emerald hairlines        */
+    --violet:#059669;       /* the accent (~10%)        */
+    --violet-deep:#045C42;  /* strong fills             */
+    --violet-soft:#88D2A6;  /* glow / light strokes     */
+    --violet-fill:#DBF2E4;  /* faint emerald block fill */
+    --plum:#8BAA96;         /* destroys / minimize / cut*/
+    --plum-fill:#EEF6F1;    /* faint plum block fill    */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#b6dcc2; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page: full-width CTA, upper content in a bounded landscape row */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  /* cover */
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#E9F7EE; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#B8E8D4; }
+
+  /* compare rows */
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #C8DDD0; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  /* CTA */
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#B8DCC8; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">&#8635;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Fast Cash</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Your cheapest leads are already in your list.</div>
+    <h1 class="title">THE<br>REACTIVATION<br>CAMPAIGN</h1>
+    <p class="cover-sub">Before you spend a dollar on ads, there is a sleeping asset sitting in your CRM. Old leads who said &ldquo;not yet.&rdquo; Old customers who drifted away. Five messages, the right sequence, and <b>$0 in ad spend</b> can bring them back in two weeks.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; fast cash &middot; dormant list &middot; zero acquisition cost</span></div>
+  </div>
+  <div class="stamp">The Reactivation Campaign &middot; $100M Fast Cash</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · THE SLEEPING ASSET ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE REACTIVATION CAMPAIGN</span><span>The Sleeping Asset</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Your list is an <span class="em">asset you already paid for.</span></h2>
+
+  <p class="lead">Every lead you ever generated cost you something &mdash; time, money, or both. When they didn&rsquo;t buy, most businesses simply forget them.</p>
+
+  <p>That&rsquo;s a mistake. A lead who raised their hand once already crossed the hardest threshold &mdash; they acknowledged they have the problem you solve. The only question left is timing.</p>
+
+  <p>Reactivation is the practice of going back to that list before spending another dollar on cold traffic. The conversion economics are dramatically better: warm leads close at 3&ndash;10&times; the rate of cold ones.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D0 · warm vs cold acquisition cost comparison -->
+    <svg viewBox="0 0 654 270" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="24" font-size="12.5" font-weight="800" fill="#059669" letter-spacing="1">COST TO ACQUIRE ONE CUSTOMER</text>
+
+      <!-- cold traffic bar -->
+      <rect x="0" y="40" width="654" height="86" rx="12" fill="#EEF6F1" stroke="#8BAA96" stroke-width="2"/>
+      <text x="22" y="72" font-size="15" font-weight="800" fill="#21452F">COLD TRAFFIC (ads, outreach to strangers)</text>
+      <text x="22" y="96" font-size="13" font-weight="700" fill="#6B9078">New creative &middot; paid impressions &middot; trust from zero &middot; long cycle</text>
+      <rect x="446" y="54" width="188" height="54" rx="8" fill="#8BAA96"/>
+      <text x="540" y="86" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">$$$$$</text>
+
+      <!-- warm list bar -->
+      <rect x="0" y="146" width="654" height="86" rx="12" fill="#DBF2E4" stroke="#059669" stroke-width="2.5"/>
+      <text x="22" y="178" font-size="15" font-weight="800" fill="#0C2A18">WARM LIST (old leads + lapsed customers)</text>
+      <text x="22" y="202" font-size="13" font-weight="700" fill="#21452F">Trust already exists &middot; problem already acknowledged &middot; short cycle</text>
+      <rect x="562" y="160" width="72" height="54" rx="8" fill="#059669"/>
+      <text x="598" y="192" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">$</text>
+
+      <!-- arrow between them -->
+      <g stroke="#059669" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <line x1="327" y1="130" x2="327" y2="142"/><polyline points="319,138 327,146 335,138"/>
+      </g>
+    </svg>
+    <div class="caption">You already paid to get their attention once. Reactivation is collecting what you&rsquo;re owed.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · TWO LISTS ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE REACTIVATION CAMPAIGN</span><span>Two Lists, Two Plays</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Two distinct groups. <span class="em">Two different plays.</span></h2>
+
+  <p><span class="b">Old leads</span> said &ldquo;maybe someday&rdquo; and went quiet. They understand the problem but the timing wasn&rsquo;t right. Give them the same offer with a fresh angle, a new hook, or a reason to act now.</p>
+
+  <p><span class="b">Lapsed customers</span> already bought, got value (or didn&rsquo;t), and drifted. The re-offer must be something <em>new</em> &mdash; not the same product they already have. The relationship exists; the task is finding the next problem you can solve for them.</p>
+
+  <p class="small">Build two separate lists. Sequence them separately. The language, the offer, and the re-entry point are different for each.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D1 · two lists 2x2 -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- old leads card -->
+      <rect x="0" y="0" width="314" height="280" rx="13" fill="#FFFFFF" stroke="#0C2A18" stroke-width="2.5"/>
+      <text x="22" y="36" font-size="12" font-weight="800" fill="#059669" letter-spacing="1.5">LIST 01 &middot; OLD LEADS</text>
+      <text x="22" y="62" font-size="18" font-weight="800" fill="#0C2A18">Said &ldquo;not yet.&rdquo;</text>
+      <text x="22" y="86" font-size="18" font-weight="800" fill="#0C2A18">Went quiet.</text>
+      <line x1="22" y1="104" x2="290" y2="104" stroke="#D0E9D8" stroke-width="2"/>
+      <text x="22" y="130" font-size="13.5" font-weight="800" fill="#21452F">The play:</text>
+      <text x="22" y="158" font-size="13" font-weight="700" fill="#21452F">Same offer, new reason to act</text>
+      <text x="22" y="180" font-size="13" font-weight="700" fill="#21452F">now. New hook, new angle.</text>
+      <rect x="22" y="210" width="270" height="46" rx="9" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="157" y="230" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0C2A18">OFFER STAYS SAME</text>
+      <text x="157" y="248" text-anchor="middle" font-size="11.5" font-weight="600" fill="#6B9078">framing changes</text>
+
+      <!-- lapsed customers card -->
+      <rect x="340" y="0" width="314" height="280" rx="13" fill="#059669"/>
+      <text x="362" y="36" font-size="12" font-weight="800" fill="#B8E8D4" letter-spacing="1.5">LIST 02 &middot; LAPSED CUSTOMERS</text>
+      <text x="362" y="62" font-size="18" font-weight="800" fill="#fff">Bought once.</text>
+      <text x="362" y="86" font-size="18" font-weight="800" fill="#fff">Drifted away.</text>
+      <line x1="362" y1="104" x2="630" y2="104" stroke="#045C42" stroke-width="2"/>
+      <text x="362" y="130" font-size="13.5" font-weight="800" fill="#DBF2E4">The play:</text>
+      <text x="362" y="158" font-size="13" font-weight="700" fill="#DBF2E4">NEW offer for the next problem</text>
+      <text x="362" y="180" font-size="13" font-weight="700" fill="#DBF2E4">they have. Never re-sell the same.</text>
+      <rect x="362" y="210" width="270" height="46" rx="9" fill="#045C42"/>
+      <text x="497" y="230" text-anchor="middle" font-size="12.5" font-weight="800" fill="#fff">OFFER MUST BE NEW</text>
+      <text x="497" y="248" text-anchor="middle" font-size="11.5" font-weight="800" fill="#B8E8D4">solve the next problem</text>
+    </svg>
+    <div class="caption">Don&rsquo;t treat them the same. The relationship history determines the re-entry strategy.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · THE FIVE-MESSAGE SEQUENCE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE REACTIVATION CAMPAIGN</span><span>The 5-Message Sequence</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Five messages. <span class="em">Two weeks.</span> No guessing.</h2>
+
+  <p>The sequence is not a newsletter blast. It&rsquo;s a deliberate cadence with a specific job at each step: warm first, offer second, close third. Skipping the warm-up is the most common mistake.</p>
+
+  <p>Delivered over 10&ndash;14 days via email, SMS, DM, or phone depending on your relationship depth. The channel matters less than the <span class="b">order and the intent</span> behind each message.</p>
+
+  <div class="band">
+    <div class="t">VALUE FIRST. SOFT MENTION. CLEAR ASK. LAST CHANCE.</div>
+    <div class="s">never lead with the offer &mdash; you haven&rsquo;t re-earned that right yet</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0">
+    <!-- D2 · flow: 5 messages -->
+    <svg viewBox="0 0 654 296" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- msg 1 -->
+      <rect x="0" y="0" width="654" height="48" rx="9" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="22" y="20" font-size="11" font-weight="800" fill="#059669" letter-spacing="1">MSG 01 &middot; DAY 1</text>
+      <text x="22" y="38" font-size="14" font-weight="800" fill="#0C2A18">Pure value &mdash; no mention of an offer. Share a useful insight.</text>
+      <g stroke="#059669" stroke-width="2" fill="none"><line x1="327" y1="52" x2="327" y2="64"/><polyline points="319,60 327,68 335,60"/></g>
+
+      <!-- msg 2 -->
+      <rect x="0" y="68" width="654" height="48" rx="9" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="22" y="88" font-size="11" font-weight="800" fill="#059669" letter-spacing="1">MSG 02 &middot; DAY 3</text>
+      <text x="22" y="106" font-size="14" font-weight="800" fill="#0C2A18">More value + a question. &ldquo;Are you still working on [problem]?&rdquo;</text>
+      <g stroke="#059669" stroke-width="2" fill="none"><line x1="327" y1="120" x2="327" y2="132"/><polyline points="319,128 327,136 335,128"/></g>
+
+      <!-- msg 3 -->
+      <rect x="0" y="136" width="654" height="48" rx="9" fill="#EEF6F1" stroke="#8BAA96" stroke-width="2"/>
+      <text x="22" y="156" font-size="11" font-weight="800" fill="#8BAA96" letter-spacing="1">MSG 03 &middot; DAY 6</text>
+      <text x="22" y="174" font-size="14" font-weight="800" fill="#21452F">Soft mention. &ldquo;By the way, we&rsquo;ve updated our program &mdash; here&rsquo;s how...&rdquo;</text>
+      <g stroke="#059669" stroke-width="2" fill="none"><line x1="327" y1="188" x2="327" y2="200"/><polyline points="319,196 327,204 335,196"/></g>
+
+      <!-- msg 4 -->
+      <rect x="0" y="204" width="654" height="48" rx="9" fill="#059669"/>
+      <text x="22" y="224" font-size="11" font-weight="800" fill="#B8E8D4" letter-spacing="1">MSG 04 &middot; DAY 9</text>
+      <text x="22" y="242" font-size="14" font-weight="800" fill="#fff">The clear offer. What it is, who it&rsquo;s for, why now. CTA.</text>
+      <g stroke="#059669" stroke-width="2" fill="none"><line x1="327" y1="256" x2="327" y2="268"/><polyline points="319,264 327,272 335,264"/></g>
+
+      <!-- msg 5 -->
+      <rect x="0" y="272" width="654" height="24" rx="6" fill="#045C42"/>
+      <text x="22" y="289" font-size="11" font-weight="800" fill="#fff">MSG 05 &middot; DAY 12 &mdash; Last chance. Reason to act today. Then stop.</text>
+    </svg>
+    <div class="caption">The warm-up (msgs 1&ndash;2) is not optional. It re-earns the right to make an offer.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · MSGS 1-2 VALUE FIRST ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE REACTIVATION CAMPAIGN</span><span>Messages 1–2: Value First</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Never open with <span class="em">a pitch.</span></h2>
+
+  <p>The warm-up phase has one job: re-establish that you exist and that you are worth hearing from. The person on the other end has forgotten about you. Re-earning their attention takes genuine, no-strings value.</p>
+
+  <p><span class="b">Message 1</span> gives something useful with zero ask. A tip, a framework, a result from your community. Short, specific, and directly relevant to their problem.</p>
+
+  <p><span class="b">Message 2</span> extends the value and opens a conversation. Ask a question about where they are now. Two outcomes: they reply (give them a call) or they stay warm enough for the offer next week.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D3 · before-after: pitch-first vs value-first -->
+    <svg viewBox="0 0 654 282" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="22" font-size="12" font-weight="800" fill="#059669" letter-spacing="1">MSG 01 EXAMPLE &mdash; VALUE OPEN</text>
+      <rect x="0" y="36" width="654" height="110" rx="12" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="22" y="62" font-size="14" font-weight="800" fill="#0C2A18">Subject: the one thing that doubled our clients&rsquo; leads this month</text>
+      <text x="22" y="88" font-size="13" font-weight="600" fill="#21452F">Hey [Name], noticed something across our portfolio last month &mdash; the</text>
+      <text x="22" y="108" font-size="13" font-weight="600" fill="#21452F">businesses that sent 3+ follow-up messages got 2x the close rate. Wanted</text>
+      <text x="22" y="128" font-size="13" font-weight="600" fill="#21452F">to share that. No pitch. Just thought you&rsquo;d find it useful.</text>
+
+      <text x="0" y="172" font-size="12" font-weight="800" fill="#059669" letter-spacing="1">MSG 02 EXAMPLE &mdash; THE QUESTION</text>
+      <rect x="0" y="186" width="654" height="90" rx="12" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="22" y="214" font-size="14" font-weight="800" fill="#0C2A18">Subject: quick question</text>
+      <text x="22" y="238" font-size="13" font-weight="600" fill="#21452F">Are you still working on getting more clients? I&rsquo;m asking because we</text>
+      <text x="22" y="258" font-size="13" font-weight="600" fill="#21452F">just updated something you might want to know about. More soon.</text>
+    </svg>
+    <div class="caption">Message 1 delivers. Message 2 opens dialogue. Neither sells. That comes later.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · MSGS 3-4 THE OFFER ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE REACTIVATION CAMPAIGN</span><span>Messages 3–4: The Offer</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Now, and only now, <span class="em">make the offer.</span></h2>
+
+  <p><span class="b">Message 3</span> is the bridge. You briefly mention that you&rsquo;ve updated, improved, or launched something &mdash; and tease what it is. This is the &ldquo;by the way&rdquo; message. Short. No pressure. Plant the seed.</p>
+
+  <p><span class="b">Message 4</span> is the full offer. By now you&rsquo;ve re-earned enough trust that a direct ask is welcome. State clearly: who it&rsquo;s for, what they get, what happens next. One clear call to action. Don&rsquo;t hedge.</p>
+
+  <p class="small">The offer in message 4 should include a reason to act now &mdash; a deadline, a cohort start date, limited spots, or a special rate for people already in the list.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:16px 0">
+    <!-- D4 · offer structure -->
+    <svg viewBox="0 0 654 282" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="22" font-size="12" font-weight="800" fill="#059669" letter-spacing="1">MSG 04 ANATOMY &mdash; THE FULL OFFER</text>
+
+      <!-- who it's for -->
+      <rect x="0" y="38" width="300" height="66" rx="10" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="20" y="62" font-size="12.5" font-weight="800" fill="#059669" letter-spacing="1">WHO IT&rsquo;S FOR</text>
+      <text x="20" y="84" font-size="13" font-weight="700" fill="#0C2A18">Name the exact type of person.</text>
+
+      <!-- what they get -->
+      <rect x="354" y="38" width="300" height="66" rx="10" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="374" y="62" font-size="12.5" font-weight="800" fill="#059669" letter-spacing="1">WHAT THEY GET</text>
+      <text x="374" y="84" font-size="13" font-weight="700" fill="#0C2A18">The specific outcome, not features.</text>
+
+      <!-- reason to act now -->
+      <rect x="0" y="120" width="300" height="66" rx="10" fill="#059669"/>
+      <text x="20" y="144" font-size="12.5" font-weight="800" fill="#B8E8D4" letter-spacing="1">REASON TO ACT NOW</text>
+      <text x="20" y="166" font-size="13" font-weight="800" fill="#fff">Deadline, cohort, limited spots.</text>
+
+      <!-- one CTA -->
+      <rect x="354" y="120" width="300" height="66" rx="10" fill="#059669"/>
+      <text x="374" y="144" font-size="12.5" font-weight="800" fill="#B8E8D4" letter-spacing="1">ONE CLEAR CTA</text>
+      <text x="374" y="166" font-size="13" font-weight="800" fill="#fff">Reply, book, click. One action.</text>
+
+      <!-- example CTA line -->
+      <rect x="0" y="208" width="654" height="66" rx="12" fill="#0C2A18"/>
+      <text x="327" y="235" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">&ldquo;If you want in, reply YES to this email and I&rsquo;ll send you</text>
+      <text x="327" y="257" text-anchor="middle" font-size="14" font-weight="800" fill="#88D2A6">the details. We start [date]. Spots are limited.&rdquo;</text>
+    </svg>
+    <div class="caption">Message 4 is direct. The warm-up earned you the right to ask. Don&rsquo;t squander it with hedging.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · MSG 5 LAST CHANCE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE REACTIVATION CAMPAIGN</span><span>Message 5: Last Chance</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The final message is also <span class="em">the clearest.</span></h2>
+
+  <p>Message 5 creates urgency and closes the loop. It tells them this is the last time you&rsquo;ll mention this. That&rsquo;s not a threat &mdash; it&rsquo;s a courtesy. You respect their inbox and their decision.</p>
+
+  <p>The best last-chance messages are short. Acknowledge you&rsquo;ve reached out a few times. State the deadline. Make one final offer. Then <span class="b">stop following up</span> &mdash; this is critical. Continued outreach after &ldquo;I&rsquo;ll stop&rdquo; destroys the brand.</p>
+
+  <p class="small">After message 5: if they reply &ldquo;not interested,&rdquo; respect it immediately. If they don&rsquo;t reply, move them to a long-term nurture list and reset in 90 days.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D5 · last chance message + outcome paths -->
+    <svg viewBox="0 0 654 280" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- message box -->
+      <rect x="0" y="0" width="654" height="106" rx="12" fill="#0C2A18"/>
+      <text x="22" y="28" font-size="12" font-weight="800" fill="#059669" letter-spacing="1.5">MSG 05 &mdash; LAST CHANCE</text>
+      <text x="22" y="54" font-size="14" font-weight="800" fill="#fff">&ldquo;I don&rsquo;t want to keep bothering you. This is the last time I&rsquo;ll</text>
+      <text x="22" y="74" font-size="14" font-weight="800" fill="#fff">mention [offer]. If the timing&rsquo;s ever right, [link]. Otherwise,</text>
+      <text x="22" y="94" font-size="14" font-weight="800" fill="#88D2A6">I&rsquo;ll leave you alone. Wishing you well either way.&rdquo;</text>
+
+      <!-- outcome paths -->
+      <text x="0" y="138" font-size="12" font-weight="800" fill="#059669" letter-spacing="1">POSSIBLE OUTCOMES</text>
+      <rect x="0" y="152" width="200" height="118" rx="10" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="100" y="180" text-anchor="middle" font-size="22" font-weight="800" fill="#059669">&#10003;</text>
+      <text x="100" y="206" text-anchor="middle" font-size="13" font-weight="800" fill="#0C2A18">THEY BUY</text>
+      <text x="100" y="248" text-anchor="middle" font-size="11.5" font-weight="600" fill="#6B9078">celebrate. onboard.</text>
+
+      <rect x="227" y="152" width="200" height="118" rx="10" fill="#EEF6F1" stroke="#8BAA96" stroke-width="2"/>
+      <text x="327" y="180" text-anchor="middle" font-size="22" font-weight="800" fill="#8BAA96">&#8635;</text>
+      <text x="327" y="206" text-anchor="middle" font-size="13" font-weight="800" fill="#21452F">NO REPLY</text>
+      <text x="327" y="248" text-anchor="middle" font-size="11.5" font-weight="600" fill="#6B9078">nurture list. retry in 90d.</text>
+
+      <rect x="454" y="152" width="200" height="118" rx="10" fill="#EEF6F1" stroke="#8BAA96" stroke-width="2"/>
+      <text x="554" y="180" text-anchor="middle" font-size="22" font-weight="800" fill="#8BAA96">&times;</text>
+      <text x="554" y="206" text-anchor="middle" font-size="13" font-weight="800" fill="#21452F">NOT INTERESTED</text>
+      <text x="554" y="248" text-anchor="middle" font-size="11.5" font-weight="600" fill="#6B9078">honor it. remove from list.</text>
+    </svg>
+    <div class="caption">Stopping when you say you&rsquo;ll stop is what separates brands from spammers.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · THE RE-OFFER STRUCTURE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE REACTIVATION CAMPAIGN</span><span>The Re-Offer</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The offer needs a <span class="em">reason to exist now.</span></h2>
+
+  <p>A cold call with an unchanged offer to someone who already said no is just noise. The re-offer must justify the outreach. Something must have changed: a new feature, a new cohort, a limited-time rate, new proof, a new format.</p>
+
+  <p>The &ldquo;reason why now&rdquo; does two jobs. It gives the prospect permission to reconsider without feeling embarrassed about saying no before. And it creates urgency &mdash; the window is genuinely closing.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&times;</span><span>&ldquo;Just following up on my previous email.&rdquo;</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;We just added [X]. Because of that, we&rsquo;re opening 10 spots at the original price before we raise it next month.&rdquo;</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D6 · valid reasons to re-offer -->
+    <svg viewBox="0 0 654 270" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="22" font-size="12" font-weight="800" fill="#059669" letter-spacing="1">VALID &ldquo;REASONS TO ACT NOW&rdquo;</text>
+
+      <rect x="0" y="38" width="305" height="56" rx="10" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="20" y="62" font-size="13.5" font-weight="800" fill="#0C2A18">NEW COHORT / START DATE</text>
+      <text x="20" y="82" font-size="12" font-weight="600" fill="#6B9078">we start [date] &middot; limited spots</text>
+
+      <rect x="349" y="38" width="305" height="56" rx="10" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="369" y="62" font-size="13.5" font-weight="800" fill="#0C2A18">PRICE INCREASE COMING</text>
+      <text x="369" y="82" font-size="12" font-weight="600" fill="#6B9078">locks in current rate for list members</text>
+
+      <rect x="0" y="110" width="305" height="56" rx="10" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="20" y="134" font-size="13.5" font-weight="800" fill="#0C2A18">NEW FEATURE / FORMAT</text>
+      <text x="20" y="154" font-size="12" font-weight="600" fill="#6B9078">something genuine changed</text>
+
+      <rect x="349" y="110" width="305" height="56" rx="10" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="369" y="134" font-size="13.5" font-weight="800" fill="#0C2A18">NEW PROOF / CASE STUDY</text>
+      <text x="369" y="154" font-size="12" font-weight="600" fill="#6B9078">results that speak to their situation</text>
+
+      <rect x="0" y="182" width="305" height="56" rx="10" fill="#059669"/>
+      <text x="20" y="206" font-size="13.5" font-weight="800" fill="#fff">FAST-CASH PROMOTION</text>
+      <text x="20" y="226" font-size="12" font-weight="800" fill="#B8E8D4">bonus or discount for 72h only</text>
+
+      <rect x="349" y="182" width="305" height="56" rx="10" fill="#059669"/>
+      <text x="369" y="206" font-size="13.5" font-weight="800" fill="#fff">SEASONAL / TIMELY</text>
+      <text x="369" y="226" font-size="12" font-weight="800" fill="#B8E8D4">tied to quarter, launch, or event</text>
+    </svg>
+    <div class="caption">Pick one real reason. Stack two if both are true. Never manufacture urgency that isn&rsquo;t real.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · THE MATH ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE REACTIVATION CAMPAIGN</span><span>The Math</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">A modest list turns into <span class="em">real cash.</span></h2>
+
+  <p>Reactivation math is almost always favorable because the acquisition cost is effectively zero. You&rsquo;re not buying new attention &mdash; you&rsquo;re spending time to reach people who already know you.</p>
+
+  <p>A typical reactivation campaign on a well-segmented list converts at <span class="b">5&ndash;20%</span> depending on the offer, the list age, and the sequence quality. Even at the low end, the numbers are compelling.</p>
+
+  <div class="band">
+    <div class="t">200 CONTACTS · 10% REPLY · 5 BOOK · 3 CLOSE · $3,000 AVERAGE = $9,000.</div>
+    <div class="s">two weeks of messaging &middot; $0 in ad spend</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D7 · funnel bars -->
+    <svg viewBox="0 0 654 296" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="22" font-size="12" font-weight="800" fill="#059669" letter-spacing="1">REACTIVATION FUNNEL EXAMPLE</text>
+
+      <!-- bar 1: 200 contacted -->
+      <text x="0" y="54" font-size="12.5" font-weight="800" fill="#21452F">200 CONTACTED</text>
+      <rect x="0" y="62" width="654" height="28" rx="7" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="620" y="81" text-anchor="end" font-size="12" font-weight="800" fill="#6B9078">100%</text>
+
+      <!-- bar 2: 20 reply -->
+      <text x="0" y="114" font-size="12.5" font-weight="800" fill="#21452F">20 REPLY (10%)</text>
+      <rect x="0" y="122" width="327" height="28" rx="7" fill="#059669"/>
+      <text x="310" y="141" text-anchor="end" font-size="12" font-weight="800" fill="#fff">50%</text>
+
+      <!-- bar 3: 10 book a call -->
+      <text x="0" y="174" font-size="12.5" font-weight="800" fill="#21452F">10 BOOK A CALL (50% of replies)</text>
+      <rect x="0" y="182" width="163" height="28" rx="7" fill="#059669"/>
+      <text x="148" y="201" text-anchor="end" font-size="12" font-weight="800" fill="#fff">25%</text>
+
+      <!-- bar 4: 5 close -->
+      <text x="0" y="234" font-size="12.5" font-weight="800" fill="#21452F">5 CLOSE (50% of calls)</text>
+      <rect x="0" y="242" width="82" height="28" rx="7" fill="#045C42"/>
+      <text x="68" y="261" text-anchor="end" font-size="12" font-weight="800" fill="#fff">13%</text>
+
+      <!-- revenue -->
+      <rect x="90" y="242" width="564" height="28" rx="7" fill="#0C2A18"/>
+      <text x="372" y="261" text-anchor="middle" font-size="14" font-weight="800" fill="#88D2A6">5 clients &times; $3,000 avg = $15,000 &mdash; $0 ad spend</text>
+    </svg>
+    <div class="caption">Scale the list, improve the sequence, and the revenue compounds. The asset was already there.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">09</div>
+</section>
+
+<!-- ============================== PAGE 10 · CLOSE + CTA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE REACTIVATION CAMPAIGN</span><span>Launch It</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">Launch it <span class="em">this week.</span></h2>
+
+  <p>Export every lead from the past 12 months who didn&rsquo;t convert. Segment them into old leads and lapsed customers. Write the five messages. Schedule them over two weeks. Then send.</p>
+
+  <p class="small">Don&rsquo;t over-engineer. The campaign that goes out imperfectly beats the campaign still being drafted. Start with a single segment, run the sequence, collect the data, then refine.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&times;</span><span>Running ads to cold audiences when a warm list sits untouched.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>Segment the list tonight. Write the messages tomorrow. Send by Friday.</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:10px 0">
+    <!-- D8 · quick-start checklist -->
+    <svg viewBox="0 0 654 138" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0" y="0" width="654" height="130" rx="13" fill="#DBF2E4" stroke="#059669" stroke-width="2"/>
+      <text x="24" y="30" font-size="12.5" font-weight="800" fill="#059669" letter-spacing="1">REACTIVATION QUICK-START</text>
+      <text x="24" y="58" font-size="14" font-weight="800" fill="#0C2A18">&#10003;  Export all non-buyers from the last 12 months</text>
+      <text x="24" y="82" font-size="14" font-weight="800" fill="#0C2A18">&#10003;  Segment: old leads vs lapsed customers</text>
+      <text x="24" y="106" font-size="14" font-weight="800" fill="#0C2A18">&#10003;  Write 5 messages &middot; schedule over 14 days &middot; send</text>
+    </svg>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Fast Cash &mdash; the playbook.</h3>
+    <p>The full reactivation sequence, the warm-outreach templates, and every fast-cash lever Hormozi uses when a business needs revenue now, not next quarter.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">The money is in the list. Go find it.</div>
+
+  <div class="stamp">The Reactivation Campaign &middot; $100M Fast Cash</div>
+  <div class="folio">10</div>
+</section>
+
+</body>
+</html>

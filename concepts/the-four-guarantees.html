@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Four Guarantees — Hormozi Framework</title>
+<style>
+  :root{
+    --paper:#FFFDFD;        /* near-white page               */
+    --panel:#FBE0E0;        /* light crimson panels          */
+    --ink:#340F12;          /* deep crimson-ink text         */
+    --ink-soft:#5E2328;     /* secondary text                */
+    --muted:#A66A6F;        /* captions, running heads       */
+    --line:#F0D6D8;         /* crimson hairlines             */
+    --violet:#DC2626;       /* the accent (~10%)             */
+    --violet-deep:#991218;  /* strong fills                  */
+    --violet-soft:#F0A0A0;  /* glow / light strokes          */
+    --violet-fill:#FBE0E0;  /* faint crimson block fill      */
+    --plum:#C47070;         /* destroys / minimize / cut     */
+    --plum-fill:#F7ECEC;    /* faint plum block fill         */
+    --display:'Futura','Helvetica Neue','Arial Black',Arial,sans-serif;
+    --body:'Georgia','Iowan Old Style','Times New Roman',serif;
+  }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#e8c4c4; }
+  @page{ size:A4 landscape; margin:0; }
+
+  .page{
+    width:1123px; height:794px; position:relative; overflow:hidden;
+    background:var(--paper); color:var(--ink);
+    padding:74px 70px 70px; margin:0 auto;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  /* two-column landscape spread */
+  .spread{ display:flex; gap:46px; height:100%; padding-top:60px; align-items:center; }
+  .col-text{ flex:0 0 45%; }
+  .col-fig{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .col-fig svg{ width:100%; height:auto; max-height:600px; }
+  .col-text > :first-child{ margin-top:0; }
+
+  /* closing page: full-width CTA, upper content in a bounded landscape row */
+  .close-top{ display:flex; gap:46px; align-items:center; padding-top:18px; margin-bottom:6px; }
+  .close-left{ flex:0 0 46%; }
+  .close-right{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .close-right svg{ width:100%; height:auto; }
+  .close-left > :first-child{ margin-top:0; }
+
+  .rhead{ position:absolute; top:30px; left:70px; right:70px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+  .rhead .v{ font-weight:800; color:var(--ink); }
+  .rule{ position:absolute; top:48px; left:70px; right:70px; height:2px; background:var(--ink); }
+  .folio{ position:absolute; bottom:34px; right:70px;
+    font-family:var(--display); font-size:11px; letter-spacing:.18em; color:var(--muted); }
+  .folio b{ color:var(--ink); }
+  .stamp{ position:absolute; bottom:34px; left:70px;
+    font-family:var(--display); font-size:10px; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); }
+
+  .kicker{ font-family:var(--display); font-weight:800; font-size:13px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet); margin:0 0 18px; }
+  h1.title{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:82px; line-height:.92; letter-spacing:-.02em; margin:0; }
+  h2{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:33px; line-height:1.04; letter-spacing:-.01em; margin:0 0 20px; }
+  h2 .em{ color:var(--violet); }
+  p{ font-family:var(--body); font-size:17.5px; line-height:1.6; color:var(--ink-soft); margin:0 0 16px; }
+  p.lead{ font-size:20px; color:var(--ink); }
+  p .b{ color:var(--ink); font-weight:700; }
+  .small{ font-size:15.5px; line-height:1.52; }
+
+  .pull{ font-family:var(--display); font-weight:800; color:var(--ink);
+    font-size:28px; line-height:1.16; letter-spacing:-.01em; margin:6px 0; }
+  .pull .em{ color:var(--violet); }
+
+  .caption{ font-family:var(--display); font-size:12px; letter-spacing:.04em;
+    color:var(--muted); text-transform:none; margin-top:12px; font-weight:600; }
+
+  figure{ margin:22px 0; }
+
+  /* cover */
+  .cover-glyph{ position:absolute; right:34px; bottom:-120px;
+    font-family:var(--display); font-weight:800; font-size:540px; line-height:1;
+    color:#FBEDED; z-index:0; }
+  .cover-inner{ position:relative; z-index:1; height:100%; display:flex; flex-direction:column; }
+  .cover-sub{ font-family:var(--body); font-size:22px; line-height:1.46;
+    color:var(--ink-soft); max-width:600px; margin:28px 0 0; }
+  .cover-sub b{ color:var(--ink); }
+  .byline{ font-family:var(--display); font-weight:700; font-size:14px;
+    letter-spacing:.06em; color:var(--ink); }
+  .byline span{ color:var(--muted); font-weight:600; }
+  .tick{ width:88px; height:8px; background:var(--violet); margin:0 0 30px; }
+
+  .band{ background:var(--violet); color:#fff; border-radius:12px;
+    text-align:center; padding:24px 22px; margin:22px 0 0; }
+  .band .t{ font-family:var(--display); font-weight:800; font-size:27px;
+    letter-spacing:.005em; line-height:1.08; }
+  .band .s{ font-family:var(--display); font-weight:700; font-size:12.5px;
+    letter-spacing:.18em; text-transform:uppercase; margin-top:9px; color:#F9C8C8; }
+
+  /* compare rows */
+  .cmp{ margin-top:14px; }
+  .cmp .r{ display:flex; align-items:flex-start; gap:12px; border-radius:11px;
+    padding:13px 16px; margin:8px 0; font-family:var(--body); font-size:15.5px; line-height:1.4; }
+  .cmp .bad{ background:var(--plum-fill); color:var(--ink-soft); border:2px solid #E8CECE; }
+  .cmp .good{ background:var(--violet-fill); color:var(--ink); border:2px solid var(--violet-soft); }
+  .cmp .mk{ font-family:var(--display); font-weight:800; font-size:17px; line-height:1; margin-top:1px; }
+  .cmp .bad .mk{ color:var(--plum); }
+  .cmp .good .mk{ color:var(--violet); }
+
+  /* CTA */
+  .cta{ background:var(--ink); color:var(--paper); border-radius:14px;
+    padding:28px 34px; margin-top:18px; position:relative; overflow:hidden; }
+  .cta .ck{ font-family:var(--display); font-weight:800; font-size:12px;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--violet-soft); margin:0 0 10px; }
+  .cta h3{ font-family:var(--display); font-weight:800; font-size:26px;
+    line-height:1.06; margin:0 0 12px; color:var(--paper); }
+  .cta p{ color:#E8C4C4; font-size:15px; margin:0 0 18px; }
+  .cta .link{ display:inline-block; font-family:var(--display); font-weight:800;
+    font-size:18px; letter-spacing:.01em; color:#fff; background:var(--violet);
+    padding:13px 20px; border-radius:10px; text-decoration:none; }
+
+  .spacer{ flex:1; }
+  .closer{ text-align:center; color:var(--ink); font-family:var(--display);
+    font-weight:800; font-size:18px; letter-spacing:.01em; margin-top:22px; }
+</style>
+</head>
+<body>
+
+<!-- ============================== PAGE 1 · COVER ============================== -->
+<section class="page">
+  <div class="cover-glyph">&#10003;</div>
+  <div class="cover-inner">
+    <div class="byline">THE FRAMEWORK <span>&middot; adapted from Alex Hormozi &middot; $100M Offers</span></div>
+    <div class="spacer"></div>
+    <div class="tick"></div>
+    <div class="kicker" style="margin-bottom:14px">Reverse the risk. Unlock the sale.</div>
+    <h1 class="title">THE<br>FOUR<br>GUARANTEES</h1>
+    <p class="cover-sub">Most buyers aren&rsquo;t stopped by price &mdash; they&rsquo;re stopped by <b>doubt</b>. A guarantee transfers that risk from the buyer to you, and the sale becomes almost inevitable. Four structures. One principle. Infinite leverage.</p>
+    <div class="spacer"></div>
+    <div class="byline">A visual breakdown <span>&middot; purchase insurance &middot; reverse the risk</span></div>
+  </div>
+  <div class="stamp">The Four Guarantees &middot; $100M Offers</div>
+  <div class="folio">01</div>
+</section>
+
+<!-- ============================== PAGE 2 · THE REAL ENEMY ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR GUARANTEES</span><span>The Real Enemy</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">You&rsquo;re not competing with <span class="em">rivals.</span></h2>
+
+  <p class="lead">The real enemy is inaction. The buyer already wants what you sell &mdash; they&rsquo;re just afraid of being wrong.</p>
+  <p>Every prospect running through their head: &ldquo;What if it doesn&rsquo;t work for me?&rdquo; That question blocks more sales than price, competition, or timing combined.</p>
+  <p>You&rsquo;ve delivered this result a hundred times. They&rsquo;re doing it for the first time. The side with more information should carry the risk. That side is you.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D0 · risk sits with buyer vs seller -->
+    <svg viewBox="0 0 654 270" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- BUYER HOLDS RISK (bad state) -->
+      <rect x="0" y="0" width="305" height="260" rx="13" fill="#F7ECEC" stroke="#C47070" stroke-width="2.5"/>
+      <text x="22" y="34" font-size="12" font-weight="800" fill="#C47070" letter-spacing="1.5">NO GUARANTEE</text>
+      <text x="22" y="64" font-size="18" font-weight="800" fill="#340F12">Buyer holds</text>
+      <text x="22" y="88" font-size="18" font-weight="800" fill="#340F12">ALL the risk</text>
+      <!-- scales tipping toward buyer -->
+      <line x1="152" y1="120" x2="152" y2="160" stroke="#340F12" stroke-width="3"/>
+      <line x1="90" y1="160" x2="214" y2="160" stroke="#340F12" stroke-width="3"/>
+      <line x1="90" y1="160" x2="60" y2="215" stroke="#C47070" stroke-width="3" stroke-linecap="round"/>
+      <line x1="214" y1="160" x2="244" y2="180" stroke="#340F12" stroke-width="3" stroke-linecap="round"/>
+      <rect x="32" y="215" width="56" height="26" rx="5" fill="#C47070"/>
+      <text x="60" y="233" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">BUYER</text>
+      <rect x="218" y="180" width="56" height="26" rx="5" fill="#F0D6D8" stroke="#C47070" stroke-width="2"/>
+      <text x="246" y="198" text-anchor="middle" font-size="11" font-weight="800" fill="#C47070">SELLER</text>
+      <text x="22" y="248" font-size="12" font-style="italic" fill="#A66A6F">Result: buyer hesitates. No deal.</text>
+
+      <!-- arrow -->
+      <g stroke="#DC2626" stroke-width="3" fill="none" stroke-linecap="round">
+        <line x1="309" y1="130" x2="345" y2="130"/><polyline points="335,121 349,130 335,139"/>
+      </g>
+      <text x="327" y="116" text-anchor="middle" font-size="11" font-weight="800" fill="#DC2626">GUARANTEE</text>
+
+      <!-- SELLER HOLDS RISK (good state) -->
+      <rect x="349" y="0" width="305" height="260" rx="13" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="371" y="34" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.5">WITH GUARANTEE</text>
+      <text x="371" y="64" font-size="18" font-weight="800" fill="#340F12">Seller holds</text>
+      <text x="371" y="88" font-size="18" font-weight="800" fill="#340F12">the risk</text>
+      <!-- scales tipping toward seller -->
+      <line x1="502" y1="120" x2="502" y2="160" stroke="#340F12" stroke-width="3"/>
+      <line x1="440" y1="160" x2="564" y2="160" stroke="#340F12" stroke-width="3"/>
+      <line x1="440" y1="160" x2="420" y2="180" stroke="#340F12" stroke-width="3" stroke-linecap="round"/>
+      <line x1="564" y1="160" x2="594" y2="215" stroke="#DC2626" stroke-width="3" stroke-linecap="round"/>
+      <rect x="381" y="180" width="56" height="26" rx="5" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="409" y="198" text-anchor="middle" font-size="11" font-weight="800" fill="#DC2626">BUYER</text>
+      <rect x="567" y="215" width="56" height="26" rx="5" fill="#DC2626"/>
+      <text x="595" y="233" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">SELLER</text>
+      <text x="371" y="248" font-size="12" font-style="italic" fill="#A66A6F">Result: buyer acts. Deal closed.</text>
+    </svg>
+    <div class="caption">The side that knows more should carry the risk. That&rsquo;s you.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">02</div>
+</section>
+
+<!-- ============================== PAGE 3 · THE MATH ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR GUARANTEES</span><span>The Math</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">A guarantee is a <span class="em">math equation,</span> not an emotional one.</h2>
+
+  <p>Run the numbers before you panic about refunds. A strong guarantee typically lifts conversion 20% or more. Actual refund rates sit at 2&ndash;5% for most businesses.</p>
+
+  <p>The net is almost always <span class="b">positive</span>. You&rsquo;re leaving money on the table <em>every day</em> you don&rsquo;t have one.</p>
+
+  <div class="band">
+    <div class="t">+20% CLOSES &minus; 5% REFUNDS = +15% NET REVENUE.</div>
+    <div class="s">a guarantee is purchase insurance with a positive expected value</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D1 · bar comparison: no guarantee vs guarantee -->
+    <svg viewBox="0 0 654 320" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- labels -->
+      <text x="130" y="22" text-anchor="middle" font-size="13" font-weight="800" fill="#C47070" letter-spacing="1">NO GUARANTEE</text>
+      <text x="454" y="22" text-anchor="middle" font-size="13" font-weight="800" fill="#DC2626" letter-spacing="1">WITH GUARANTEE</text>
+
+      <!-- no guarantee column: 100 leads -->
+      <text x="130" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">100 leads enter</text>
+      <rect x="50" y="64" width="160" height="160" rx="8" fill="#F7ECEC" stroke="#C47070" stroke-width="2"/>
+      <text x="130" y="158" text-anchor="middle" font-size="42" font-weight="800" fill="#C47070">20</text>
+      <text x="130" y="182" text-anchor="middle" font-size="12" font-weight="800" fill="#A66A6F">close</text>
+      <text x="130" y="242" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">0 refunds = 20 net</text>
+
+      <!-- divider -->
+      <line x1="327" y1="40" x2="327" y2="290" stroke="#F0D6D8" stroke-width="2" stroke-dasharray="6,4"/>
+
+      <!-- with guarantee column -->
+      <text x="454" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">100 leads enter</text>
+      <rect x="374" y="64" width="160" height="160" rx="8" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="454" y="158" text-anchor="middle" font-size="42" font-weight="800" fill="#DC2626">24</text>
+      <text x="454" y="182" text-anchor="middle" font-size="12" font-weight="800" fill="#991218">close (+20%)</text>
+      <text x="454" y="204" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">minus 1 refund (4%)</text>
+      <rect x="374" y="218" width="160" height="34" rx="8" fill="#DC2626"/>
+      <text x="454" y="240" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">23 net &uarr; +15%</text>
+
+      <!-- bottom note -->
+      <text x="327" y="296" text-anchor="middle" font-size="12" font-weight="700" fill="#A66A6F">same leads &middot; same price &middot; more revenue</text>
+    </svg>
+    <div class="caption">The numbers almost always work. The question is which type of guarantee to deploy.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">03</div>
+</section>
+
+<!-- ============================== PAGE 4 · FOUR TYPES OVERVIEW ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR GUARANTEES</span><span>The Four Types</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Four structures. <span class="em">One outcome:</span> risk leaves the buyer.</h2>
+
+  <p>Not all guarantees are the same. The right type depends on your offer, your confidence, your audience, and how much risk you can absorb. Each one signals something different.</p>
+
+  <p>The strongest signals the most confidence and lowers the bar to nothing. The most aligned signals &ldquo;we win together.&rdquo; The most exclusive says &ldquo;it works &mdash; that&rsquo;s why there is no refund.&rdquo;</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:14px 0">
+    <!-- D2 · 2x2 overview grid -->
+    <svg viewBox="0 0 654 330" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- 01 Unconditional (strongest) -->
+      <rect x="0" y="0" width="314" height="154" rx="13" fill="#DC2626"/>
+      <text x="22" y="34" font-size="11" font-weight="800" fill="#F9C8C8" letter-spacing="1.5">01 &middot; UNCONDITIONAL &mdash; STRONGEST</text>
+      <text x="22" y="64" font-size="19" font-weight="800" fill="#fff">Money back.</text>
+      <text x="22" y="88" font-size="19" font-weight="800" fill="#fff">No questions.</text>
+      <text x="22" y="126" font-size="12.5" font-style="italic" fill="#F9C8C8">&ldquo;Don&rsquo;t love it? Full refund, no questions asked.&rdquo;</text>
+
+      <!-- 02 Conditional -->
+      <rect x="340" y="0" width="314" height="154" rx="13" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="362" y="34" font-size="11" font-weight="800" fill="#DC2626" letter-spacing="1.5">02 &middot; CONDITIONAL</text>
+      <text x="362" y="64" font-size="19" font-weight="800" fill="#340F12">Do the work,</text>
+      <text x="362" y="88" font-size="19" font-weight="800" fill="#340F12">get the result.</text>
+      <text x="362" y="126" font-size="12.5" font-style="italic" fill="#A66A6F">&ldquo;Complete X and Y &mdash; or we work free.&rdquo;</text>
+
+      <!-- 03 Anti-Guarantee -->
+      <rect x="0" y="176" width="314" height="154" rx="13" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="22" y="210" font-size="11" font-weight="800" fill="#DC2626" letter-spacing="1.5">03 &middot; ANTI-GUARANTEE</text>
+      <text x="22" y="240" font-size="19" font-weight="800" fill="#340F12">No refund.</text>
+      <text x="22" y="264" font-size="19" font-weight="800" fill="#340F12">On purpose.</text>
+      <text x="22" y="302" font-size="12.5" font-style="italic" fill="#A66A6F">&ldquo;If you need a guarantee, this isn&rsquo;t for you.&rdquo;</text>
+
+      <!-- 04 Implied -->
+      <rect x="340" y="176" width="314" height="154" rx="13" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="362" y="210" font-size="11" font-weight="800" fill="#DC2626" letter-spacing="1.5">04 &middot; IMPLIED</text>
+      <text x="362" y="240" font-size="19" font-weight="800" fill="#340F12">We win only</text>
+      <text x="362" y="264" font-size="19" font-weight="800" fill="#340F12">when you win.</text>
+      <text x="362" y="302" font-size="12.5" font-style="italic" fill="#A66A6F">&ldquo;20% of the revenue we generate you.&rdquo;</text>
+    </svg>
+    <div class="caption">Pick by confidence, offer type, and what the risk of a refund means for your business.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">04</div>
+</section>
+
+<!-- ============================== PAGE 5 · UNCONDITIONAL ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR GUARANTEES</span><span>Type 01 — Unconditional</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The strongest move: <span class="em">no questions asked.</span></h2>
+
+  <p>An unconditional guarantee removes every last obstacle. There is no condition, no checklist, no proof required. The buyer either loves it or gets their money back &mdash; full stop.</p>
+
+  <p>This sounds terrifying. It rarely is. The business that has a strong product and delivers what it promises will see <span class="b">refund rates under 5%</span> even with an ironclad unconditional. Worried customers who would have never bought now become customers who rarely refund.</p>
+
+  <p class="small">Best for: digital products, info products, low-touch services where delivery is immediate and refund fraud is manageable.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D3 · unconditional mechanics -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- big statement block -->
+      <rect x="0" y="0" width="654" height="88" rx="13" fill="#DC2626"/>
+      <text x="327" y="42" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">IF YOU DON&rsquo;T LOVE IT FOR ANY REASON</text>
+      <text x="327" y="70" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">IN THE NEXT 30 DAYS &mdash; FULL REFUND.</text>
+
+      <!-- three things it does -->
+      <rect x="0" y="108" width="200" height="166" rx="11" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="100" y="140" text-anchor="middle" font-size="32" font-weight="800" fill="#DC2626">01</text>
+      <text x="100" y="172" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">KILLS</text>
+      <text x="100" y="192" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">INACTION</text>
+      <text x="100" y="250" text-anchor="middle" font-size="12" font-weight="600" fill="#5E2328">the bar drops to zero</text>
+
+      <rect x="227" y="108" width="200" height="166" rx="11" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="327" y="140" text-anchor="middle" font-size="32" font-weight="800" fill="#DC2626">02</text>
+      <text x="327" y="172" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">SIGNALS</text>
+      <text x="327" y="192" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">CONFIDENCE</text>
+      <text x="327" y="250" text-anchor="middle" font-size="12" font-weight="600" fill="#5E2328">you only say this if you&rsquo;re sure</text>
+
+      <rect x="454" y="108" width="200" height="166" rx="11" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="554" y="140" text-anchor="middle" font-size="32" font-weight="800" fill="#DC2626">03</text>
+      <text x="554" y="172" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">ATTRACTS</text>
+      <text x="554" y="192" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">BETTER BUYERS</text>
+      <text x="554" y="250" text-anchor="middle" font-size="12" font-weight="600" fill="#5E2328">committed people rarely refund</text>
+    </svg>
+    <div class="caption">Unconditional = maximum signal of confidence. Use it when you know your product wins.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">05</div>
+</section>
+
+<!-- ============================== PAGE 6 · CONDITIONAL ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR GUARANTEES</span><span>Type 02 — Conditional</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">Bake your best customer&rsquo;s <span class="em">success path</span> into the guarantee.</h2>
+
+  <p>A conditional guarantee adds requirements &mdash; but that&rsquo;s a feature, not a bug. The conditions are the exact steps your best customers take to get the result. If someone follows them and still fails, you genuinely haven&rsquo;t delivered and the refund is warranted.</p>
+
+  <p><span class="b">Engineer it backward:</span> look at your top 20% of customers. What did they do? What milestones did they hit? Write those as the conditions. Fewest conditions wins &mdash; three or fewer is ideal.</p>
+
+  <p class="small">Best for: coaching, courses, high-touch services &mdash; where outcome depends partly on buyer action.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D4 · conditional flow -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- title strip -->
+      <text x="0" y="22" font-size="12.5" font-weight="800" fill="#DC2626" letter-spacing="1">HOW TO BUILD A CONDITIONAL GUARANTEE</text>
+      <!-- step 1 -->
+      <rect x="0" y="36" width="190" height="80" rx="11" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="95" y="64" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">STUDY YOUR</text>
+      <text x="95" y="84" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">TOP CLIENTS</text>
+      <text x="95" y="104" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">what did they do?</text>
+      <g stroke="#DC2626" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="194" y1="76" x2="218" y2="76"/><polyline points="210,67 222,76 210,85"/></g>
+      <!-- step 2 -->
+      <rect x="222" y="36" width="190" height="80" rx="11" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="317" y="64" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">EXTRACT THEIR</text>
+      <text x="317" y="84" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">MILESTONES</text>
+      <text x="317" y="104" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">3 steps max</text>
+      <g stroke="#DC2626" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="416" y1="76" x2="440" y2="76"/><polyline points="432,67 444,76 432,85"/></g>
+      <!-- step 3 -->
+      <rect x="444" y="36" width="210" height="80" rx="11" fill="#DC2626"/>
+      <text x="549" y="64" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">THOSE BECOME</text>
+      <text x="549" y="84" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">THE CONDITIONS</text>
+      <text x="549" y="104" text-anchor="middle" font-size="11" font-weight="800" fill="#F9C8C8">guarantee = success path</text>
+
+      <!-- example card -->
+      <rect x="0" y="148" width="654" height="130" rx="13" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="24" y="180" font-size="12" font-weight="800" fill="#DC2626" letter-spacing="1.5">EXAMPLE &mdash; COACHING PROGRAM</text>
+      <text x="24" y="206" font-size="15.5" font-weight="800" fill="#340F12">Complete all 12 modules &#10003;  Submit your action plan &#10003;  Book your review call &#10003;</text>
+      <text x="24" y="232" font-size="15.5" font-weight="600" fill="#5E2328">If you do all three and don&rsquo;t hit [result] in 90 days &mdash; we work for free until you do.</text>
+      <text x="24" y="258" font-size="12" font-style="italic" fill="#A66A6F">Notice: the conditions are things your best clients already do naturally.</text>
+    </svg>
+    <div class="caption">If they follow the path and fail, you haven&rsquo;t delivered &mdash; so the refund is fair.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">06</div>
+</section>
+
+<!-- ============================== PAGE 7 · ANTI-GUARANTEE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR GUARANTEES</span><span>Type 03 — Anti-Guarantee</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The boldest play: <span class="em">no refund,</span> on purpose.</h2>
+
+  <p>An anti-guarantee flips the logic entirely. Instead of lowering the risk of buying, it raises the signal of confidence so high that the risk disappears. &ldquo;It works. That&rsquo;s why we don&rsquo;t offer refunds.&rdquo;</p>
+
+  <p>This sounds counterintuitive &mdash; and it is. But in the right context, with the right audience and a proven product, it works precisely because most products hide behind vague guarantees. The anti-guarantee says: <span class="b">there is no safety net because none is needed.</span></p>
+
+  <p class="small">Best for: high-ticket offers, exclusive programs, or businesses with overwhelming social proof and a clearly earned reputation.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D5 · anti-guarantee spectrum -->
+    <svg viewBox="0 0 654 270" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- left: normal guarantee zone -->
+      <rect x="0" y="0" width="300" height="110" rx="12" fill="#F7ECEC" stroke="#C47070" stroke-width="2"/>
+      <text x="22" y="36" font-size="13" font-weight="800" fill="#C47070" letter-spacing="1">NORMAL GUARANTEE</text>
+      <text x="22" y="62" font-size="14.5" font-weight="700" fill="#5E2328">Lowers the bar to zero.</text>
+      <text x="22" y="84" font-size="14.5" font-weight="700" fill="#5E2328">Buyer has nothing to lose.</text>
+      <text x="22" y="100" font-size="11.5" font-style="italic" fill="#A66A6F">works when confidence is moderate</text>
+
+      <!-- right: anti-guarantee zone -->
+      <rect x="354" y="0" width="300" height="110" rx="12" fill="#FBE0E0" stroke="#DC2626" stroke-width="2.5"/>
+      <text x="376" y="36" font-size="13" font-weight="800" fill="#DC2626" letter-spacing="1">ANTI-GUARANTEE</text>
+      <text x="376" y="62" font-size="14.5" font-weight="800" fill="#340F12">Signals it works.</text>
+      <text x="376" y="84" font-size="14.5" font-weight="800" fill="#340F12">Buyer trusts the proof.</text>
+      <text x="376" y="100" font-size="11.5" font-style="italic" fill="#A66A6F">works when confidence is overwhelming</text>
+
+      <!-- vs arrow -->
+      <text x="327" y="60" text-anchor="middle" font-size="16" font-weight="800" fill="#340F12">VS</text>
+
+      <!-- when to use -->
+      <rect x="0" y="132" width="654" height="128" rx="13" fill="#340F12"/>
+      <text x="28" y="166" font-size="12.5" font-weight="800" fill="#DC2626" letter-spacing="1.5">WHEN ANTI-GUARANTEES WORK</text>
+      <text x="28" y="196" font-size="14" font-weight="700" fill="#fff">&#10003;  Proven track record with documented results</text>
+      <text x="28" y="218" font-size="14" font-weight="700" fill="#fff">&#10003;  Audience who understands the premium signals exclusivity</text>
+      <text x="28" y="240" font-size="14" font-weight="700" fill="#fff">&#10003;  High-ticket offer where &ldquo;no refund&rdquo; filters serious buyers</text>
+    </svg>
+    <div class="caption">An anti-guarantee only works when your proof is louder than the risk. Build the proof first.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">07</div>
+</section>
+
+<!-- ============================== PAGE 8 · IMPLIED ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR GUARANTEES</span><span>Type 04 — Implied</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The aligned play: <span class="em">we only win if you win.</span></h2>
+
+  <p>An implied guarantee is embedded in the deal structure itself. You don&rsquo;t call it a guarantee. There&rsquo;s no refund clause. But the economics make it clear: if the buyer doesn&rsquo;t succeed, you don&rsquo;t get paid.</p>
+
+  <p>Revenue share, performance bonuses, equity stakes &mdash; all are implied guarantees. They signal total alignment. The prospect&rsquo;s internal monologue shifts from &ldquo;will this work?&rdquo; to <span class="b">&ldquo;if it doesn&rsquo;t work, they lose too.&rdquo;</span></p>
+
+  <p class="small">Best for: agencies, growth services, consulting &mdash; anywhere your output directly drives a measurable client result.</p>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:20px 0">
+    <!-- D6 · implied structures -->
+    <svg viewBox="0 0 654 280" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- header -->
+      <text x="0" y="24" font-size="12.5" font-weight="800" fill="#DC2626" letter-spacing="1">THREE IMPLIED GUARANTEE STRUCTURES</text>
+
+      <!-- row 1 -->
+      <rect x="0" y="40" width="200" height="60" rx="10" fill="#DC2626"/>
+      <text x="100" y="66" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">REVENUE SHARE</text>
+      <text x="100" y="86" text-anchor="middle" font-size="11.5" font-weight="700" fill="#F9C8C8">we take % of what we generate</text>
+      <g stroke="#DC2626" stroke-width="2" fill="none"><line x1="204" y1="70" x2="228" y2="70"/><polyline points="220,61 232,70 220,79"/></g>
+      <rect x="232" y="40" width="200" height="60" rx="10" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="332" y="66" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">PERFORMANCE FEE</text>
+      <text x="332" y="86" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5E2328">bonus if we hit KPIs</text>
+      <g stroke="#DC2626" stroke-width="2" fill="none"><line x1="436" y1="70" x2="460" y2="70"/><polyline points="452,61 464,70 452,79"/></g>
+      <rect x="464" y="40" width="190" height="60" rx="10" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="559" y="66" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">EQUITY STAKE</text>
+      <text x="559" y="86" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5E2328">we build it with you</text>
+
+      <!-- the key insight box -->
+      <rect x="0" y="130" width="654" height="140" rx="13" fill="#FFFDFD" stroke="#340F12" stroke-width="2.5"/>
+      <text x="28" y="162" font-size="12.5" font-weight="800" fill="#DC2626" letter-spacing="1.5">THE PROSPECT&rsquo;S INTERNAL SHIFT</text>
+      <text x="28" y="190" font-size="15" font-weight="800" fill="#C47070">&times; &ldquo;Will this agency actually deliver?&rdquo;</text>
+      <text x="28" y="216" font-size="15" font-weight="800" fill="#DC2626">&#10003; &ldquo;They take 20% of revenue &mdash; they don&rsquo;t get paid if I don&rsquo;t.&rdquo;</text>
+      <text x="28" y="248" font-size="12.5" font-style="italic" fill="#A66A6F">the structure answers the doubt before the question is ever asked</text>
+    </svg>
+    <div class="caption">Align the incentives. The guarantee isn&rsquo;t a clause &mdash; it&rsquo;s the business model.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">08</div>
+</section>
+
+<!-- ============================== PAGE 9 · STACKING ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR GUARANTEES</span><span>Stacking</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">One guarantee is good. <span class="em">Stacked guarantees</span> are a machine.</h2>
+
+  <p>You don&rsquo;t have to pick one. Layer a short-term unconditional with a longer-term conditional. The first covers the hesitant buyer. The second covers the motivated one who needs proof of commitment on your side.</p>
+
+  <p>The combined message: &ldquo;Try it risk-free for 30 days. And if you do the work and don&rsquo;t hit the result in 90 days, we&rsquo;re not done.&rdquo;</p>
+
+  <div class="band">
+    <div class="t">THE SALE BECOMES A TRIAL. MORE CLOSES. FEW MORE REFUNDS. NET MORE REVENUE.</div>
+    <div class="s">stacked guarantees turn fence-sitters into buyers</div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D7 · stacking timeline -->
+    <svg viewBox="0 0 654 260" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <!-- timeline base -->
+      <line x1="30" y1="140" x2="630" y2="140" stroke="#340F12" stroke-width="3"/>
+      <!-- tick marks -->
+      <line x1="30" y1="133" x2="30" y2="147" stroke="#340F12" stroke-width="3"/>
+      <line x1="230" y1="133" x2="230" y2="147" stroke="#340F12" stroke-width="3"/>
+      <line x1="630" y1="133" x2="630" y2="147" stroke="#340F12" stroke-width="3"/>
+      <!-- labels below line -->
+      <text x="30" y="164" text-anchor="middle" font-size="12" font-weight="800" fill="#340F12">DAY 0</text>
+      <text x="30" y="180" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">purchase</text>
+      <text x="230" y="164" text-anchor="middle" font-size="12" font-weight="800" fill="#340F12">DAY 30</text>
+      <text x="230" y="180" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">unconditional ends</text>
+      <text x="630" y="164" text-anchor="middle" font-size="12" font-weight="800" fill="#340F12">DAY 90</text>
+      <text x="630" y="180" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">conditional ends</text>
+
+      <!-- layer 1: unconditional band -->
+      <rect x="30" y="86" width="200" height="42" rx="8" fill="#DC2626"/>
+      <text x="130" y="112" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">30-DAY UNCONDITIONAL</text>
+
+      <!-- layer 2: conditional band -->
+      <rect x="30" y="40" width="600" height="36" rx="8" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="330" y="63" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">90-DAY CONDITIONAL (do the work &rarr; or we continue for free)</text>
+
+      <!-- what each does -->
+      <text x="130" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">removes fear of buying</text>
+      <text x="430" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#5E2328">removes fear of commitment</text>
+      <line x1="130" y1="186" x2="130" y2="212" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="430" y1="186" x2="430" y2="212" stroke="#DC2626" stroke-width="1.5" stroke-dasharray="4,3"/>
+    </svg>
+    <div class="caption">Layer them: short unconditional to enter, long conditional to stay. The funnel widens at both ends.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">09</div>
+</section>
+
+<!-- ============================== PAGE 10 · LANGUAGE ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR GUARANTEES</span><span>Write It Right</span></div>
+  <div class="rule"></div>
+
+  <div class="spread">
+  <div class="col-text">
+  <h2 style="margin-top:30px">The words make it <span class="em">real or invisible.</span></h2>
+
+  <p>Vague guarantees get banner-blindness. Every seller says &ldquo;results guaranteed.&rdquo; Nobody believes it because it means nothing. Your guarantee needs to name the exact outcome, the exact timeframe, and the exact consequence if it doesn&rsquo;t happen.</p>
+
+  <p>You don&rsquo;t even need the word &ldquo;guarantee.&rdquo; Describing precisely what you will do if the result isn&rsquo;t delivered is stronger than any boilerplate phrase.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&times;</span><span>&ldquo;We guarantee your satisfaction.&rdquo;</span></div>
+    <div class="r bad"><span class="mk">&times;</span><span>&ldquo;Results guaranteed or your money back.&rdquo;</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>&ldquo;If you don&rsquo;t add at least $10,000 to your monthly revenue in 90 days following the program, I&rsquo;ll write you a check for the difference.&rdquo;</span></div>
+  </div>
+  </div>
+
+  <div class="col-fig">
+  <figure style="margin:18px 0">
+    <!-- D8 · anatomy of a strong guarantee -->
+    <svg viewBox="0 0 654 290" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <text x="0" y="24" font-size="12.5" font-weight="800" fill="#DC2626" letter-spacing="1">ANATOMY OF A STRONG GUARANTEE</text>
+      <!-- the statement -->
+      <rect x="0" y="40" width="654" height="78" rx="11" fill="#340F12"/>
+      <text x="327" y="72" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">&ldquo;If you don&rsquo;t lose 20 lbs in 90 days following</text>
+      <text x="327" y="94" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">the plan, I&rsquo;ll refund every cent &mdash; no questions asked.&rdquo;</text>
+
+      <!-- four callouts -->
+      <rect x="0" y="140" width="150" height="130" rx="10" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="75" y="168" text-anchor="middle" font-size="22" font-weight="800" fill="#DC2626">01</text>
+      <text x="75" y="192" text-anchor="middle" font-size="12.5" font-weight="800" fill="#340F12">EXACT</text>
+      <text x="75" y="210" text-anchor="middle" font-size="12.5" font-weight="800" fill="#340F12">OUTCOME</text>
+      <text x="75" y="252" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">&ldquo;20 lbs&rdquo;</text>
+
+      <rect x="168" y="140" width="150" height="130" rx="10" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="243" y="168" text-anchor="middle" font-size="22" font-weight="800" fill="#DC2626">02</text>
+      <text x="243" y="192" text-anchor="middle" font-size="12.5" font-weight="800" fill="#340F12">EXACT</text>
+      <text x="243" y="210" text-anchor="middle" font-size="12.5" font-weight="800" fill="#340F12">TIMEFRAME</text>
+      <text x="243" y="252" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">&ldquo;90 days&rdquo;</text>
+
+      <rect x="336" y="140" width="150" height="130" rx="10" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="411" y="168" text-anchor="middle" font-size="22" font-weight="800" fill="#DC2626">03</text>
+      <text x="411" y="192" text-anchor="middle" font-size="12.5" font-weight="800" fill="#340F12">EXACT</text>
+      <text x="411" y="210" text-anchor="middle" font-size="12.5" font-weight="800" fill="#340F12">CONSEQUENCE</text>
+      <text x="411" y="252" text-anchor="middle" font-size="11" font-weight="600" fill="#A66A6F">&ldquo;refund every cent&rdquo;</text>
+
+      <rect x="504" y="140" width="150" height="130" rx="10" fill="#DC2626"/>
+      <text x="579" y="168" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">04</text>
+      <text x="579" y="192" text-anchor="middle" font-size="12.5" font-weight="800" fill="#fff">NO HOOPS</text>
+      <text x="579" y="210" text-anchor="middle" font-size="12.5" font-weight="800" fill="#fff">TO JUMP</text>
+      <text x="579" y="252" text-anchor="middle" font-size="11" font-weight="800" fill="#F9C8C8">&ldquo;no questions asked&rdquo;</text>
+    </svg>
+    <div class="caption">Specific language is believable. Vague language is invisible. Name the number and the consequence.</div>
+  </figure>
+  </div>
+  </div>
+
+  <div class="folio">10</div>
+</section>
+
+<!-- ============================== PAGE 11 · CLOSE + CTA ============================== -->
+<section class="page">
+  <div class="rhead"><span class="v">THE FOUR GUARANTEES</span><span>Build It Now</span></div>
+  <div class="rule"></div>
+
+  <div class="close-top">
+  <div class="close-left">
+  <h2 style="margin-top:30px">Now build <span class="em">yours.</span></h2>
+
+  <p>Pick the type that matches your confidence and your offer. Write the exact outcome, exact timeframe, exact consequence. Add a second layer if you can. Then put it everywhere: sales pages, calls, proposals, DMs.</p>
+
+  <p class="small">The buyers who were on the fence will step over. The refund rate you feared won&rsquo;t materialize. The math will win &mdash; it always does.</p>
+
+  <div class="cmp">
+    <div class="r bad"><span class="mk">&times;</span><span>No guarantee &rarr; buyer carries all risk &rarr; hesitates &rarr; no sale.</span></div>
+    <div class="r good"><span class="mk">&#10003;</span><span>Strong guarantee &rarr; risk leaves buyer &rarr; fence-sitters close &rarr; net revenue up.</span></div>
+  </div>
+  </div>
+
+  <div class="close-right">
+  <figure style="margin:12px 0">
+    <!-- D9 · the guarantee decision tree -->
+    <svg viewBox="0 0 654 140" width="654" xmlns="http://www.w3.org/2000/svg" font-family="Futura, 'Helvetica Neue', Arial, sans-serif">
+      <rect x="0" y="10" width="654" height="54" rx="10" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="327" y="34" text-anchor="middle" font-size="14" font-weight="800" fill="#340F12">CAN YOU ABSORB A 5% REFUND RATE?</text>
+      <text x="200" y="56" text-anchor="middle" font-size="12" font-weight="700" fill="#DC2626">YES &rarr;</text>
+      <text x="480" y="56" text-anchor="middle" font-size="12" font-weight="700" fill="#C47070">NO &rarr;</text>
+      <rect x="0" y="76" width="300" height="54" rx="10" fill="#DC2626"/>
+      <text x="150" y="100" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">UNCONDITIONAL</text>
+      <text x="150" y="118" text-anchor="middle" font-size="11" font-weight="700" fill="#F9C8C8">strongest signal</text>
+      <rect x="354" y="76" width="300" height="54" rx="10" fill="#FBE0E0" stroke="#DC2626" stroke-width="2"/>
+      <text x="504" y="100" text-anchor="middle" font-size="13" font-weight="800" fill="#340F12">CONDITIONAL</text>
+      <text x="504" y="118" text-anchor="middle" font-size="11" font-weight="700" fill="#A66A6F">add milestone steps</text>
+    </svg>
+  </figure>
+  </div>
+  </div>
+
+  <div class="cta">
+    <div class="ck">The system this came from</div>
+    <h3>$100M Offers &mdash; the book.</h3>
+    <p>The complete guarantee playbook, the value equation, and every offer-building framework that makes saying no feel stupid.</p>
+    <a class="link" href="https://www.acquisition.com">acquisition.com</a>
+  </div>
+
+  <div class="closer">Remove the risk. Close the fence-sitters. Build the guarantee today.</div>
+
+  <div class="stamp">The Four Guarantees &middot; $100M Offers</div>
+  <div class="folio">11</div>
+</section>
+
+</body>
+</html>
